@@ -322,3 +322,18 @@ template now names the real ../checkpoint path from downloaded code/, the uv
 invocation and the pinned-cache tutorial. No model/evaluation changes. The staged
 release-v1 remains immutable; the final bundle must be rebuilt after approved
 publication cross-links are added, including this documentation correction.
+
+## 2026-10-05 — Publication blocker confirmed across three goal turns
+
+The same missing new-project publication settings remain after the original
+concrete release-review turn and two automatic continuations. The preceding
+continuation made a small loading-documentation correction (13 release tests
+passed); it did not resolve publication authorization. Current worktree is clean,
+local bundle verification passed, and published-artifact/download/GPU-parity
+evidence is still absent, as expected before upload.
+
+No independent milestone work remains that would unblock publication. The
+explicit goal and plan require confirming destinations and visibility first.
+Mark the goal blocked pending that existing question, not complete or paused.
+On answer, rebuild with approved cross-links and the loading correction, publish
+the agreed repositories, then verify actual downloads and the hosted demo.

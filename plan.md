@@ -1,7 +1,7 @@
 # Complete Stackcraft
 
 
-Status: active. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
+Status: blocked on new-project publication destinations/visibility. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
 
 ## Purpose
 
@@ -175,4 +175,4 @@ After authorization, add approved cross-links, rebuild the exact final bundle,
 publish, record immutable revisions, verify fresh downloads and checkpoint parity,
 and test the actual hosted demo. Preserve all frozen checkpoint/evaluation bytes.
 GLM is restored and healthy. The local game is available on port 8087.
-Keep the goal active until M6 passes.
+Resume after the publication answer; do not mark the goal complete until M6 passes.
