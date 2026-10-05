@@ -47,7 +47,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M2: Offline tournaments, replayable race, native encoding and actual unchanged Clef GPU baseline verified. Development seeds0–1 yielded0mean lines for Clef versus9heuristic at30pieces, zero errors;144ms mean Clef decision latency.
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
-- [ ] M5: Both training epochs and complete validation passed. Epoch 02 selected by preregistered NLL rule (1.7759 versus 1.8609); fresh-process reload reproduced probabilities exactly. The frozen 200-seed, five-player evaluation finished with 1,000 successful episodes and passed independent replay/statistics review. Final report and actual-recording browser checks remain.
+- [x] (2026-10-05) M5: Selected epoch 02 passed exact fresh-process reload and all 1,000 final games. Independent replay/statistics and narrative audits passed. Trained mean lines 16.81 versus native 0.07 and heuristic 76.53. Fixed-seed three-bot recordings with live human play passed desktop/mobile checks; CPU Docker smoke passed. Final report and Tutorial 05 complete.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
 
 ## Milestones
@@ -152,24 +152,27 @@ Training feasibility passed on the RTX5090 with BF16 backbone and FP32 decision 
 ## Outcomes and Retrospective
 
 
-M0–M4 are complete. The local game, replay and recorded comparison are playable.
-The dataset contains 827 training and 215 validation rows with fixed disjoint seed
-pools and independently checked sample labels. Both full training epochs completed;
-epoch 02 won the preregistered validation selection, and its fresh-process reload
-matched reference probabilities exactly. The final test passed independent evidence review; release remains in
-progress. Human-alongside play is implemented and browser-verified. The integrated
-checks passed 262 tests (including the separately enabled native CPU encoding
-check), Ruff and ty. Release tooling is ready for actual final evaluation evidence.
+M0–M5 are complete. Fine-tuning improved the selected model over unchanged Clef,
+with mean lines 16.81 versus 0.07 and a paired gain interval [15.74, 17.77]. The
+heuristic remains substantially stronger (76.53 lines) and faster. All 1,000
+held-out episodes and all paired intervals passed independent review; no errors
+were excluded. The final comparison demo includes live human play alongside
+actual base/trained/heuristic recordings and passed desktop/mobile and CPU Docker
+checks. Full report, compact metrics, source hashes and all seven tutorials exist.
+Publication and fresh-download verification remain outstanding under M6.
 
 ## Next Action
 
-The final evaluation finished successfully and the authorized GLM service was
-restored and verified healthy. All 1,000 persisted episodes and all paired
-intervals passed independent CPU review. Do not tune from these test results
-or change the selected checkpoint.
+The local release is staged at `runs/release-v1` from clean source commit
+`3c98736`. Its byte/schema/card review passed. The concrete publication question is
+pending; await the user's destinations/visibility answer before creating remote repositories.
+Proposed GitHub: `kkarimi/stackcraft`; Hugging Face model:
+`nima1/stackcraft-clef-flash-lora`; dataset: `nima1/stackcraft-data`;
+Docker Space: `nima1/stackcraft`. Public HF artifacts include reproducibility
+source, even if GitHub is private. No public upload has occurred.
 
-The optional human board beside recorded bots is integrated and browser-verified.
-The fixed seed 30000 demo is exported and installed; repeat the comparison
-browser and Docker checks with those actual model recordings. Update results and tutorials, build and review the release,
-confirm new-project publication settings, publish and verify fresh downloads.
-The local game is available on port 8087. Keep the goal active until M5 and M6 pass.
+After authorization, add approved cross-links, rebuild the exact final bundle,
+publish, record immutable revisions, verify fresh downloads and checkpoint parity,
+and test the actual hosted demo. Preserve all frozen checkpoint/evaluation bytes.
+GLM is restored and healthy. The local game is available on port 8087.
+Keep the goal active until M6 passes.

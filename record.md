@@ -270,3 +270,41 @@ and healthy. Root independently checked its in-container /health: status ok.
 Exported fixed seed 30000 (base, trained, heuristic) to runs/demo-final-v1.json
 and deliberately replaced the packaged development manifest. Final browser,
 Docker, report and release bundle checks follow; no new training or test tuning.
+
+## 2026-10-05 — M5 accepted and concrete release staged
+
+Final narrative review matched every compact-summary metric, all twelve intervals,
+all evidence hashes and fixed-seed endpoint descriptions. No blocking findings.
+The full test run passed 260 tests and found one obsolete expectation for two
+recorded players; changed it to require base/trained/heuristic. All five focused
+server tests then passed. One optional native encoding test was skipped in this
+run; it passed separately before these reporting/UI edits. Ruff lint/format, ty,
+JavaScript syntax and local Markdown links passed. Exact archived audit source
+still matches the executed script hash.
+
+Actual final-recording browser checks passed desktop and 390×844 mobile controls,
+probabilities, synchronized human moves, scrubbing, preserved sessions and the
+200-piece human comparison cap. Fixed a real-name heading wrap alignment issue.
+The CPU Docker image stackcraft-demo:final-local passed health/assets, exact
+manifest, all three replay outcomes and human move/replay roundtrip. It runs as
+UID1000 without Torch. Image SHA256:
+200b46e282d2b09b73cd597fe2150ab6039139489c7fbdd35d9d50f425dda3b1.
+The isolated smoke container was removed. No GPU workload was changed.
+
+Local commit 3c98736 contains the study, report and final demo. The builder
+validated all final evidence and staged 1,149 files at runs/release-v1 from that
+clean source. Actual bundle hash/schema, card and publication-scope review follow.
+Nothing has been uploaded.
+
+The actual staged bundle passed byte/schema verification and independent card,
+path, source-manifest, checkpoint and tutorial review. It contains 1,149 files,
+2,757,587,696 bytes. Release manifest SHA256:
+0fe02dadf3a793bfce936e1c54a762d8dd2108a35de30293279adeabe6a8c0c1.
+A limited recognizable-token/private-key scan covered all 1,147 nonbinary files
+and found no matches or forbidden runtime files. This is not a guarantee of
+secret absence. Local verification is not a fresh-download or GPU parity claim.
+
+Presented concrete Stackcraft publication destinations and visibility options
+after review, explicitly disclosing public source inside public HF artifacts.
+Await the user's answer before creating/uploading repositories. M6 remains open;
+no publication is claimed and the goal remains active.
