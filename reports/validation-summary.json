@@ -1,0 +1,158 @@
+{
+  "selected_key": "epoch-02",
+  "decision_rule": "lowest finite mean target NLL over all 215 validation positions; exact tie chooses earlier epoch",
+  "selection_sha256": "025b62587a26bd8cc78c80f362524b8c178190df5188b317299121afa6b1203b",
+  "checkpoint_sha256": {
+    "adapter/README.md": "bf1fa63446e8ee38c5ac154ade9138a0e2354e3215201f59473102eeb5206fa0",
+    "adapter/adapter_config.json": "bbbce7f19e186b4a79c39d03786bb190d6084e7990a601e8e28672cf1c969741",
+    "adapter/adapter_model.safetensors": "3ed169fe68b20a370bb856f9d91842543374ff3c98fd3bbe139ef2d0b97877a3",
+    "joint_head.safetensors": "4f21c0f315cf1bcf852a9887d158928855eaa9bdcab6b9770d518abf3727fa1b",
+    "reference.json": "adacc63684d28598f8016602bab790cd3967317986b6934dd94a5e14fabe571f",
+    "training_config.json": "3ead31d0a3ccb6a62914c3853ee26332f6412382c5196e40b461182e64d8b329"
+  },
+  "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+  "validation": {
+    "epoch-01": {
+      "report_sha256": "ce401ef9fe1d25c11c7a0e3845def347967d8617223307ad823e23a90c3f0033",
+      "players": {
+        "base": {
+          "available_subset_mean_brier": 0.9231725575578064,
+          "complete_probability_coverage": true,
+          "correct": 21,
+          "error_rate": 0.0,
+          "failed_predictions": [],
+          "finite_subset_mean_nll": 2.9527020509302693,
+          "finite_subset_nll_positions": 215,
+          "mean_brier": 0.9231725575578064,
+          "mean_nll": 2.9527020509302693,
+          "missing_probabilities": [],
+          "nll_is_infinite": false,
+          "positions": 215,
+          "probability_positions": 215,
+          "selection_performed": false,
+          "teacher_agreement": 0.09767441860465116,
+          "zero_target_probability_count": 0
+        },
+        "base-fp32": {
+          "available_subset_mean_brier": 0.9231017245023939,
+          "complete_probability_coverage": true,
+          "correct": 22,
+          "error_rate": 0.0,
+          "failed_predictions": [],
+          "finite_subset_mean_nll": 2.9523931327950934,
+          "finite_subset_nll_positions": 215,
+          "mean_brier": 0.9231017245023939,
+          "mean_nll": 2.9523931327950934,
+          "missing_probabilities": [],
+          "nll_is_infinite": false,
+          "positions": 215,
+          "probability_positions": 215,
+          "selection_performed": false,
+          "teacher_agreement": 0.10232558139534884,
+          "zero_target_probability_count": 0
+        },
+        "trained": {
+          "available_subset_mean_brier": 0.7221895727255984,
+          "complete_probability_coverage": true,
+          "correct": 89,
+          "error_rate": 0.0,
+          "failed_predictions": [],
+          "finite_subset_mean_nll": 1.8608697515370076,
+          "finite_subset_nll_positions": 215,
+          "mean_brier": 0.7221895727255984,
+          "mean_nll": 1.8608697515370076,
+          "missing_probabilities": [],
+          "nll_is_infinite": false,
+          "positions": 215,
+          "probability_positions": 215,
+          "selection_performed": false,
+          "teacher_agreement": 0.413953488372093,
+          "zero_target_probability_count": 0
+        }
+      },
+      "provenance": {
+        "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+        "encoding_version": "stackcraft-clef-v1",
+        "installed_versions": {
+          "huggingface-hub": "1.33.0",
+          "peft": "0.21.2",
+          "safetensors": "0.8.0",
+          "torch": "2.14.1+cu130",
+          "transformers": "5.18.0"
+        },
+        "precision_policy": "native BF16 base; FP32 trained head; optional base-fp32 ablation",
+        "rules_version": "stackcraft-v1",
+        "source_commit": "ada38885b55ae3e4b6705a18dec98d194d37447e",
+        "source_dirty": false,
+        "source_hashes": {
+          "scripts/evaluate_clef.py": "70a47e9314ec9d7351a939bae32f07f14bd08f6106b60ce6155687c0540b92dd",
+          "src/stackcraft/clef.py": "c505f35d27121ba9ec9db3c663927ac8b28304f4ed864765be61ce96c8c86e13",
+          "src/stackcraft/data.py": "74b68a1f391a3128d2e499c7e86b6c94a1f2a2bef33ffe75c8631207065bd991",
+          "src/stackcraft/engine.py": "0805be38ee968d569fa1c12230730f491490f7d27cfcc570c400ac3b4a546453",
+          "src/stackcraft/evaluation.py": "df56f9d36655e79573a014a5c55c2571bc5e04e2c20f1b37e2d939b871e889e6",
+          "src/stackcraft/pieces.py": "c5bee0f8767aeeab279cfbadb4c7b4c0bbf1f31c1d29b08dda197f0627654b29",
+          "src/stackcraft/players/__init__.py": "550bed9237303a845cdcc101542b0b688173a8f5436dd1d08c5f85a5a19fa2b2",
+          "src/stackcraft/provenance.py": "0728104f22361ad2a8b4471e6eef0467852d94f650d0259d7f5f674c0086f13b",
+          "src/stackcraft/schema.py": "35c70d96e8a49e434dc0a3607412a0ce58141306df59e09b1170511694cb6eb5",
+          "src/stackcraft/tournament.py": "288ed447a32e0845f52097372a644fc211b1632790655f620801d3ce1639d559",
+          "src/stackcraft/training.py": "f7e48b041b331cf2b68674ec2abb1059dd1da47cb261697b46260b4f0169dba8",
+          "uv.lock": "bc7fae476529578be003856b5f19e09c8cc96e0020ab999e20e1f8210696f9c8"
+        },
+        "source_identity_method": "exact-git-root"
+      }
+    },
+    "epoch-02": {
+      "report_sha256": "9482be5ac08b85a7bafc18d8f70a35ba277f476d9a96dd0684553e937abc4d2a",
+      "players": {
+        "trained": {
+          "available_subset_mean_brier": 0.7089798657211578,
+          "complete_probability_coverage": true,
+          "correct": 92,
+          "error_rate": 0.0,
+          "failed_predictions": [],
+          "finite_subset_mean_nll": 1.7759231168523646,
+          "finite_subset_nll_positions": 215,
+          "mean_brier": 0.7089798657211578,
+          "mean_nll": 1.7759231168523646,
+          "missing_probabilities": [],
+          "nll_is_infinite": false,
+          "positions": 215,
+          "probability_positions": 215,
+          "selection_performed": false,
+          "teacher_agreement": 0.42790697674418604,
+          "zero_target_probability_count": 0
+        }
+      },
+      "provenance": {
+        "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+        "encoding_version": "stackcraft-clef-v1",
+        "installed_versions": {
+          "huggingface-hub": "1.33.0",
+          "peft": "0.21.2",
+          "safetensors": "0.8.0",
+          "torch": "2.14.1+cu130",
+          "transformers": "5.18.0"
+        },
+        "precision_policy": "native BF16 base; FP32 trained head; optional base-fp32 ablation",
+        "rules_version": "stackcraft-v1",
+        "source_commit": "7a21f6491bcaf2afacc9aa5b5e2733a35c41a7a8",
+        "source_dirty": false,
+        "source_hashes": {
+          "scripts/evaluate_clef.py": "70a47e9314ec9d7351a939bae32f07f14bd08f6106b60ce6155687c0540b92dd",
+          "src/stackcraft/clef.py": "c505f35d27121ba9ec9db3c663927ac8b28304f4ed864765be61ce96c8c86e13",
+          "src/stackcraft/data.py": "74b68a1f391a3128d2e499c7e86b6c94a1f2a2bef33ffe75c8631207065bd991",
+          "src/stackcraft/engine.py": "0805be38ee968d569fa1c12230730f491490f7d27cfcc570c400ac3b4a546453",
+          "src/stackcraft/evaluation.py": "df56f9d36655e79573a014a5c55c2571bc5e04e2c20f1b37e2d939b871e889e6",
+          "src/stackcraft/pieces.py": "c5bee0f8767aeeab279cfbadb4c7b4c0bbf1f31c1d29b08dda197f0627654b29",
+          "src/stackcraft/players/__init__.py": "550bed9237303a845cdcc101542b0b688173a8f5436dd1d08c5f85a5a19fa2b2",
+          "src/stackcraft/provenance.py": "0728104f22361ad2a8b4471e6eef0467852d94f650d0259d7f5f674c0086f13b",
+          "src/stackcraft/schema.py": "35c70d96e8a49e434dc0a3607412a0ce58141306df59e09b1170511694cb6eb5",
+          "src/stackcraft/tournament.py": "288ed447a32e0845f52097372a644fc211b1632790655f620801d3ce1639d559",
+          "src/stackcraft/training.py": "f7e48b041b331cf2b68674ec2abb1059dd1da47cb261697b46260b4f0169dba8",
+          "uv.lock": "bc7fae476529578be003856b5f19e09c8cc96e0020ab999e20e1f8210696f9c8"
+        },
+        "source_identity_method": "exact-git-root"
+      }
+    }
+  }
+}
