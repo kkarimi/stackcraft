@@ -47,7 +47,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M2: Offline tournaments, replayable race, native encoding and actual unchanged Clef GPU baseline verified. Development seeds0–1 yielded0mean lines for Clef versus9heuristic at30pieces, zero errors;144ms mean Clef decision latency.
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
-- [ ] M5: Both training epochs and complete validation passed. Epoch02 selected by preregisteredNLL rule(1.7759 versus1.8609). Selected freshreload and actual200paired testgames remain; comparison UI/tutorial05 ready for finalresults.
+- [ ] M5: Both training epochs and complete validation passed. Epoch 02 selected by preregistered NLL rule (1.7759 versus 1.8609); fresh-process reload reproduced probabilities exactly. The frozen 200-seed, five-player evaluation is running. Human-alongside comparison UI and final results remain.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
 
 ## Milestones
@@ -152,9 +152,24 @@ Training feasibility passed on the RTX5090 with BF16 backbone and FP32 decision 
 ## Outcomes and Retrospective
 
 
-M0–M4 are complete. The local game, replay and recorded side-by-side race are playable.117 tests including actual native CPU encoding, Ruff and ty pass; the earlier game wheel passed isolated installation checks. Independent review caught and fixed keyboard focus and lost-response retry bugs. M2 includes a successful real-weight unchanged Clef development run. The expert dataset has827train/215validation rows from committed code, independent sample-label checks and untouched reserved test seeds. Bounded real GPU training and exact fresh-process reload have passed. Fullstudy training and publication are pending.
+M0–M4 are complete. The local game, replay and recorded comparison are playable.
+The dataset contains 827 training and 215 validation rows with fixed disjoint seed
+pools and independently checked sample labels. Both full training epochs completed;
+epoch 02 won the preregistered validation selection, and its fresh-process reload
+matched reference probabilities exactly. The final test and release remain in
+progress. The latest full suite passed 230 tests, Ruff and ty before the current
+web-only changes; those changes need browser review before integration.
 
 ## Next Action
 
+Poll live evaluation session `49782` and `runs/final-evaluation/progress.json`.
+Do not restart while its process is alive. All 200 seeds (30000–30199), the
+200-piece cap, five players and frozen selection remain fixed. Do not tune from
+partial test results or change protected evaluation source files. The GPU wrapper
+will restore GLM and check health on completion or its 21600-second timeout.
 
-Finaltournament is RUNNING in session49782, childPID2685785. Poll runs/final-evaluation/progress.json and wrapperrecord runs/gpu-final-evaluation-session.json before any action; do notrestart blindly. First13baseepisodes persisted atlastcheck. Selectedepoch02 freshreload passed0.0 drift. GPUwrapper temporarily stoppedGLM and will restore/healthcheck after job or21600s timeout. All200seeds30000:30200/cap200/allfiveplayers and selectionSHA025b62587a26bd8cc78c80f362524b8c178190df5188b317299121afa6b1203b are frozen. No tuning orprotectedsourcechanges afterteststart. UIworker stack_ui addsoptionalhuman-alongside using webfiles only. Afterfulltest, verifyall1000episodes/replays/pairedreports, exportfixedseed30000demo, updateactualresults/cards/tutorials, build/reviewrelease, asknewprojectvisibility, publishandverifyfreshdownloads. Do notcompletegoalbeforeallremainingmilestones. Localgame8087.
+The UI worker owns web files for the optional human board beside the recorded
+bots. Review and validate that change, then export the fixed seed 30000 demo after
+all 1000 episodes finish. Update results and tutorials, build and review the release,
+confirm new-project publication settings, publish and verify fresh downloads.
+The local game is available on port 8087. Keep the goal active until M5 and M6 pass.
