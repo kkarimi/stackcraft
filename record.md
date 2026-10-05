@@ -308,3 +308,17 @@ Presented concrete Stackcraft publication destinations and visibility options
 after review, explicitly disclosing public source inside public HF artifacts.
 Await the user's answer before creating/uploading repositories. M6 remains open;
 no publication is claimed and the goal remains active.
+
+## 2026-10-05 — Pending publication decision, loading example clarified
+
+First automatic continuation after the concrete publication question: no
+visibility/destination answer has arrived. Rechecked clean repository, plan and
+local verification evidence. The prior turn made concrete progress by completing
+M5 and staging/reviewing the actual release; no remote publication is authorized
+until the required new-project scope is confirmed.
+
+Addressed the packaging review's minor loading-example issue: the model-card
+template now names the real ../checkpoint path from downloaded code/, the uv
+invocation and the pinned-cache tutorial. No model/evaluation changes. The staged
+release-v1 remains immutable; the final bundle must be rebuilt after approved
+publication cross-links are added, including this documentation correction.

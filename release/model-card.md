@@ -90,7 +90,11 @@ uncertainty does not capture variation across training seeds.
 
 Use the released Stackcraft source and locked ML dependencies. Generic
 `AutoModel` or adapter-only loading omits the custom decision head and is incorrect.
-Cache the pinned upstream snapshot, then:
+From the downloaded model repository's `code/` directory, install the locked ML
+environment with `uv sync --locked --extra ml` and cache the pinned upstream
+snapshot as described in [Tutorial 02](code/docs/tutorials/02-baselines.md).
+Run this example with `uv run --locked --extra ml python`; the sibling
+`../checkpoint` directory contains the released adapter and head:
 
 ```python
 from stackcraft.clef import ClefPlayer
@@ -99,7 +103,7 @@ from stackcraft.engine import new_game
 from stackcraft.players import observe
 
 player = ClefPlayer.from_pretrained(trust_pinned_code=True, local_files_only=True)
-load_checkpoint(player.model, "downloaded-stackcraft-checkpoint")
+load_checkpoint(player.model, "../checkpoint")
 print(player.choose(observe(new_game(42))))
 ```
 
