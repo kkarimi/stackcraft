@@ -42,9 +42,9 @@ An honest negative training result is acceptable scientific evidence; silently r
 
 
 - [x] (2026-10-05) User selected Tetris-style Stackcraft and requested an active goal. Goal and durable plan created.
-- [ ] M0: Initialize repository, uv toolchain, rule specification, interfaces, and foundation tutorial.
-- [ ] M1: Implement deterministic engine, playable UI, replay, and game tutorial.
-- [ ] M2: Implement baseline tournament and unchanged Clef adapter; write baseline tutorial.
+- [x] (2026-10-05) M0: Isolated repository, locked Python 3.13.16 environment, rules/interfaces and tutorial00 validated, including clean wheel installation.
+- [x] (2026-10-05) M1: Deterministic engine, playable browser UI, replay and tutorial01 verified by behavioral tests, independent landing review and desktop/mobile interaction.
+- [ ] M2: Offline random/heuristic tournament and tutorial02 implemented;20-seed pilot replay-verified. Remaining: native unchanged Clef adapter and real baseline measurements.
 - [ ] M3: Generate search-expert data, freeze splits, audit leakage, and write data tutorial.
 - [ ] M4: Verify real GPU training, decision-head gradients, save/reload, memory, and feasibility tutorial.
 - [ ] M5: Train, select on validation, evaluate held-out games, integrate comparison UI, and write evaluation tutorial.
@@ -122,7 +122,7 @@ Use uv for environments, FastAPI for serving, pytest for tests, Ruff for formatt
 
 Work in `/home/nima/Work/stackcraft`. Establish these commands during M0 and keep them accurate in each tutorial:
 
-    uv sync --locked --extra dev
+    uv sync --locked --group dev
     uv run --locked ruff check .
     uv run --locked ruff format --check .
     uv run --locked pytest
@@ -138,7 +138,7 @@ Use unique run directories with immutable configs and artifact hashes. Resume ch
 ## Surprises and Discoveries
 
 
-Training feasibility is untested. Community `MersivMedia/clef-finetune` documents only a tiny random-model CPU test; it is a source to inspect, not evidence of successful Clef training. RouterPlus documents a Tetris comparison application, demonstrating interest in the format but not fine-tuning gains.
+Training feasibility is untested. Community `MersivMedia/clef-finetune` documents only a tiny random-model CPU test; it is a source to inspect, not evidence of successful Clef training. RouterPlus documents a Tetris comparison application, demonstrating interest in the format but not fine-tuning gains. Read-only hardware reconnaissance found the local GLM llama.cpp Docker service occupies about 23 GB of the 32 GB card. A user question is pending about temporarily stopping and restoring that service for GPU experiments; game/data work continues independently.
 
 ## Decision Log
 
@@ -152,9 +152,9 @@ Training feasibility is untested. Community `MersivMedia/clef-finetune` document
 ## Outcomes and Retrospective
 
 
-Goal and initial plan are recorded. No game, repository commit, dataset, training run or benchmark has been completed. Publication settings remain to be confirmed at release preparation.
+M0 and M1 are complete. The local game and replay service are playable;83 tests, Ruff, ty and packaged-wheel checks pass. Independent review caught and fixed keyboard focus and lost-response retry bugs. M2 has offline baselines only:20 development seeds at100pieces yielded random0.1 versus heuristic35.95 mean lines, with every heuristic run reaching the cap. No Clef run or training exists yet. Publication settings remain to be confirmed at release preparation.
 
 ## Next Action
 
 
-Execute M0: inspect available tools and project-directory Git ancestry, initialize the isolated repository, establish the locked Python environment, write rules and schemas, and create tutorial 00. Then implement M1 and use a bounded independent reviewer for engine correctness before collecting data.
+Continue M2/M3: implement a native Clef observation encoder and pinned model loading path, and a bounded search expert using only one-piece preview. Freeze data split seed pools excluding development seeds0–19 and1000; audit expert decisions and cross-split duplicates before generating a training dataset. GPU service permission is pending; CPU work can continue.

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101218">
+  <title>Stackcraft — Make your next move</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Stackcraft home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>STACK<span>CRAFT</span><small>LAB</small></a>
+      <div class="header-note"><span class="status-dot"></span> A small game. A better decision.</div>
+    </header>
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div><p class="eyebrow">THE PLACEMENT LAB / 001</p><h1 id="page-title">Make your next move<span>.</span></h1><p class="subtitle">A familiar game. Room to think. Every placement counts.</p></div>
+        <span class="mode-pill">TURN-BASED <span>·</span> NO TIMER</span>
+      </section>
+      <div id="error" class="error-banner" role="alert" hidden></div>
+      <section class="game-layout" aria-label="Stackcraft game">
+        <aside class="left-rail">
+          <div class="panel player-card"><p class="eyebrow">AT THE CONTROLS</p><div class="player-name"><span class="avatar" aria-hidden="true">YOU</span><div><h2>Human intuition</h2><p>Your board. Your call.</p></div></div><div class="player-status"><span class="status-dot"></span><span id="player-status">Ready to play</span></div></div>
+          <div class="panel stats-panel" aria-label="Game statistics"><div class="stat primary-stat"><span>SCORE</span><strong id="score">0</strong></div><div class="stat-row"><div class="stat"><span>LINES</span><strong id="lines">0</strong></div><div class="stat"><span>PLACED</span><strong id="pieces">0</strong></div></div></div>
+          <div class="panel sequence-panel"><p class="eyebrow">SAME SEED, SAME PIECES</p><label for="seed">Piece sequence</label><div class="seed-controls"><input id="seed" type="number" value="42" min="0" max="2147483647" step="1" inputmode="numeric" aria-describedby="seed-help"><button id="restart" class="icon-button" title="Start a new game with this seed" aria-label="Start new game">↻</button></div><p id="seed-help" class="helper">Change the seed for a new challenge.<br>Keep it to try a different strategy.</p></div>
+        </aside>
+        <div class="board-column">
+          <div class="board-heading"><span><span class="status-dot"></span><span id="board-mode">YOUR BOARD</span></span><span id="move-counter">MOVE 001</span></div>
+          <div class="board-wrap"><div id="board" class="board" role="img" tabindex="0" aria-label="Empty game board. Use left and right arrows to choose a placement, up to rotate, and space to drop."></div><div id="terminal-overlay" class="terminal-overlay" hidden><span class="eyebrow">RUN COMPLETE</span><h2>One more try?</h2><p>No legal placements remain.</p><button id="play-again" class="primary-button">Play again <span aria-hidden="true">↗</span></button></div></div>
+          <div class="board-footer"><span id="placement-label">Choose your landing spot</span><span class="ghost-key"><i></i> LANDING GHOST</span></div>
+          <div id="play-controls" class="play-controls" aria-label="Placement controls"><div class="direction-controls"><button id="move-left" class="control-button" aria-label="Move placement left" title="Left arrow">←</button><button id="rotate" class="control-button rotate-button" aria-label="Rotate piece" title="Up arrow">↻<span>ROTATE</span></button><button id="move-right" class="control-button" aria-label="Move placement right" title="Right arrow">→</button></div><button id="drop" class="primary-button drop-button">Drop piece <span>SPACE ↵</span></button></div>
+          <div id="replay-controls" class="replay-controls panel" hidden><div class="replay-heading"><span class="eyebrow">REPLAY · RECORDED MOVES</span><button id="exit-replay" class="text-button">Back to game</button></div><input id="replay-position" type="range" min="0" max="0" value="0" aria-label="Replay move"><div class="replay-buttons"><button id="replay-prev" class="control-button" aria-label="Previous replay frame">←</button><button id="replay-play" class="control-button" aria-label="Play replay">Play</button><button id="replay-next" class="control-button" aria-label="Next replay frame">→</button><span id="replay-progress">0 / 0</span></div></div>
+        </div>
+        <aside class="right-rail">
+          <div class="panel piece-panel"><div class="piece-header"><p class="eyebrow">CURRENT PIECE</p><span id="current-name" class="piece-name">—</span></div><div id="current-preview" class="piece-preview" aria-label="Current piece"></div><div class="next-piece"><div><p class="eyebrow">UP NEXT</p><p class="helper">One move ahead.</p></div><div id="next-preview" class="piece-preview small" aria-label="Next piece"></div></div></div>
+          <div class="how-to"><p class="eyebrow">TAKE YOUR TIME</p><h2>Find the fit.</h2><p>Move the ghost. Rotate your piece. Drop when it feels right.</p><ul class="keyboard-help"><li><span>Choose position</span><span><kbd>←</kbd> <kbd>→</kbd></span></li><li><span>Rotate</span><kbd>↑</kbd></li><li><span>Place piece</span><kbd>space</kbd></li></ul><p class="helper">Or tap a column on the board.</p></div>
+          <div class="replay-tools"><p class="eyebrow">EVERY MOVE, REPLAYABLE</p><button id="download-replay" class="secondary-button"><span aria-hidden="true">↓</span> Save replay</button><button id="load-replay" class="text-button"><span aria-hidden="true">↑</span> Open a replay</button><input id="replay-file" type="file" accept=".json,application/json" hidden><p class="helper">A tiny JSON file. An exact rerun.</p></div>
+        </aside>
+      </section>
+      <div id="announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <footer class="site-footer"><p><strong>Built for fair comparisons.</strong> Deterministic seven-bag pieces. One-piece preview. Straight drops.</p><details><summary>The research rules</summary><p>Stackcraft is a simplified, turn-based falling-block game on a 10 × 20 board. There is no gravity timer, hold, wall kick, tuck or T-spin bonus. Clear 1 / 2 / 3 / 4 lines to score 100 / 300 / 500 / 800 points. All players will use the same rules. Model comparisons are coming after verified baseline runs.</p></details><span class="footer-version">STACKCRAFT / RULES V1</span></footer>
+    </main>
+  </div>
+</body>
+</html>
