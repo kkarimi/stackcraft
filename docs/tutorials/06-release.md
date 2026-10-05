@@ -64,11 +64,47 @@ text-generation pipeline. See Tutorial04 for the reason and serialization checks
 
 ## Assemble and audit a local release
 
-After final evaluation and the fixed-seed demo export, run the release builder
-from the source repository. Use its `--help` for the exact implemented arguments;
-it takes the selected checkpoint, frozen selection, complete evaluation directory,
-audited dataset and a new output directory. It must reject incomplete evaluation,
-mismatched hashes or a missing selected checkpoint reference.
+Wait for all five players to finish all 200 games, then export the demonstration
+from the complete final report. Seed 30000 was fixed before test results; do not
+choose a more flattering game after seeing outcomes.
+
+```bash
+uv run --locked --extra ml python scripts/export_demo.py \
+  --input runs/final-evaluation/report.json \
+  --players base trained heuristic --seed 30000 \
+  --output runs/demo-final.json
+```
+
+The exporter validates the stored replays, observations and decisions without
+loading a model. Inspect the output, then deliberately replace the packaged
+historical development recording and review that Git diff:
+
+```bash
+cp runs/demo-final.json src/stackcraft/web/baseline-demo.json
+```
+
+Run the local game and check the final three-player comparison plus the optional
+live human board. Then stage a new release directory:
+
+```bash
+uv run --locked --extra ml python scripts/build_release.py \
+  --checkpoint checkpoints/candidates/epoch-02 \
+  --selection runs/selection-v1/selection.json \
+  --evaluation runs/final-evaluation --dataset data/study-v1 \
+  --output runs/release-v1
+```
+
+Epoch 02 is the measured selected checkpoint for this study; use your frozen
+selection's actual path when reproducing. The builder rejects incomplete final
+evaluation, mismatched hashes or a missing selected-checkpoint reference. It also
+requires the packaged demo to match the exact fixed-seed export from that report.
+
+After a public report destination is confirmed, optionally pass the same
+`--report-url https://APPROVED_REPORT_LOCATION` to **both** exporter and builder.
+Use new output directories and deliberately update the packaged demo again.
+Omitting the URL from only one command causes the exact-manifest check to fail.
+These commands prepare local files only; neither creates a remote repository nor
+uploads anything.
 
 The builder stages separate model, dataset and demo directories and a release
 manifest. It includes only explicit source/build inputs. Environments, credentials,

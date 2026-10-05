@@ -1,8 +1,10 @@
 # Tutorial 05 — Select on validation, then measure complete games
 
-This tutorial describes the frozen study procedure. It does not claim completed
-training, selection, held-out performance, or an improvement. Actual evidence and
-milestone status belong in `record.md` and the generated reports.
+The two-epoch training run, validation selection and selected-checkpoint reload
+are complete. Epoch 02 was selected on validation. Held-out game evaluation is
+running, so no improved-play claim is made here. This tutorial gives the frozen
+procedure and measured training/validation evidence; final game results belong
+in the released report.
 
 ## Separate learning, selection and final testing
 
@@ -23,6 +25,69 @@ the next board; the model eventually encounters states different from its traini
 examples. The teacher itself uses a limited search horizon and a heuristic value
 function. Final evaluation must therefore play complete games on unseen sequences.
 
+## Train exactly the preregistered candidates
+
+Pass the real GPU feasibility and fresh-process reload gates in Tutorial 04 first.
+Use the exact 827/215-row dataset from Tutorial 03. The training runner rejects a
+substituted dataset even when its labels look similar: hashes bind the experiment
+to specific bytes and provenance. Use a fresh run directory when reproducing.
+
+```bash
+uv sync --locked --extra ml --group dev
+uv run --locked --extra ml python scripts/train_clef.py \
+  --dataset data/study-v1 --output runs/study-v1 \
+  --mode lora --epochs 2 --learning-rate 1e-5 \
+  --accumulation 8 --max-length 4096
+```
+
+This command needs a free GPU. On the original workstation only, run it through
+the authorized stop/restore wrapper from Tutorial 04 with a 3,600-second timeout.
+The script uses seed 42, batch size one, rank-4/alpha-8 LoRA with zero dropout,
+AdamW weight decay 0.01, gradient norm clipping at 1.0, and the fixed smoothed
+cross-entropy plus Brier loss from Tutorial 04. The backbone stays BF16 and frozen;
+LoRA matrices and the native FP32 head learn. Each epoch visits all training rows
+in a recorded deterministic shuffled order. Validation rows never train the model.
+
+Accumulating eight single-example gradients fits the memory budget while averaging
+over several boards per optimizer step. The final group has only three rows and
+is divided by three, not eight. Two complete epochs give two declared candidates
+without an open-ended search. Neither falling loss nor a promising demo authorizes
+extra epochs after the test set has been opened. The script defaults to one epoch,
+so the explicit `--epochs 2` above is essential for reproducing this study.
+
+The completed run processed 827 examples and 104 optimizer steps in each epoch:
+
+| Epoch | Mean training loss | Time |
+| --- | ---: | ---: |
+| 01 | 2.577967 | 742.48 s |
+| 02 | 1.966718 | 744.66 s |
+
+Total training time including hashes and checkpoint work was 1,511.25 seconds
+(about 25.2 minutes). Peak CUDA allocation was 23.23 GB, or about 21.64 GiB.
+The head and LoRA parameters changed, while all frozen parameter hashes remained
+unchanged. These are training measurements, not held-out performance. See
+[the training report](../../reports/study-training.json),
+[the original launch source](../../reports/training-launch-source.json), and
+[the archived preregistration](../../reports/study-preregistration.md).
+
+## Prepare checkpoint metadata before freezing it
+
+PEFT can write a generic adapter README with placeholders and a local cache path.
+Keep raw training outputs immutable. Prepare candidate copies before validation:
+
+```bash
+uv run --locked --extra ml python scripts/prepare_checkpoint.py \
+  --source runs/study-v1/epoch-01 --output checkpoints/candidates/epoch-01
+uv run --locked --extra ml python scripts/prepare_checkpoint.py \
+  --source runs/study-v1/epoch-02 --output checkpoints/candidates/epoch-02
+```
+
+The script replaces only `adapter/README.md`, compares every other file byte for
+byte, and saves a sibling preparation record. It does not alter learned weights
+or training settings. Validate and select these exact copies. Once selected,
+even a README edit would break the frozen checkpoint file mapping. See Tutorial 06
+for how release documentation stays outside the checkpoint directory.
+
 ## Generate validation evidence
 
 These commands load real GPU models. Use the memory admission and service-restoration
@@ -31,11 +96,11 @@ stops another workload. Replace paths if your run directory differs.
 
 ```sh
 uv run --locked --extra ml python scripts/evaluate_clef.py positions \
-  --dataset data/study-v1 --checkpoint runs/study-v1/epoch-01 \
+  --dataset data/study-v1 --checkpoint checkpoints/candidates/epoch-01 \
   --players base base-fp32 trained --output runs/validation-epoch-01
 
 uv run --locked --extra ml python scripts/evaluate_clef.py positions \
-  --dataset data/study-v1 --checkpoint runs/study-v1/epoch-02 \
+  --dataset data/study-v1 --checkpoint checkpoints/candidates/epoch-02 \
   --players trained --output runs/validation-epoch-02
 ```
 
@@ -54,10 +119,10 @@ same complete observation encoding and BF16 backbone.
 ## Freeze the choice before running test episodes
 
 ```sh
-uv run --locked python scripts/select_checkpoint.py \
+uv run --locked --extra ml python scripts/select_checkpoint.py \
   --dataset data/study-v1 \
-  --candidate01 runs/study-v1/epoch-01 runs/validation-epoch-01/report.json \
-  --candidate02 runs/study-v1/epoch-02 runs/validation-epoch-02/report.json \
+  --candidate01 checkpoints/candidates/epoch-01 runs/validation-epoch-01/report.json \
+  --candidate02 checkpoints/candidates/epoch-02 runs/validation-epoch-02/report.json \
   --output runs/selection-v1
 ```
 
@@ -76,6 +141,37 @@ of a label such as "best model" is not sufficient to unlock final evaluation.
 Use a new output directory for a new selection attempt; existing evidence is not
 silently overwritten.
 
+## Inspect selection and reload the selected artifact
+
+The measured validation results used all 215 positions for every policy, with
+zero errors and complete probability distributions:
+
+| Policy | Teacher agreement | Mean target NLL | Mean Brier score |
+| --- | ---: | ---: | ---: |
+| Native base | 21/215 (9.77%) | 2.952702 | 0.923173 |
+| Unchanged FP32 head | 22/215 (10.23%) | 2.952393 | 0.923102 |
+| Epoch 01 | 89/215 (41.40%) | 1.860870 | 0.722190 |
+| Epoch 02 | 92/215 (42.79%) | 1.775923 | 0.708980 |
+
+The declared NLL rule selected epoch 02. The saved
+[validation summary](../../reports/validation-summary.json) identifies its complete
+file hashes and the selection hash. Teacher agreement improved on these positions;
+that still does not establish better complete-game play.
+
+Before consuming test seeds, reload the selected artifact in another process:
+
+```bash
+uv run --locked --extra ml python scripts/probe_clef_training.py \
+  --dataset data/study-v1 --reload checkpoints/candidates/epoch-02 \
+  --output runs/selected-reload-v1
+```
+
+This command also needs the GPU admission/restoration procedure. In this study it
+reproduced all four training-position reference distributions with **0.0 maximum
+absolute difference**, below the predeclared `1e-4` tolerance. See
+[the reload report](../../reports/selected-checkpoint-reload.json).
+The references use training positions, so this check does not consume test games.
+
 ## Run the paired test once
 
 Use the selected checkpoint path from the evidence, not whichever epoch you hoped
@@ -89,7 +185,7 @@ uv run --locked --extra ml python scripts/evaluate_clef.py tournament \
   --checkpoint SELECTED_CHECKPOINT \
   --seeds 30000:30200 --max-pieces 200 --final-test \
   --selection-file runs/selection-v1/selection.json \
-  --output runs/final-evaluation-v1
+  --output runs/final-evaluation
 ```
 
 `--final-test` explicitly acknowledges that these held-out seeds are being consumed.

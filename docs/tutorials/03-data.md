@@ -73,21 +73,26 @@ reservations are checked separately from observation hashes.
 
 ```python
 from pathlib import Path
-import subprocess
 from stackcraft.data import DatasetConfig, audit_dataset, generate_dataset, write_dataset
+from stackcraft.provenance import source_identity
 
 config = DatasetConfig()
-commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-if subprocess.check_output(["git", "status", "--porcelain"], text=True).strip():
-    commit += "+working-tree"
+identity = source_identity(Path.cwd())
+commit = identity["source_commit"] + ("+working-tree" if identity["source_dirty"] else "")
+output = Path("data/pilot-v1")
+assert not output.exists(), "Choose a new output directory"
 bundle = generate_dataset(config, source_commit=commit)
 assert bundle == generate_dataset(config, source_commit=bundle.manifest["source_commit"])
 print(audit_dataset(bundle.records, bundle.manifest))
-write_dataset(bundle, Path("data/pilot-v1"))
+write_dataset(bundle, output)
 ```
 
-Run with `uv run --locked python` in the repository. The writer refuses existing
-artifact files so a new experiment cannot silently replace recorded evidence.
+Run with `uv run --locked python` from the repository root or the public bundle's
+`code/` directory. Source identity uses that exact Git root or verifies the bundled
+source manifest, so private Git access is not required. This creates a new pilot
+with the current source identity, not necessarily the original study's bytes.
+The writer refuses existing artifact files so a new experiment cannot silently
+replace recorded evidence.
 The manifest stores the complete configuration, seed reservations, teacher formula
 revision, collection and exclusion counts, and SHA-256 hashes of canonical JSONL.
 Auditing reconstructs legal placements and verifies label argmax with the tie rule,
@@ -98,8 +103,10 @@ complete games, not just how accurately a model copies these labels.
 The manifest also fingerprints `engine.py`, `pieces.py`, `schema.py`,
 `players/__init__.py`, `expert.py`, and `data.py`. During development, append
 `+working-tree` to the commit identifier when source edits are not committed.
-Release datasets must be regenerated against the final committed source. A source
-hash records what ran; it must not imply that an earlier commit includes later code.
+Before study training, freeze the dataset against its committed generator source.
+Preserve those exact bytes through publication; later documentation or packaging
+commits are not reasons to regenerate the training dataset. A source hash records
+what ran; it must not imply that an earlier commit includes later code.
 
 ## Pilot observations
 
@@ -141,6 +148,12 @@ From that directory, `uv sync --locked` installs the game/data tools. The regula
 modified source files. Its provenance will therefore differ from the original
 M3 commit even when generator logic is unchanged.
 
+The probe and full-training commands in later tutorials use `data/study-v1`.
+For a fresh reproduction, the command below creates that directory with the exact
+original study bytes. Alternatively, place the released dataset's `train.jsonl`,
+`validation.jsonl` and `manifest.json` in that directory and verify them using the
+release audit. Do not substitute the newly generated pilot above for the study.
+
 To reproduce the original study bytes exactly, first verify that every generator
 source file matches the original dataset manifest, then use its recorded commit
 in the generator API. This avoids falsely stamping changed code with an old commit:
@@ -156,9 +169,10 @@ manifest = json.loads(Path('reports/dataset-manifest.json').read_text())
 for name, expected in manifest['source_hashes'].items():
     path = Path('src/stackcraft') / name
     assert hashlib.sha256(path.read_bytes()).hexdigest() == expected, name
-output = Path('data/original-study-reproduction')
+output = Path('data/study-v1')
 assert not output.exists(), 'Choose a new output directory'
 bundle = generate_dataset(DatasetConfig(), source_commit=manifest['source_commit'])
+assert bundle.manifest == manifest, 'Generated manifest differs from the frozen study'
 write_dataset(bundle, output)
 for split in ('train', 'validation'):
     actual = hashlib.sha256((output / f'{split}.jsonl').read_bytes()).hexdigest()
@@ -167,6 +181,9 @@ print('Both original split hashes match')
 PY
 ```
 
-Use the downloaded, audited study dataset for reproducing the published training
-run. If any source hash fails, investigate or generate a clearly new dataset; do
-not suppress the check or reuse the original study's identity.
+If `data/study-v1` already exists, retain and audit it rather than overwrite it.
+For a separate regeneration, choose a new output directory and supply that path
+with `--dataset` in subsequent probe, training and evaluation commands. Use only
+the audited downloaded dataset or the exact hash-matching reconstruction to
+reproduce study training. If any source hash fails, investigate or generate a
+clearly new dataset; do not suppress the check or reuse the original study's identity.

@@ -106,9 +106,25 @@ full artifact hash.
 ## Actual unchanged Clef development run
 
 The pinned native Clef-flash backbone and joint head ran on RTX 5090 in BF16.
-Reproduce with `uv run --locked --extra ml python scripts/benchmark_clef.py
---output runs/clef-development-repeat.json --episodes 2 --max-pieces 30`
-when at least25GiB GPU memory is free. Do not stop other workloads without authorization.
+First cache the exact upstream snapshot from the repository root:
+
+```bash
+uv run --locked --extra ml hf download Cloudflare/clef-flash \
+  --revision 17f0b0ad64efb65d273590632833508766b2aae6
+```
+
+This installs the optional ML dependencies and downloads files; it does not load
+the model onto the GPU. The benchmark loader uses local files only and will fail
+on a fresh machine without this step. Once at least25GiB GPU memory is free, run:
+
+```bash
+uv run --locked --extra ml python scripts/benchmark_clef.py \
+  --output runs/clef-development-repeat.json --episodes 2 --max-pieces 30
+```
+
+Choose a new output path if it already exists. Do not stop other workloads without
+authorization. The loader explicitly trusts the pinned, hash-checked upstream
+Python implementation; see Tutorial04 for that trust boundary and memory checks.
 
 On development seeds0–1 (30-piece cap), Clef averaged0lines and27.5pieces;
 the heuristic averaged9lines and reached30pieces both times. No player errored.

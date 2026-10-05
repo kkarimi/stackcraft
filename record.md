@@ -202,3 +202,25 @@ the primary comparison and discloses that intervals are not adjusted for multipl
 comparisons. A read-only integrity audit confirmed all 12 protected source hashes,
 all six selected-checkpoint files and the frozen selection still match the running
 request. No final outcome claim is made from incomplete games.
+
+## 2026-10-05 — Fill the full-training tutorial gap
+
+Tutorial 05 described validation and testing but omitted the full training command,
+used raw checkpoint paths despite preparation before selection, and retained an
+outdated status. Add the exact two-epoch configuration, preparation and selected
+fresh-reload steps; document completed training/validation evidence separately from
+still-running game evaluation. An independent reviewer checks the other milestone
+tutorials against actual CLI contracts. Documentation only; no experiments restart.
+
+Tutorials 02–06 now form a continuous reproduction path: cache the pinned model,
+run enabled native CPU checks, generate or download exact `data/study-v1` bytes,
+train explicitly for two epochs, prepare candidate copies, validate/select,
+fresh-reload, evaluate, export seed 30000, and stage a release. Tutorial 06 includes
+the actual export/build commands and requires a matching optional report URL.
+Tutorial 03 supports bundled source identity without private Git and checks full
+manifest equality before writing exact study bytes. Root checked all 27 tutorial
+shell/Python blocks for syntax, verified local Markdown links, and matched the
+training table against the real report. No tutorial GPU command was rerun.
+
+Historical Tutorial 01 development-race descriptions remain accurate for the
+currently shipped development manifest and must be revised at the final export.

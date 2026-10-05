@@ -2,7 +2,7 @@
 
 A playable, deterministic falling-block game for studying decision models. The goal is a fair comparison of a heuristic player, unchanged Clef-flash, and a fine-tuned model on identical piece sequences.
 
-**Status:** the playable game, data, native Clef baseline and real GPU training/reload gates are complete. The full two-epoch study is running; validation selection, held-out results and publication remain pending. See [the project plan](plan.md) for milestones and acceptance criteria.
+**Status:** the playable game, data, native Clef baseline and real GPU training/reload gates are complete. Full two-epoch training and validation selection are complete; epoch 02 reloads with exact reference-probability parity. The held-out game evaluation is running, and publication remains pending. See [the project plan](plan.md) for milestones and acceptance criteria.
 
 ## Run locally
 
@@ -54,8 +54,8 @@ supplied legal move instead of generating text. Training updates rank-4 text-lay
 LoRA matrices and the native joint decision head; the original backbone is frozen.
 The checkpoint must save and load both the adapter and head.
 
-On the RTX5090, the short native inference pilot allocated19.7GB and averaged144ms
-per decision. The training probe allocated23.2GB; both head-only and LoRA-plus-head
+On the RTX 5090, the short native inference pilot allocated 19.7 GB and averaged
+144 ms per decision. The training probe allocated 23.2 GB; both head-only and LoRA-plus-head
 checkpoints reproduced their reference probabilities exactly in fresh processes.
 These are engineering measurements, not evidence of better game play. See
 [the measured feasibility report](reports/gpu-feasibility.json).
@@ -71,8 +71,8 @@ These are engineering measurements, not evidence of better game play. See
 7. [Release, public reproduction and fresh-download checks](docs/tutorials/06-release.md)
 
 Each tutorial explains the commands, evidence, design choices and alternatives.
-The [evaluation protocol](docs/evaluation-protocol.md) freezes200 test sequences
-and a200-piece cap before results. It compares the selected model with the native
+The [evaluation protocol](docs/evaluation-protocol.md) freezes 200 test sequences
+and a 200-piece cap before results. It compares the selected model with the native
 base, an unchanged FP32-head ablation, random moves and a fast heuristic.
 
 The training runner intentionally accepts only the exact frozen study dataset.

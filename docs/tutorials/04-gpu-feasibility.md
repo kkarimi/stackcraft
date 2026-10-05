@@ -82,23 +82,31 @@ make a bounded next decision rather than silently changing the experiment.
 
 ## Prepare before borrowing the GPU
 
-Run these commands from the repository:
+Run these commands from the repository root or the public bundle's `code/`
+directory. Install the ML tools and cache the pinned release before testing:
 
 ```bash
 uv sync --locked --extra ml --group dev
-uv run --locked --extra ml pytest tests/test_training.py tests/test_clef.py
-```
-
-The actual native-head tests require the pinned source in the local Hugging Face
-cache. Inspect the test summary: a skipped test is not a passed native-model test.
-Download the pinned release while other GPU services are still available:
-
-```bash
 uv run --locked --extra ml hf download Cloudflare/clef-flash \
   --revision 17f0b0ad64efb65d273590632833508766b2aae6
 ```
 
-The training probe expects the audited `data/study-v1` bundle from Tutorial 03.
+Downloading only populates the cache; it does not load GPU weights. It can run
+while other GPU services remain available. The actual native-head tests need
+this cached source. Explicitly enable the native tokenizer/encoder check too:
+
+```bash
+STACKCRAFT_TEST_NATIVE_ENCODING=1 uv run --locked --extra ml \
+  pytest tests/test_training.py tests/test_clef.py
+```
+
+These checks use CPU fixtures and the real tokenizer/source; they do not load
+the full backbone or establish GPU feasibility. Inspect the test summary: a
+skipped test is not a passed native-model test.
+
+The training probe expects the audited `data/study-v1` bundle established by
+Tutorial03's exact-study reconstruction or a verified dataset download. If you
+used a different directory, pass that same path with `--dataset` below.
 It validates the train/validation bundle, then uses only the first four training
 positions. It does not sample held-out test seeds. Record the current source
 commit and any uncommitted probe changes in `record.md` before running.
