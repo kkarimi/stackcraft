@@ -8,7 +8,6 @@ import argparse
 import gc
 import hashlib
 import json
-import subprocess
 import time
 from pathlib import Path
 
@@ -17,6 +16,7 @@ import torch
 from stackcraft.clef import ClefPlayer, encode_observation
 from stackcraft.data import audit_dataset
 from stackcraft.players import observe
+from stackcraft.provenance import source_identity
 from stackcraft.schema import GameState
 from stackcraft.training import (
     decision_loss,
@@ -139,9 +139,9 @@ def main():
             initial_free_vram=free,
             torch=torch.__version__,
             dataset_manifest_sha256=hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-            source_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
             row_ids=[row["id"] for row in rows],
         )
+        report.update(source_identity(Path(__file__).resolve().parents[1]))
         player = ClefPlayer.from_pretrained(trust_pinned_code=True)
         torch.cuda.reset_peak_memory_stats()
         if args.reload:
