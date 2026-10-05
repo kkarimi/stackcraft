@@ -47,7 +47,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M2: Offline tournaments, replayable race, native encoding and actual unchanged Clef GPU baseline verified. Development seeds0–1 yielded0mean lines for Clef versus9heuristic at30pieces, zero errors;144ms mean Clef decision latency.
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
-- [ ] M5: Train, select on validation, evaluate held-out games, integrate comparison UI, and write evaluation tutorial.
+- [ ] M5: Two-epoch study is running (session89241); epoch01 saved/prepared, epoch02 active. Validation/test runners, guarded selection, comparison UI and tutorial05 are implemented. Actual validation selection and all200paired testgames remain.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
 
 ## Milestones
@@ -157,4 +157,4 @@ M0–M4 are complete. The local game, replay and recorded side-by-side race are 
 ## Next Action
 
 
-Run preregistered two-epoch training from scripts/train_clef.py with a3600s GLM-restoring wrapper. Select lowest finite validation NLL across epoch01/02, tie earlier, using215 fixed validation positions. Then freeze checkpoint/evidence hashes and execute all200 reserved testseeds atcap200 with all five policies. Do not tune after testresults. Dataset data/study-v1 fixed to70d84bd; local game on8087. Publication destinations remain unconfirmed until concrete release is prepared.
+Monitor existing fulltraining session89241 / runs/study-v1, not a new job. Epoch01 finished827positions in742.48s and prepared candidate checkpoints/candidates/epoch-01; epoch02 remains active. Wrapper runs/gpu-study-session.json owns GLM stop/restore and has3600s childtimeout. Aftertraining exits verify finalfrozenhashes and restoredhealthy, then prepare epoch02 with scripts/prepare_checkpoint.py. Validate both candidate copies with evaluate_clef.py positions (epoch01 include base/base-fp32/trained; epoch02 trainedonly) under approvedGPUwrapper. Source is reviewed/committed; do not change neural encoding/precision or evaluation source between candidate measurements. Select with scripts/select_checkpoint.py, freshreload selectedcheckpoint, then all200heldoutseeds/cap200/allfiveplayers via resumable finaltournament. Preserve results even ifnegative. Complete fixedseed30000 demo, build/review release, confirm newprojectpublication settings, publish andverifyfreshdownloads beforegoalcompletion. Local game remains on8087.
