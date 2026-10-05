@@ -56,3 +56,13 @@ Optional ML stack resolves Torch2.14.1+cu130, torchvision0.29.1+cu130, Transform
 M3 preregistration and pilot evidence are in tutorial03. Two complete generations matched exactly:827train,215validation, with6within-training and2cross-split duplicates excluded. Seed pools10000–10023train,20000–20005validation,30000–30199reservedtest; no test trajectories generated. Source hashes accompany every manifest. Root inspected collector/expert/audit code and the independent16-position teacher recomputation report. The separate five-seed development search tournament averaged38.6lines versus37.8heuristic; both hit100pieces, so this is not robust superiority evidence. Pilot artifacts predate the last provenance-validator edit and must be regenerated from committed source before release.
 
 Before final M3 generation: commit reviewed implementation; generate once using recorded clean commit; compare observations/action values/labels to the historical reproducible pilot ignoring only source_commit; audit all hashes and split exclusions. Stop on any difference or failed audit. Expected destination `data/study-v1`. Final test seeds stay untouched.
+
+
+## 2026-10-05 — Committed M3 artifact accepted
+
+
+Implementation commit `70d84bd8dc5d4a60f3b96455a57d9e6f9416d109`. Root ran `uv run --locked --extra ml stackcraft generate-data --output data/study-v1` from the clean commit. Structural/provenance audit returned827train/215validation; all six source hashes matched current files. Removing only source_commit metadata produced exact row equality with the independently checked historical pilot, including every observation, teacher value and label. Final JSONL hashes: train `edd682761db95a4f25bb30a284489c54d9336a36da0a9b19d2cda860b428baa8`, validation `eff9cdc5932e935959ac4d26dce6470d335090f7428a91930001954266d133bc`. Compact manifest committed in `reports/dataset-manifest.json`; rawdata ignored. Reserved test seeds untouched.
+
+Latest checks:117tests passed with actual pinned native CPU encoding enabled, plus Ruff and ty. Root verified race scrubbing to100, final scores and human-game preservation. Final race screenshot `/home/nima/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muvnwvs6-60bf91fb.png`; controls fit1280×800 (bottom786px).
+
+At checkpoint, download session78859 was polled and confirmed still running; cache about12GB. GPU remains22,976MiB used/9,175MiB free; no user response to service-stop question, no workload stopped and no real-weight inference attempted. This is progress with a live download, not a blocked/completed goal. Next: implement bounded training probe, finish download and run real inference/training when memory is available.

@@ -45,7 +45,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M0: Isolated repository, locked Python 3.13.16 environment, rules/interfaces and tutorial00 validated, including clean wheel installation.
 - [x] (2026-10-05) M1: Deterministic engine, playable browser UI, replay and tutorial01 verified by behavioral tests, independent landing review and desktop/mobile interaction.
 - [ ] M2: Offline tournament and recorded race implemented;20-seed pilot replay-verified. Native Clef adapter and real CPU tokenization checked. Remaining: real unchanged Clef weight loading and baseline measurements.
-- [ ] M3: Search expert, disjoint splits, deduplication, tutorial03 and827/215-row pilot verified. Remaining: regeneration against committed source and final artifact audit.
+- [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [ ] M4: Verify real GPU training, decision-head gradients, save/reload, memory, and feasibility tutorial.
 - [ ] M5: Train, select on validation, evaluate held-out games, integrate comparison UI, and write evaluation tutorial.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
@@ -152,9 +152,9 @@ Training feasibility is untested. Community `MersivMedia/clef-finetune` document
 ## Outcomes and Retrospective
 
 
-M0 and M1 are complete. The local game and replay service are playable;83 tests, Ruff, ty and packaged-wheel checks pass. Independent review caught and fixed keyboard focus and lost-response retry bugs. M2 has offline baselines only:20 development seeds at100pieces yielded random0.1 versus heuristic35.95 mean lines, with every heuristic run reaching the cap. No Clef run or training exists yet. Publication settings remain to be confirmed at release preparation.
+M0, M1 and M3 are complete. The local game, replay and recorded side-by-side race are playable.117 tests including actual native CPU encoding, Ruff and ty pass; the earlier game wheel passed isolated installation checks. Independent review caught and fixed keyboard focus and lost-response retry bugs. M2 has offline baselines and a native adapter, but no real-weight model run. The expert dataset has827train/215validation rows from committed code, independent sample-label checks and untouched reserved test seeds. No training or publication has occurred.
 
 ## Next Action
 
 
-Regenerate the M3 dataset against the committed source and confirm game examples match the audited pilot. Continue the pinned Clef download (live exec session78859 at this checkpoint; revalidate the handle/process, do not blindly restart). Real M2 inference and M4 GPU probes need sufficient free memory; the GLM service permission question remains pending. Model code, encoded input integrity, and all offline game/data work are ready for the next gate.
+Continue the pinned Clef download (live exec session78859 at this checkpoint, about12GB cached; revalidate the handle/process, do not blindly restart). Implement the bounded M4 head/LoRA training probe and fresh-process reload verification against native source while waiting. Real M2 GPU inference and M4 GPU runs need sufficient free memory; the GLM service permission question remains pending. Dataset at data/study-v1 is fixed to70d84bd; reports/dataset-manifest.json records hashes and reserved test seeds. Local game server remains on8087 via exec session95030.
