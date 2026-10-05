@@ -160,3 +160,29 @@ than censored survival. JavaScript syntax and diff whitespace checks pass.
 The current recording is still the disclosed development seed 0 comparison.
 Final seed 30000 export and browser review remain required after evaluation.
 Tutorial 01 and the deployment guide now explain the human comparison workflow.
+
+## 2026-10-05 — Release review and download verification tooling
+
+Independent release review found public packaging gaps: the Space README linked
+to excluded documentation, the bundled source README linked to excluded plan.md,
+and the dataset card assumed access to a private historical commit. The builder
+now generates a self-contained Space README, redirects the one bundled planning
+link to Tutorial 06, and includes the download verifier. Cards point readers to
+the already verified public-source regeneration procedure. Final repository links
+will be added after destinations and visibility are confirmed.
+
+`scripts/verify_release.py` checks separately downloaded model, dataset and demo
+payloads against the retained local release manifest, including every expected
+size/hash and uploaded manifest. It rejects missing, extra, linked or traversing
+payloads, permits only explicit HF bookkeeping, and audits downloaded dataset
+records. Its report explicitly excludes GPU parity, publisher authenticity and
+download freshness. Tests exercise corruption, unexpected files, inconsistent
+metadata, schema-invalid but rehashed datasets, and the actual installed HF 1.33
+metadata writer. A temporary-copy CPU smoke used the real 827/215 dataset and an
+explicit toy checkpoint; this is not a released-model verification claim.
+
+Combined checks: 261 tests passed with one optional native-encoding test skipped;
+that native CPU encoding test was then enabled separately and passed (262 total).
+Ruff lint/format and ty passed; the human-API focused suite passed all five tests.
+No protected evaluation source or selected-checkpoint bytes changed. The frozen
+GPU job remains live, with 157 native-base episodes saved at this check.

@@ -41,6 +41,7 @@ REPRO_SCRIPTS = (
     "select_checkpoint.py",
     "export_demo.py",
     "build_release.py",
+    "verify_release.py",
     "prepare_checkpoint.py",
     "gpu_session.py",
 )
@@ -305,6 +306,64 @@ def code_files(root: Path, *, demo: bool) -> list[Path]:
     return sorted(set(files))
 
 
+def bundled_source_readme(readme: str) -> str:
+    """Replace only the known private planning link with the shipped release tutorial."""
+    return readme.replace(
+        "[the project plan](plan.md)",
+        "[the release tutorial](docs/tutorials/06-release.md)",
+    )
+
+
+def space_readme(report_url: str | None = None) -> str:
+    """Describe the CPU demo without links to files excluded from its bundle."""
+    readme = """---
+title: Stackcraft
+sdk: docker
+app_port: 7860
+license: apache-2.0
+---
+
+# Stackcraft
+
+Play a simplified falling-block game and watch a recorded comparison of an
+unchanged Clef model, a trained model and a heuristic on the same piece sequence.
+
+**Human play is live. Bot comparisons are recorded.** The comparison replays saved
+placements and their decision probabilities; it does not call a model while you
+watch. Playback speed changes the animation, not measured inference latency.
+The fixed demonstration sequence is seed30000. One game illustrates behavior;
+it does not establish which player performs better across the complete study.
+
+Choose an orientation and column, then drop the current piece vertically onto a
+10×20 board. One next piece is visible. Completed rows clear simultaneously.
+There is no timed gravity, hold, wall kick, tuck or T-spin bonus. This is a small
+placement game, not a competitive Tetris implementation. Probabilities express
+model preferences over legal placements, not calibrated chances of winning.
+
+The Docker Space runs on CPU and needs no model weights, GPU or model credentials.
+Human sessions are kept in memory; download a replay before a restart to retain
+your game. The service runs as UID1000 on port7860 by default.
+
+To run the same image locally:
+
+```bash
+docker build -t stackcraft-demo .
+docker run --rm -p 7860:7860 stackcraft-demo
+```
+
+Open http://localhost:7860. The [Dockerfile](Dockerfile) and
+[game source](src/stackcraft/) are included here. The
+[recorded comparison](src/stackcraft/web/baseline-demo.json) contains the displayed
+actions, probabilities, outcomes and source report hashes.
+
+Apache-2.0: see [LICENSE](LICENSE) and [NOTICE](NOTICE). Stackcraft is independent
+of Cloudflare, Qwen and Tetris.
+"""
+    if report_url:
+        readme += f"\n[Complete study report](<{report_url}>).\n"
+    return readme
+
+
 def build_release(args: argparse.Namespace) -> dict[str, Any]:
     if args.output.exists():
         raise ValueError("release output already exists; use a new directory")
@@ -349,6 +408,8 @@ def build_release(args: argparse.Namespace) -> dict[str, Any]:
         copy_file(args.checkpoint / relative, args.output / "model/checkpoint" / relative)
     for relative in code_paths:
         copy_file(ROOT / relative, args.output / "model/code" / relative)
+    source_readme = args.output / "model/code/README.md"
+    source_readme.write_text(bundled_source_readme(source_readme.read_text()))
     for relative in demo_paths:
         copy_file(ROOT / relative, args.output / "demo" / relative)
     for relative in evaluation_paths:
@@ -364,13 +425,7 @@ def build_release(args: argparse.Namespace) -> dict[str, Any]:
             copy_file(ROOT / name, args.output / bundle / name)
     (args.output / "model/README.md").write_text(card)
     (args.output / "dataset/README.md").write_text(dataset_card)
-    demo_readme = (ROOT / "README.md").read_text()
-    if not demo_readme.startswith("---\n"):
-        demo_readme = (
-            "---\ntitle: Stackcraft\nsdk: docker\napp_port: 7860\nlicense: apache-2.0\n---\n\n"
-            + demo_readme
-        )
-    (args.output / "demo/README.md").write_text(demo_readme)
+    (args.output / "demo/README.md").write_text(space_readme(args.report_url))
     copied_hashes = {
         relative: sha256(args.output / "model/checkpoint" / relative)
         for relative in checkpoint_hashes

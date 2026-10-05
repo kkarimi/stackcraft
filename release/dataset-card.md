@@ -52,10 +52,16 @@ The bundle includes `manifest.json` with source/configuration and split hashes.
 - train SHA256: `edd682761db95a4f25bb30a284489c54d9336a36da0a9b19d2cda860b428baa8`
 - validation SHA256: `eff9cdc5932e935959ac4d26dce6470d335090f7428a91930001954266d133bc`
 
-Run `stackcraft generate-data --output NEWDIR` from the recorded source commit
-with its locked environment to reproduce exactly. New source commits deliberately
-change provenance fields and therefore file hashes even if labels are identical.
-A regeneration and an independent sample-label audit preceded study training.
+The model release includes public source under `code/` and the exact regeneration
+recipe in `code/docs/tutorials/03-data.md`. Use its **Reproduce from the public
+source bundle without private Git access** procedure: first verify all six generator
+source hashes against this dataset's `manifest.json`, then generate with the
+original source-commit provenance. Access to the original Git repository is not
+required. The procedure reproduced both JSONL hashes exactly on the study machine.
+Ordinary `stackcraft generate-data --output NEWDIR` records the current source
+identity; a new source commit deliberately changes provenance fields and therefore
+file hashes even if labels are identical. A regeneration and an independent
+sample-label audit preceded study training.
 
 ## Limits
 

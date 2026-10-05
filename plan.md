@@ -157,8 +157,9 @@ The dataset contains 827 training and 215 validation rows with fixed disjoint se
 pools and independently checked sample labels. Both full training epochs completed;
 epoch 02 won the preregistered validation selection, and its fresh-process reload
 matched reference probabilities exactly. The final test and release remain in
-progress. The latest full suite passed 230 tests, Ruff and ty before the current
-web-only changes; those changes need browser review before integration.
+progress. Human-alongside play is implemented and browser-verified. The integrated
+checks passed 262 tests (including the separately enabled native CPU encoding
+check), Ruff and ty. Release tooling is ready for actual final evaluation evidence.
 
 ## Next Action
 
@@ -168,8 +169,8 @@ Do not restart while its process is alive. All 200 seeds (30000–30199), the
 partial test results or change protected evaluation source files. The GPU wrapper
 will restore GLM and check health on completion or its 21600-second timeout.
 
-The UI worker owns web files for the optional human board beside the recorded
-bots. Review and validate that change, then export the fixed seed 30000 demo after
-all 1000 episodes finish. Update results and tutorials, build and review the release,
+The optional human board beside recorded bots is integrated and browser-verified.
+Export the fixed seed 30000 demo after all 1000 episodes finish, then repeat the
+comparison browser check with those actual model recordings. Update results and tutorials, build and review the release,
 confirm new-project publication settings, publish and verify fresh downloads.
 The local game is available on port 8087. Keep the goal active until M5 and M6 pass.

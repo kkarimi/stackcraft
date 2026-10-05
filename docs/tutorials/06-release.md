@@ -134,6 +134,31 @@ audit on downloaded JSONL files and its manifest. Use a fresh Python process to 
 the downloaded checkpoint onto the pinned upstream backbone and compare its four
 raw reference probability distributions at maximum absolute tolerance1e-4.
 
+Use `huggingface_hub.snapshot_download` with each recorded immutable revision and
+an empty `local_dir` for each repository. Use `repo_type="dataset"` for the dataset
+and `repo_type="space"` for the demo. `local_dir` materializes regular files; passing
+a shared cache snapshot directory directly can expose symlinks, which the verifier
+rejects. Keep the original local `release-manifest.json` separately as the trusted
+comparison, rather than trusting a manifest fetched with the same download.
+
+From the reviewed source checkout, verify all three downloaded repositories:
+
+```bash
+uv run --locked --extra ml python scripts/verify_release.py \
+  --trusted-manifest LOCAL_RELEASE/release-manifest.json \
+  --model DOWNLOADED_MODEL \
+  --dataset DOWNLOADED_DATASET \
+  --demo DOWNLOADED_SPACE \
+  --output runs/released-files-verification.json
+```
+
+This verifies file sizes and SHA256 hashes, checks each uploaded per-repository
+manifest, and reruns the dataset schema/split audit. It rejects missing or extra
+payloads and links, except narrowly defined Hugging Face download bookkeeping,
+which it lists in the report. It does not establish publisher authenticity,
+prove that a download was fresh, or load the neural model. Save the download
+revisions and command separately, then perform the GPU parity check below.
+
 The existing probe script can perform that final serialization check:
 
 ```bash

@@ -81,7 +81,7 @@ uncertainty does not capture variation across training seeds.
 
 ## Loading
 
-Use the released Stackcraft source/wheel and locked ML dependencies. Generic
+Use the released Stackcraft source and locked ML dependencies. Generic
 `AutoModel` or adapter-only loading omits the custom decision head and is incorrect.
 Cache the pinned upstream snapshot, then:
 
