@@ -132,3 +132,15 @@ experiment entry. The original preregistration remains independently available i
 Git history before training and test execution. This restoration changes no study
 configuration, source code, data, checkpoint or outcome. Tutorial 06 remains at
 `docs/tutorials/06-release.md`.
+
+The public release will include `reports/study-preregistration.md`, preserving the
+preregistration excerpt from actual training-launch commit `d9fcd05` and identifying
+the full original record hash. This makes the historical text inspectable without
+private GitHub access; it is not a signed or externally timestamped registration.
+
+While final evaluation runs, `stack_engine` independently reviews release tooling
+and tutorials (read-only). `stack_training_recon` owns only new
+`scripts/verify_release.py` and `tests/test_verify_release.py`, implementing download
+byte verification against a trusted local bundle manifest plus downloaded dataset
+audit. This check does not replace GPU probability parity or published browser
+verification. The UI worker retains exclusive ownership of web changes.
