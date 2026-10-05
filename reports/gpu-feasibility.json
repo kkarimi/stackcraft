@@ -1,0 +1,210 @@
+{
+  "runs/probe-v1/report.json": {
+    "sha256": "b66d2c01a43d08234229f3d7d3980a7d2d161fb21aa26965acb3bfe243351807",
+    "report": {
+      "status": "passed",
+      "reload": false,
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "total_vram": 33711521792,
+      "initial_free_vram": 33179500544,
+      "torch": "2.14.1+cu130",
+      "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+      "source_commit": "e38ac536d0a6af444b48fddd6d8789ace089a51c",
+      "row_ids": [
+        "seed-10000-turn-0",
+        "seed-10000-turn-1",
+        "seed-10000-turn-2",
+        "seed-10000-turn-3"
+      ],
+      "runtime_config": {
+        "model_id": "Cloudflare/clef-flash",
+        "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:stackcraft-clef-v1",
+        "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+        "encoding_version": "stackcraft-clef-v1",
+        "source_sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3",
+        "max_length": 4096,
+        "dtype": "torch.bfloat16",
+        "device": "cuda:0"
+      },
+      "load_and_native_seconds": 5.267827647010563,
+      "fp32_head_initial_max_probability_drift": 0.0007441192865371704,
+      "head_steps": [
+        {
+          "step": 1,
+          "row_id": "seed-10000-turn-0",
+          "tokens": 2248,
+          "loss": 3.5077385902404785,
+          "gradient_abs_sums": {
+            "head": 1406.742018819321,
+            "lora": 0.0
+          },
+          "seconds": 0.3278578449971974,
+          "peak_allocated_bytes": 21323760640,
+          "peak_reserved_bytes": 21369978880
+        },
+        {
+          "step": 2,
+          "row_id": "seed-10000-turn-1",
+          "tokens": 2252,
+          "loss": 3.839761734008789,
+          "gradient_abs_sums": {
+            "head": 3064.3000336452387,
+            "lora": 0.0
+          },
+          "seconds": 0.258370580006158,
+          "peak_allocated_bytes": 21323760640,
+          "peak_reserved_bytes": 21541945344
+        },
+        {
+          "step": 3,
+          "row_id": "seed-10000-turn-2",
+          "tokens": 1302,
+          "loss": 2.7408740520477295,
+          "gradient_abs_sums": {
+            "head": 2409.824099964928,
+            "lora": 0.0
+          },
+          "seconds": 0.1538237390050199,
+          "peak_allocated_bytes": 21323760640,
+          "peak_reserved_bytes": 21541945344
+        }
+      ],
+      "head_frozen_parameters_unchanged": true,
+      "lora_steps": [
+        {
+          "step": 1,
+          "row_id": "seed-10000-turn-0",
+          "tokens": 2248,
+          "loss": 3.5077385902404785,
+          "gradient_abs_sums": {
+            "head": 1406.742226867238,
+            "lora": 4314.483247246593
+          },
+          "seconds": 1.3170126390177757,
+          "peak_allocated_bytes": 22128918016,
+          "peak_reserved_bytes": 22531801088
+        },
+        {
+          "step": 2,
+          "row_id": "seed-10000-turn-1",
+          "tokens": 2252,
+          "loss": 3.845935106277466,
+          "gradient_abs_sums": {
+            "head": 3134.688414009288,
+            "lora": 2980.2572337791935
+          },
+          "seconds": 1.3217443070025183,
+          "peak_allocated_bytes": 23176526848,
+          "peak_reserved_bytes": 23483908096
+        },
+        {
+          "step": 3,
+          "row_id": "seed-10000-turn-2",
+          "tokens": 1302,
+          "loss": 2.744056463241577,
+          "gradient_abs_sums": {
+            "head": 2369.929164870642,
+            "lora": 3249.260241425407
+          },
+          "seconds": 0.672728523000842,
+          "peak_allocated_bytes": 23176526848,
+          "peak_reserved_bytes": 23483908096
+        },
+        {
+          "step": 4,
+          "row_id": "seed-10000-turn-3",
+          "tokens": 1304,
+          "loss": 2.775989294052124,
+          "gradient_abs_sums": {
+            "head": 2491.2841364948545,
+            "lora": 3332.906228476757
+          },
+          "seconds": 0.6700605849910062,
+          "peak_allocated_bytes": 23176526848,
+          "peak_reserved_bytes": 23483908096
+        },
+        {
+          "step": 5,
+          "row_id": "seed-10000-turn-0",
+          "tokens": 2248,
+          "loss": 3.4597291946411133,
+          "gradient_abs_sums": {
+            "head": 1691.1293117979076,
+            "lora": 4719.155243932968
+          },
+          "seconds": 1.3178317880083341,
+          "peak_allocated_bytes": 23180389888,
+          "peak_reserved_bytes": 23595057152
+        }
+      ],
+      "checkpoint": "runs/probe-v1/checkpoint",
+      "frozen_parameters_unchanged": true,
+      "elapsed_seconds": 51.810954032989684
+    }
+  },
+  "runs/probe-head-reload-v1/report.json": {
+    "sha256": "ed7afb912569ce4738d506962ca98c33cbbaee2d922ab4bff7b8adcbbae8c521",
+    "report": {
+      "status": "passed",
+      "reload": true,
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "total_vram": 33711521792,
+      "initial_free_vram": 33179500544,
+      "torch": "2.14.1+cu130",
+      "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+      "source_commit": "e38ac536d0a6af444b48fddd6d8789ace089a51c",
+      "row_ids": [
+        "seed-10000-turn-0",
+        "seed-10000-turn-1",
+        "seed-10000-turn-2",
+        "seed-10000-turn-3"
+      ],
+      "max_absolute_probability_difference": 0.0,
+      "tolerance": 0.0001,
+      "elapsed_seconds": 5.435347482009092
+    }
+  },
+  "runs/probe-reload-v1/report.json": {
+    "sha256": "174d5267b1825bbd66bcf4456fdc97b505e7a3565557462358ab99c66bd11539",
+    "report": {
+      "status": "failed",
+      "reload": true,
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "total_vram": 33711521792,
+      "initial_free_vram": 33179500544,
+      "torch": "2.14.1+cu130",
+      "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+      "source_commit": "e38ac536d0a6af444b48fddd6d8789ace089a51c",
+      "row_ids": [
+        "seed-10000-turn-0",
+        "seed-10000-turn-1",
+        "seed-10000-turn-2",
+        "seed-10000-turn-3"
+      ],
+      "error": "ValueError: saved adapter configuration differs from checkpoint metadata",
+      "elapsed_seconds": 4.1464992630062625
+    }
+  },
+  "runs/probe-reload-v2/report.json": {
+    "sha256": "1687e90ab5518785bc3c6a1701978828f410624bab6e297e5a4a2deb8bdcf2e3",
+    "report": {
+      "status": "passed",
+      "reload": true,
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "total_vram": 33711521792,
+      "initial_free_vram": 33179500544,
+      "torch": "2.14.1+cu130",
+      "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+      "source_commit": "f7be7ceee9c38566dfebad0ebf5f1c04958faee3",
+      "row_ids": [
+        "seed-10000-turn-0",
+        "seed-10000-turn-1",
+        "seed-10000-turn-2",
+        "seed-10000-turn-3"
+      ],
+      "max_absolute_probability_difference": 0.0,
+      "tolerance": 0.0001,
+      "elapsed_seconds": 5.648779143986758
+    }
+  }
+}

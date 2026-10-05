@@ -15,6 +15,7 @@ import pytest
 def runner(monkeypatch, tmp_path):
     path = Path(__file__).parents[1] / "scripts" / "gpu_session.py"
     spec = importlib.util.spec_from_file_location("stackcraft_gpu_session_test", path)
+    assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     record = tmp_path / "session.json"

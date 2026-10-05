@@ -46,7 +46,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M1: Deterministic engine, playable browser UI, replay and tutorial01 verified by behavioral tests, independent landing review and desktop/mobile interaction.
 - [x] (2026-10-05) M2: Offline tournaments, replayable race, native encoding and actual unchanged Clef GPU baseline verified. Development seeds0–1 yielded0mean lines for Clef versus9heuristic at30pieces, zero errors;144ms mean Clef decision latency.
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
-- [ ] M4: Verify real GPU training, decision-head gradients, save/reload, memory, and feasibility tutorial.
+- [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
 - [ ] M5: Train, select on validation, evaluate held-out games, integrate comparison UI, and write evaluation tutorial.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
 
@@ -138,7 +138,7 @@ Use unique run directories with immutable configs and artifact hashes. Resume ch
 ## Surprises and Discoveries
 
 
-Training feasibility is untested. Community `MersivMedia/clef-finetune` documents only a tiny random-model CPU test; it is a source to inspect, not evidence of successful Clef training. RouterPlus documents a Tetris comparison application, demonstrating interest in the format but not fine-tuning gains. Read-only hardware reconnaissance found the local GLM llama.cpp Docker service occupies about 23 GB of the 32 GB card. The user authorized temporarily stopping and restoring that service. The real-weight baseline passed, and the service was restored and its in-container health endpoint returned status ok.
+Training feasibility passed on the RTX5090 with BF16 backbone and FP32 decision head. Community `MersivMedia/clef-finetune` documents only a tiny random-model CPU test; it is a source to inspect, not evidence of successful Clef training. RouterPlus documents a Tetris comparison application, demonstrating interest in the format but not fine-tuning gains. Read-only hardware reconnaissance found the local GLM llama.cpp Docker service occupies about 23 GB of the 32 GB card. The user authorized temporarily stopping and restoring that service. The real-weight baseline passed, and the service was restored and its in-container health endpoint returned status ok.
 
 ## Decision Log
 
@@ -152,9 +152,9 @@ Training feasibility is untested. Community `MersivMedia/clef-finetune` document
 ## Outcomes and Retrospective
 
 
-M0, M1, M2 and M3 are complete. The local game, replay and recorded side-by-side race are playable.117 tests including actual native CPU encoding, Ruff and ty pass; the earlier game wheel passed isolated installation checks. Independent review caught and fixed keyboard focus and lost-response retry bugs. M2 includes a successful real-weight unchanged Clef development run. The expert dataset has827train/215validation rows from committed code, independent sample-label checks and untouched reserved test seeds. No training or publication has occurred.
+M0–M4 are complete. The local game, replay and recorded side-by-side race are playable.117 tests including actual native CPU encoding, Ruff and ty pass; the earlier game wheel passed isolated installation checks. Independent review caught and fixed keyboard focus and lost-response retry bugs. M2 includes a successful real-weight unchanged Clef development run. The expert dataset has827train/215validation rows from committed code, independent sample-label checks and untouched reserved test seeds. Bounded real GPU training and exact fresh-process reload have passed. Fullstudy training and publication are pending.
 
 ## Next Action
 
 
-Run the bounded M4 head/LoRA training probe and fresh-process reload verification. User authorized temporary GLM stop/restore; wrapper owns restoration. Pinned weights are complete and native GPU inference passed. Dataset data/study-v1 remains fixed to70d84bd. Test seeds remain untouched. Parallel workers prepare training/evaluation runners and tutorial04. Local game is on8087.
+Run preregistered two-epoch training from scripts/train_clef.py with a3600s GLM-restoring wrapper. Select lowest finite validation NLL across epoch01/02, tie earlier, using215 fixed validation positions. Then freeze checkpoint/evidence hashes and execute all200 reserved testseeds atcap200 with all five policies. Do not tune after testresults. Dataset data/study-v1 fixed to70d84bd; local game on8087. Publication destinations remain unconfirmed until concrete release is prepared.
