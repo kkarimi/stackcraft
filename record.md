@@ -153,3 +153,5 @@ in a browser. Verify model/dataset links and any private GitHub access expectati
 Record failures and correct the actual published bundle before declaring release
 complete. Then update the plan's M6 status and final outcomes with verified links,
 revisions, hashes, measured limitations and fresh-download evidence.
+
+Public-source Tutorial03 exact regeneration recipe executed while epoch02 trained. Verified all six generator-source hashes, generated data/original-study-reproduction with original70d84bd provenance, and matched both original train/validation fileSHA256 exactly in9.8s. No test trajectories generated. This validates the documented route without privateGit history.
