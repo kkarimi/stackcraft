@@ -214,6 +214,14 @@ def save_checkpoint(
     metadata["head_shapes"] = {name: list(tensor.shape) for name, tensor in head_state.items()}
     if metadata["mode"] == "lora":
         model.language_model.save_pretrained(destination / "adapter", safe_serialization=True)
+        adapter_path = destination / "adapter" / "adapter_config.json"
+        adapter_config = json.loads(adapter_path.read_text())
+        adapter_config.update(
+            base_model_name_or_path=MODEL_ID,
+            revision=MODEL_REVISION,
+            target_modules=metadata["lora"]["target_modules"],
+        )
+        adapter_path.write_text(json.dumps(adapter_config, indent=2, sort_keys=True) + "\n")
     (destination / "training_config.json").write_text(
         json.dumps(metadata, indent=2, sort_keys=True, allow_nan=False) + "\n"
     )
@@ -249,7 +257,8 @@ def load_checkpoint(model: Any, path: str | Path, *, trainable: bool = False) ->
         raise ValueError("checkpoint head tensors must be FP32")
     model.language_model.requires_grad_(False)
     if mode == "lora":
-        from peft import PeftModel
+        from peft import LoraConfig, PeftModel
+        from peft.tuners.tuners_utils import check_target_module_exists
 
         lora = metadata.get("lora")
         if not isinstance(lora, dict) or lora.get("target_modules") != lora_target_modules(
@@ -266,13 +275,24 @@ def load_checkpoint(model: Any, path: str | Path, *, trainable: bool = False) ->
                 "checkpoint LoRA rank, alpha or dropout violates the training contract"
             )
         config = json.loads((source / "adapter" / "adapter_config.json").read_text())
+        # PEFT 0.21.2 minimizes >=20 explicit module names to equivalent suffixes.
+        # Compare their meaning on this exact unchanged backbone, not list spelling.
+        # Enumerating ALL modules ensures an accidental vision/MTP/lm_head match
+        # makes the sets unequal and is rejected before installing the adapter.
+        saved_config = LoraConfig.from_pretrained(str(source / "adapter"))
+        resolved_targets = sorted(
+            name
+            for name, _ in model.language_model.named_modules()
+            if check_target_module_exists(saved_config, name)
+        )
         if (
             config.get("r") != lora.get("rank")
             or config.get("lora_alpha") != lora.get("alpha")
             or config.get("lora_dropout") != lora.get("dropout")
-            or sorted(config.get("target_modules", [])) != lora["target_modules"]
+            or resolved_targets != lora["target_modules"]
             or config.get("bias") != "none"
             or config.get("modules_to_save") is not None
+            or config.get("target_parameters") is not None
         ):
             raise ValueError("saved adapter configuration differs from checkpoint metadata")
         model.language_model = PeftModel.from_pretrained(

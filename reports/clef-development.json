@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "rules_version": "stackcraft-v1",
+  "seeds": [
+    0,
+    1
+  ],
+  "max_pieces": 30,
+  "summary": {
+    "random": {
+      "episodes": 2,
+      "mean_lines": 0,
+      "median_lines": 0.0,
+      "mean_score": 0,
+      "mean_pieces": 27,
+      "cap_hit_rate": 0,
+      "error_rate": 0,
+      "timing": {
+        "count": 54,
+        "total_seconds": 9.454792598262429e-05,
+        "mean_seconds": 1.7508875181967461e-06,
+        "median_seconds": 1.580017851665616e-06,
+        "p95_seconds": 2.9500224627554417e-06
+      }
+    },
+    "heuristic": {
+      "episodes": 2,
+      "mean_lines": 9,
+      "median_lines": 9.0,
+      "mean_score": 1200,
+      "mean_pieces": 30,
+      "cap_hit_rate": 1,
+      "error_rate": 0,
+      "timing": {
+        "count": 60,
+        "total_seconds": 0.010729207948315889,
+        "mean_seconds": 0.00017882013247193148,
+        "median_seconds": 0.00013837897859048098,
+        "p95_seconds": 0.00027111798408441246
+      }
+    },
+    "clef-base": {
+      "episodes": 2,
+      "mean_lines": 0,
+      "median_lines": 0.0,
+      "mean_score": 0,
+      "mean_pieces": 27.5,
+      "cap_hit_rate": 0,
+      "error_rate": 0,
+      "timing": {
+        "count": 55,
+        "total_seconds": 7.934351755975513,
+        "mean_seconds": 0.1442609410177366,
+        "median_seconds": 0.1331863310188055,
+        "p95_seconds": 0.24066273399512284
+      }
+    }
+  },
+  "development_only": true,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "peak_allocated_bytes": 19686539776,
+  "peak_reserved_bytes": 20002635776,
+  "elapsed_seconds": 12.598100575996796,
+  "artifact_sha256": "3c56622dc2a95eb89df4cae87ecce4bb2a4afb26e47c43553a9e7f826e971e93",
+  "replays_verified": 6
+}

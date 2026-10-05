@@ -80,25 +80,29 @@ def main():
                     # Probe inside the container: host port8080 belongs to another service.
                     deadline = time.monotonic() + 120
                     while True:
-                        health = subprocess.run(
-                            [
-                                "docker",
-                                "exec",
-                                CONTAINER,
-                                "curl",
-                                "-fsS",
-                                "--max-time",
-                                "5",
-                                "http://localhost:8080/health",
-                            ],
-                            capture_output=True,
-                            text=True,
-                            timeout=10,
-                        )
-                        if (
-                            health.returncode == 0
-                            and json.loads(health.stdout).get("status") == "ok"
-                        ):
+                        healthy = False
+                        try:
+                            health = subprocess.run(
+                                [
+                                    "docker",
+                                    "exec",
+                                    CONTAINER,
+                                    "curl",
+                                    "-fsS",
+                                    "--max-time",
+                                    "5",
+                                    "http://localhost:8080/health",
+                                ],
+                                capture_output=True,
+                                text=True,
+                                timeout=10,
+                            )
+                            healthy = health.returncode == 0 and json.loads(health.stdout) == {
+                                "status": "ok"
+                            }
+                        except (subprocess.TimeoutExpired, json.JSONDecodeError):
+                            pass
+                        if healthy:
                             report["restored_healthy"] = True
                             break
                         if time.monotonic() >= deadline:

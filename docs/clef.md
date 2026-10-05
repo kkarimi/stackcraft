@@ -1,8 +1,8 @@
 # Native Clef adapter
 
-Status: adapter implementation, offline contract tests, and real pinned tokenizer/
-native encoder agreement checked on CPU. Real-weight inference, GPU memory use,
-accuracy and native training parity are not yet verified. Fake
+Status: native encoding, real-weight BF16 inference and bounded head/LoRA GPU
+training have passed. Fresh-process checkpoint parity and full held-out quality
+are separate gates; see the plan and reports for their current status. Fake
 components in unit tests exercise mapping and failure handling only.
 
 ## Pinned upstream contract
@@ -57,7 +57,7 @@ about the backbone's advertised context. If observed positions exceed it, measur
 the required size and preregister a consistently larger limit for both base and
 trained models. Any different text representation needs a new encoding version.
 
-## Integration example, pending real inference
+## Integration example
 
 After ML dependencies and the pinned snapshot are available, and available GPU
 memory has been checked:
@@ -77,7 +77,7 @@ decision = player.choose(observe(new_game(42)))
 print(decision.action_id, decision.probabilities, player.last_input_tokens)
 ```
 
-This example loads real 9B weights. It has not passed the real-inference gate yet.
+This example loads real 9B weights. Real inference passed on an RTX 5090.
 The loader does not stop other workloads, allocate rented compute, or implicitly
 download missing weights by default. A caller can deliberately set
 `local_files_only=False` to obtain this pinned snapshot. Model identity, source
@@ -114,8 +114,8 @@ tokenizer/processor/source files:
 STACKCRAFT_TEST_NATIVE_ENCODING=1 uv run --locked --extra ml pytest tests/test_clef.py
 ```
 
-Next gate: run persisted decisions with real unchanged weights, measure GPU memory
-and latency, and verify probabilities cover all legal actions and sum to one. Only
-then can this adapter support a measured baseline. Training must call native
+The two-seed real-weight development baseline used19.69GB peak allocated memory
+and averaged144ms per decision; reports/clef-development.json records the result.
+These development measurements do not establish trained-model quality. Training must call native
 `ClefModel.forward` with gradients enabled; `choose()` intentionally uses inference
 mode and must not be used as a training path.

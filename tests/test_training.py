@@ -194,6 +194,11 @@ def test_real_native_forward_gradients_changed_intended_bytes_and_reload(native,
     assert metadata["mode"] == mode
     assert (destination / "joint_head.safetensors").exists()
     assert (destination / "adapter").exists() == (mode == "lora")
+    if mode == "lora":
+        adapter_config = json.loads((destination / "adapter" / "adapter_config.json").read_text())
+        assert adapter_config["base_model_name_or_path"] == MODEL_ID
+        assert adapter_config["revision"] == MODEL_REVISION
+        assert adapter_config["target_modules"] == metadata["lora"]["target_modules"]
     restored = load_checkpoint(tiny_model(native), destination)
     assert not any(parameter.requires_grad for parameter in restored.parameters())
     with torch.no_grad():
@@ -311,3 +316,43 @@ def test_actual_tiny_qwen_hybrid_checkpointing_keeps_lora_gradients(native):
             for name, parameter in model.named_parameters()
             if "lora_" in name and part in name
         )
+
+
+def test_peft_minimized_suffixes_reload_but_extra_targets_fail(native, tmp_path):
+    def larger_tiny_model():
+        model = tiny_model(native)
+        text = model.language_model.model.language_model
+        text.layers = torch.nn.ModuleList([copy.deepcopy(text.layers[0]) for _ in range(32)])
+        return model
+
+    model = prepare_trainable(larger_tiny_model(), mode="lora")
+    compressed = sorted(model.language_model.peft_config["default"].target_modules)
+    intended = model._stackcraft_training["lora"]["target_modules"]
+    assert len(intended) == 128
+    assert len(compressed) < len(intended)  # Exercise actual PEFT >=20 optimization.
+    checkpoint = tmp_path / "compressed"
+    save_checkpoint(model, checkpoint)
+    config_path = checkpoint / "adapter" / "adapter_config.json"
+    config = json.loads(config_path.read_text())
+    assert config["target_modules"] == intended  # New saves are explicit and canonical.
+    config["target_modules"] = compressed  # Recreate the immutable older probe format.
+    config["base_model_name_or_path"] = "/old/local/cache/snapshot"
+    config["revision"] = None
+    config_path.write_text(json.dumps(config))
+    restored = load_checkpoint(larger_tiny_model(), checkpoint)
+    original_adapters = {
+        name: parameter.detach() for name, parameter in model.named_parameters() if "lora_" in name
+    }
+    restored_adapters = {
+        name: parameter.detach()
+        for name, parameter in restored.named_parameters()
+        if "lora_" in name
+    }
+    assert original_adapters.keys() == restored_adapters.keys()
+    for name, expected in original_adapters.items():
+        torch.testing.assert_close(restored_adapters[name], expected, rtol=0, atol=0)
+    # Force an otherwise-valid suffix to also select the output layer.
+    config["target_modules"] = compressed + ["lm_head"]
+    config_path.write_text(json.dumps(config))
+    with pytest.raises(ValueError, match="adapter configuration"):
+        load_checkpoint(larger_tiny_model(), checkpoint)
