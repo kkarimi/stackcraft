@@ -1,0 +1,42 @@
+{
+  "cpu_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+  "evaluation_request_sha256": "a507e3b947d603b02f56b6df12b160e9e182ee5706d2ac64d8e9f93358f79e62",
+  "gpus": [
+    {
+      "configured_power_limit_watts": 575.0,
+      "driver_version": "610.57.04",
+      "name": "NVIDIA GeForce RTX 5090",
+      "reported_total_memory_mib": 32607
+    }
+  ],
+  "host_reported_memory_kib": 129391464,
+  "kernel": "7.2.5-3-omarchy",
+  "logical_cpu_count": 32,
+  "observed_at_utc": "2026-10-05T21:20:14.982799+00:00",
+  "python_version": "3.13.16",
+  "schema_version": 1,
+  "scope": "Read-only hardware snapshot during final evaluation; no energy usage or continuous clock/temperature measurement",
+  "trained_runtime_config": {
+    "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+    "cpu_threads": 8,
+    "cuda_matmul_allow_tf32": false,
+    "cuda_version": "13.0",
+    "device": "cuda:0",
+    "dtype": "torch.bfloat16",
+    "encoding_version": "stackcraft-clef-v1",
+    "evaluation_head": "fp32-gathered-rows",
+    "float32_matmul_precision": "highest",
+    "head_dtype": "float32",
+    "max_length": 4096,
+    "model_id": "Cloudflare/clef-flash",
+    "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:checkpoint-sha256-b8133e9775a82c6b952fc1a1b1c805c5bc993fbcd919e81f663ad35e122ab7c7:stackcraft-clef-v1",
+    "source_sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3",
+    "versions": {
+      "huggingface-hub": "1.33.0",
+      "peft": "0.21.2",
+      "safetensors": "0.8.0",
+      "torch": "2.14.1+cu130",
+      "transformers": "5.18.0"
+    }
+  }
+}

@@ -205,7 +205,10 @@ than being retried until a nicer result appears.
 
 The primary outcome is lines cleared. Score and pieces survived are secondary.
 The report includes means, medians, cap-hit rate, failure counts, latency and input
-lengths. A game reaching 200 pieces survived **at least** 200; its eventual death
+lengths. The [hardware snapshot](../../reports/evaluation-hardware.json) records
+the RTX 5090, driver, CPU, Python and inference settings observed during this run.
+Compare latency only with that environment in mind; the snapshot does not measure
+energy consumption or continuous GPU clock behavior. A game reaching 200 pieces survived **at least** 200; its eventual death
 was not observed. Always report cap-hit rates with survival statistics.
 
 For the primary reliability-adjusted analysis, any errored episode receives zero

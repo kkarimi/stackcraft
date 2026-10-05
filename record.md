@@ -239,3 +239,13 @@ including its upstream copyright notice; NOTICE records Stackcraft's modificatio
 and upstream revision. Upstream LICENSE raw SHA256:
 `bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a`.
 The full evaluation is still live in session 49782; no experiment settings changed.
+
+## 2026-10-05 — Record the inference hardware context
+
+Saved `reports/evaluation-hardware.json` while the same final-evaluation process
+was live. It identifies RTX 5090, driver 610.57.04, Ryzen 9 9950X3D, Python 3.13.16,
+32 logical CPUs, host/GPU memory, kernel, configured power limit, and the actual
+trained-player inference settings. It is bound to the frozen evaluation request
+hash. The power limit is not measured consumption; this snapshot is not an energy
+or continuous clock trace. Tutorial 05 links it for interpreting latency. No
+hardware settings, dependency versions or evaluation source changed.
