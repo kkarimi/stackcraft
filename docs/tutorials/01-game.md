@@ -112,3 +112,25 @@ fine-tuning helps.
 Choose **Watch a race** to load a real development episode for Random and Heuristic. The packaged `baseline-demo.json` contains the same seed and both action traces; the service rebuilds frames through the authoritative replay engine. Scrubbing to piece100 shows Random stopped at26 while Heuristic reaches37lines. Returning to Play preserves the human game.
 
 The boards are synchronized by placements, not decision time. Playback is explicitly recorded and does not imply live model inference or model speed. A player that tops out keeps its final board visible while other recordings continue. This lets a visitor compare outcomes without requiring a GPU server; later real Clef runs can use the same replay format.
+
+## Play alongside recorded opponents
+
+The race view offers an explicit **Start live board · seed N** action. This starts
+a new human game with the recording's seed and episode cap; merely opening or
+leaving the race tab does not reset the current game. The human board is labelled
+**LIVE HUMAN**, while opponents remain labelled as recorded. Both use the Python
+engine's legal placements and the same deterministic piece stream.
+
+Each human placement advances the recorded timeline to the same piece count. A
+recording that ended earlier stays on its final frame. You can scrub the recorded
+timeline independently without changing your board; **Match my move** resynchronizes
+it. The original board DOM and session controller move between views, avoiding a
+second simulator or conflicting copies of live state.
+
+At the recording's episode cap, human placement controls stop and show **Cap
+reached**, distinct from top-out. Switching to Play retains that comparison cap
+and the same session. **Leave comparison** removes comparison mode and returns
+the existing game to ordinary play; only starting/restarting a game resets it.
+Pending moves temporarily disable view changes so a late response cannot update
+a different session. Desktop boards align side by side; narrow screens stack them
+without shrinking the human controls.

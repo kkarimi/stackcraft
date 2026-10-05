@@ -134,3 +134,46 @@
 
 .race-report-link { text-align: center; margin: 9px 0 0; font-size: 11px; }
 .race-report-link a { color: var(--accent); text-underline-offset: 3px; }
+
+/* One authoritative human board is moved between Play and the comparison view. */
+.race-view.with-human { max-width: 1124px; }
+.race-join-controls { margin: 0 0 20px; padding: 12px 15px; border: 1px solid #3c4436; border-radius: 9px; background: #c4f57806; }
+.race-join-buttons { display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
+.race-join-buttons .secondary-button { width: auto; color: var(--accent); padding: 8px 13px; }
+.race-join-buttons .text-button { padding: 4px 0; }
+.race-join-controls .helper { margin-top: 6px; font-size: 10px; }
+.race-human-card { width: calc(var(--cell-size) * 10 + 20px); flex-shrink: 0; }
+.race-human-card .race-card-heading { margin-bottom: 8px; }
+.live-human-badge { font-family: ui-monospace, monospace; font-size: 8px; color: var(--accent); letter-spacing: .7px; }
+.race-human-card .board-wrap { border-color: #819e58; box-shadow: 0 0 0 3px #c4f57808; }
+.race-human-card .race-metrics { margin: 0 0 5px; }
+.race-human-preview { font-size: 10px; color: #c0ceae; margin: 5px 0 12px; }
+.race-human-instructions { color: var(--muted); font-size: 10px; margin: 10px 0 0; text-align: center; }
+.comparison-human-note { font-size: 9px; color: var(--accent); border: 1px solid #414d32; border-radius: 7px; padding: 8px; margin-bottom: 10px; }
+.comparison-human-note .text-button { padding: 3px 0 0; display: block; font-size: 9px; }
+.race-human-card .terminal-overlay p { max-width: 185px; }
+@media (max-width: 790px) {
+  .race-view.with-human .race-boards { gap: 20px; }
+  .race-human-card { width: 100%; }
+  .race-human-card > .race-card-heading, .race-human-card > .race-metrics, .race-human-preview, .race-human-instructions, #race-human-slot { width: calc(var(--cell-size) * 10 + 20px); margin-left: auto; margin-right: auto; }
+  .race-human-card { padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+}
+@media (min-width: 791px) {
+  .race-human-card { --cell-size: var(--race-cell); display: flex; flex-direction: column; width: calc(var(--race-cell) * 10 + 20px); }
+  .race-human-card #race-human-slot, .race-human-card #human-board-column { display: contents; }
+  .race-human-card > .race-card-heading { order: 0; margin-bottom: 7px; }
+  .race-human-card .board-heading { display: none; }
+  .race-human-card .board-wrap { order: 1; }
+  .race-human-card .race-metrics { order: 2; margin: 8px 0 0; }
+  .race-human-card .race-human-preview { order: 3; margin: 6px 0 0; font-size: 9px; }
+  .race-human-card .board-footer { order: 4; }
+  .race-human-card #play-controls { order: 5; }
+  .race-human-card .race-human-instructions { order: 6; font-size: 9px; }
+  .race-human-card .rotate-button span { display: none; }
+  .race-human-card .drop-button { padding-left: 10px; padding-right: 10px; font-size: 11px; gap: 8px; }
+  .race-human-card .drop-button span { font-size: 8px; }
+}
+
+@media (max-width: 530px) {
+  .race-view.with-human .race-boards { gap: 12px; --race-cell: min(15px, calc((100vw - 112px) / 20)); }
+}

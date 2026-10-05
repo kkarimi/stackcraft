@@ -25,6 +25,9 @@ let racePlayers = null;
 let raceIndex = 0;
 let raceMax = 0;
 let raceTimer = null;
+let raceManifest = null;
+let raceHumanActive = false;
+const humanRaceCard = $("race-human-card");
 const cells = Array.from({ length: 200 }, () => {
   const cell = document.createElement("div");
   cell.className = "cell";
@@ -61,6 +64,39 @@ async function operation(task) {
 
 function currentState() { return frames ? frames[frameIndex] : live; }
 function legal() { return live?.legal_actions || []; }
+function humanCapReached() { return Boolean(raceHumanActive && live && !live.terminal && live.pieces >= raceManifest.max_pieces); }
+function mountHumanBoard() {
+  const alongside = raceVisible && raceHumanActive;
+  if (alongside) $("race-human-slot").append($("human-board-column"));
+  else $("human-board-home").after($("human-board-column"));
+  humanRaceCard.hidden = !alongside;
+  $("race-view").classList.toggle("with-human", alongside);
+}
+function renderHumanComparison() {
+  $("comparison-human-note").hidden = !raceHumanActive || raceVisible;
+  $("seed").disabled = raceHumanActive || busy;
+  $("leave-comparison-race").hidden = !raceHumanActive;
+  $("race-match-human").hidden = !raceHumanActive;
+  $("race-human-timeline-note").hidden = !raceHumanActive;
+  if (raceManifest) $("join-race").textContent = `${raceHumanActive ? "Restart" : "Start"} live board · seed ${raceManifest.seed}`;
+  if (!raceHumanActive || !live) return;
+  const cap = raceManifest.max_pieces;
+  $("comparison-human-label").textContent = `Comparison · seed ${activeSeed} · cap ${cap}`;
+  for (const key of ["lines", "score", "pieces"]) $("race-human-" + key).textContent = live[key].toLocaleString();
+  $("race-human-preview").textContent = humanCapReached() ? `Episode cap reached · ${cap} pieces` : live.terminal ? "Topped out" : `${live.current} now · ${live.next_piece} next · cap ${cap}`;
+  $("race-human-timeline-note").textContent = `Live human: ${live.pieces}/${cap} pieces. Recorded timeline: ${raceIndex}.${raceIndex !== Math.min(live.pieces, raceMax) ? " Watching another recorded position; your board is unchanged." : " Recordings match your move count (finished runs stay frozen)."}`;
+}
+function syncRaceToHuman() {
+  if (!raceHumanActive || !live) return;
+  stopRace();
+  seekRace(live.pieces);
+}
+function leaveComparison(switchToPlay = true) {
+  raceHumanActive = false;
+  if (switchToPlay) setView(false);
+  mountHumanBoard();
+  render();
+}
 function chooseNearest(rotation = 0, x = 3) {
   const sameRotation = legal().filter((action) => action.rotation === rotation);
   const choices = sameRotation.length ? sameRotation : legal();
@@ -85,7 +121,7 @@ function renderPreview(id, piece) {
 }
 
 function renderControls() {
-  const playable = !busy && stateSynced && live && !live.terminal && !frames && selected;
+  const playable = !busy && stateSynced && live && !live.terminal && !humanCapReached() && !frames && selected && (!raceVisible || raceHumanActive);
   for (const id of ["move-left", "move-right", "rotate", "drop"]) $(id).disabled = !playable;
   for (const id of ["restart", "play-again", "load-replay", "exit-replay"]) $(id).disabled = busy;
   $("download-replay").disabled = busy || (!live && !replayArtifact);
@@ -95,12 +131,16 @@ function renderControls() {
   $("replay-position").disabled = busy;
   $("play-controls").hidden = Boolean(frames);
   $("replay-controls").hidden = !frames;
+  for (const id of ["play-tab", "race-tab", "leave-comparison-play", "leave-comparison-race"]) $(id).disabled = busy;
+  $("join-race").disabled = busy || !raceManifest;
+  renderHumanComparison();
 }
 
 function render() {
   const state = currentState();
   if (!state) return renderControls();
-  const ghost = !frames && !state.terminal ? new Set(selected?.cells.map(([x, y]) => y * 10 + x)) : new Set();
+  const capped = humanCapReached() && !frames;
+  const ghost = !frames && !state.terminal && !capped ? new Set(selected?.cells.map(([x, y]) => y * 10 + x)) : new Set();
   for (let i = 0; i < cells.length; i++) {
     const value = state.board[Math.floor(i / 10)][i % 10];
     cells[i].className = `cell${value ? " filled" : ghost.has(i) ? " ghost" : ""}`;
@@ -110,12 +150,15 @@ function render() {
   $("lines").textContent = state.lines.toLocaleString();
   $("pieces").textContent = state.pieces.toLocaleString();
   $("current-name").textContent = state.current;
-  $("move-counter").textContent = `MOVE ${String(state.pieces + (state.terminal ? 0 : 1)).padStart(3, "0")}`;
-  $("board-mode").textContent = frames ? "SAVED REPLAY" : "YOUR BOARD";
-  $("player-status").textContent = frames ? "Watching a recorded game" : !stateSynced ? "Connection lost · restart to continue" : state.terminal ? "Run complete" : "Ready for your next move";
-  $("terminal-overlay").hidden = !state.terminal || Boolean(frames);
-  $("placement-label").textContent = frames ? `Recorded move ${frameIndex}` : state.terminal ? "No legal placements" : selected ? `COL ${selected.x + 1} / ROT ${selected.rotation + 1}` : "Choose your landing spot";
-  $("board").setAttribute("aria-label", `${frames ? "Replay" : "Game"} board. ${state.pieces} pieces placed, ${state.lines} lines, score ${state.score}.${state.terminal ? " Game over." : selected && !frames ? ` ${state.current} piece at column ${selected.x + 1}, rotation ${selected.rotation + 1}. Use left and right to move, up to rotate, space to drop.` : ""}`);
+  $("move-counter").textContent = `MOVE ${String(state.pieces + (state.terminal || capped ? 0 : 1)).padStart(3, "0")}`;
+  $("board-mode").textContent = frames ? "SAVED REPLAY" : raceHumanActive ? "LIVE HUMAN" : "YOUR BOARD";
+  $("player-status").textContent = frames ? "Watching a recorded game" : !stateSynced ? "Connection lost · restart to continue" : capped ? "Comparison cap reached" : state.terminal ? "Run complete" : "Ready for your next move";
+  $("terminal-overlay").hidden = (!state.terminal && !capped) || Boolean(frames);
+  $("terminal-eyebrow").textContent = capped ? "EPISODE CAP" : "RUN COMPLETE";
+  $("terminal-title").textContent = capped ? "Cap reached." : "One more try?";
+  $("terminal-description").textContent = capped ? `${raceManifest.max_pieces} pieces placed. This is the comparison limit, not a top-out.` : "No legal placements remain.";
+  $("placement-label").textContent = frames ? `Recorded move ${frameIndex}` : capped ? `Comparison cap: ${raceManifest.max_pieces}` : state.terminal ? "No legal placements" : selected ? `COL ${selected.x + 1} / ROT ${selected.rotation + 1}` : "Choose your landing spot";
+  $("board").setAttribute("aria-label", `${frames ? "Replay" : "Game"} board. ${state.pieces} pieces placed, ${state.lines} lines, score ${state.score}.${capped ? " Comparison episode cap reached." : state.terminal ? " Game over." : selected && !frames ? ` ${state.current} piece at column ${selected.x + 1}, rotation ${selected.rotation + 1}. Use left and right to move, up to rotate, space to drop.` : ""}`);
   renderPreview("current-preview", state.current);
   renderPreview("next-preview", state.next_piece);
   if (frames) {
@@ -134,7 +177,7 @@ function stopReplay() {
 }
 
 async function restart() {
-  const text = $("seed").value.trim();
+  const text = raceHumanActive ? String(raceManifest.seed) : $("seed").value.trim();
   const seed = Number(text);
   if (!text || !Number.isSafeInteger(seed) || seed < 0 || seed > 2147483647) {
     reportError(new Error("Choose a whole-number seed between 0 and 2,147,483,647."));
@@ -148,14 +191,16 @@ async function restart() {
     live = snapshot;
     stateSynced = true;
     activeSeed = seed;
+    $("seed").value = seed;
     chooseNearest();
+    syncRaceToHuman();
     render();
     $("announcement").textContent = `New game, seed ${seed}. ${live.current} piece ready.`;
   });
 }
 
 function move(direction) {
-  if (busy || !stateSynced || frames || !selected || live.terminal) return;
+  if (busy || !stateSynced || frames || !selected || live.terminal || humanCapReached()) return;
   const row = legal().filter((action) => action.rotation === selected.rotation).sort((a, b) => a.x - b.x);
   const index = row.findIndex((action) => action.id === selected.id);
   selected = row[Math.max(0, Math.min(row.length - 1, index + direction))];
@@ -163,7 +208,7 @@ function move(direction) {
 }
 
 function rotate() {
-  if (busy || !stateSynced || frames || !selected || live.terminal) return;
+  if (busy || !stateSynced || frames || !selected || live.terminal || humanCapReached()) return;
   const rotations = [...new Set(legal().map((action) => action.rotation))].sort((a, b) => a - b);
   const nextRotation = rotations[(rotations.indexOf(selected.rotation) + 1) % rotations.length];
   chooseNearest(nextRotation, selected.x);
@@ -171,7 +216,7 @@ function rotate() {
 }
 
 async function drop() {
-  if (!live || !stateSynced || live.terminal || !selected || frames) return;
+  if (!live || !stateSynced || live.terminal || humanCapReached() || !selected || frames) return;
   await operation(async () => {
     const oldLines = live.lines;
     const sessionPath = `/api/games/${encodeURIComponent(live.id)}`;
@@ -187,6 +232,7 @@ async function drop() {
         live = await api(sessionPath);
         stateSynced = true;
         chooseNearest();
+        syncRaceToHuman();
         render();
       } catch {
         stateSynced = false;
@@ -197,9 +243,10 @@ async function drop() {
       throw error;
     }
     chooseNearest();
+    syncRaceToHuman();
     render();
     const clear = live.lines - oldLines;
-    $("announcement").textContent = live.terminal ? `Game over. ${live.lines} lines cleared. Score ${live.score}.` : `${clear ? `${clear} ${clear === 1 ? "line" : "lines"} cleared! ` : ""}${live.current} piece ready. Score ${live.score}.`;
+    $("announcement").textContent = humanCapReached() ? `Comparison cap reached after ${live.pieces} pieces. Score ${live.score}.` : live.terminal ? `Game over. ${live.lines} lines cleared. Score ${live.score}.` : `${clear ? `${clear} ${clear === 1 ? "line" : "lines"} cleared! ` : ""}${live.current} piece ready. Score ${live.score}.`;
   });
 }
 
@@ -218,12 +265,12 @@ $("play-again").addEventListener("click", restart);
 $("seed").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); restart(); } });
 document.addEventListener("keydown", (event) => {
   if (event.target.matches("input, textarea, select, button, a, summary") || event.ctrlKey || event.metaKey || event.altKey) return;
-  if (raceVisible || frames || busy || !stateSynced || !live || live.terminal) return;
+  if ((raceVisible && !raceHumanActive) || frames || busy || !stateSynced || !live || live.terminal || humanCapReached()) return;
   const handler = { ArrowLeft: () => move(-1), ArrowRight: () => move(1), ArrowUp: rotate, " ": drop, Enter: drop }[event.key];
   if (handler) { event.preventDefault(); if (!event.repeat || event.key.startsWith("Arrow")) handler(); }
 });
 $("board").addEventListener("click", (event) => {
-  if (frames || busy || !stateSynced || !selected || live.terminal) return;
+  if (frames || busy || !stateSynced || !selected || live.terminal || humanCapReached()) return;
   const rect = $("board").getBoundingClientRect();
   const x = Math.floor((event.clientX - rect.left) / (rect.width / 10));
   chooseNearest(selected.rotation, x);
@@ -253,6 +300,7 @@ $("replay-file").addEventListener("change", (event) => {
     const result = await api("/api/replays", { method: "POST", body: JSON.stringify(artifact) });
     if (!Array.isArray(result.frames) || !result.frames.length) throw new Error("The replay contains no frames.");
     stopReplay();
+    if (raceHumanActive) leaveComparison(false);
     frames = result.frames;
     replayArtifact = artifact;
     frameIndex = 0;
@@ -408,6 +456,7 @@ function renderRace() {
   $("race-next").disabled = raceIndex === raceMax;
   $("race-play").disabled = raceMax === 0;
   $("race-restart").disabled = raceMax === 0;
+  renderHumanComparison();
 }
 
 async function loadRace() {
@@ -430,7 +479,8 @@ async function loadRace() {
       if (!Array.isArray(result.frames) || result.frames.length !== player.replay.actions.length + 1) throw new Error("A race replay has an invalid frame count.");
       return { ...player, frames: result.frames };
     }));
-    $("race-boards").replaceChildren();
+    $("race-boards").replaceChildren(humanRaceCard);
+    raceManifest = manifest;
     racePlayers = loaded.map(raceCard);
     raceMax = Math.max(...racePlayers.map((player) => player.frames.length - 1));
     $("race-label").textContent = typeof manifest.label === "string" ? manifest.label : "Recorded development baseline";
@@ -458,7 +508,9 @@ async function loadRace() {
     }
     $("race-loading").hidden = true;
     $("race-transport").hidden = false;
+    $("race-join-controls").hidden = false;
     renderRace();
+    renderControls();
   } catch (error) {
     $("race-loading").textContent = `Race unavailable: ${error.message} Switch to Play and back to retry.`;
     $("race-context").textContent = "No comparison results are available yet.";
@@ -466,6 +518,7 @@ async function loadRace() {
 }
 
 function setView(watchRace) {
+  if (busy) return;
   raceVisible = watchRace;
   stopReplay();
   stopRace();
@@ -476,8 +529,35 @@ function setView(watchRace) {
     $(id).setAttribute("aria-selected", String(active));
     $(id).tabIndex = active ? 0 : -1;
   }
-  if (watchRace) loadRace();
+  mountHumanBoard();
+  if (watchRace) {
+    loadRace();
+    syncRaceToHuman();
+  }
+  render();
 }
+$("join-race").addEventListener("click", () => operation(async () => {
+  if (!raceManifest) return;
+  const snapshot = await api("/api/games", { method: "POST", body: JSON.stringify({ seed: raceManifest.seed }) });
+  stopReplay();
+  stopRace();
+  frames = null;
+  replayArtifact = null;
+  live = snapshot;
+  stateSynced = true;
+  activeSeed = raceManifest.seed;
+  $("seed").value = activeSeed;
+  raceHumanActive = true;
+  chooseNearest();
+  mountHumanBoard();
+  syncRaceToHuman();
+  render();
+  $("announcement").textContent = `Live comparison started on seed ${activeSeed}, with a ${raceManifest.max_pieces}-piece cap. The other boards are recorded.`;
+  $("board").focus({ preventScroll: true });
+}));
+$("leave-comparison-play").addEventListener("click", () => leaveComparison());
+$("leave-comparison-race").addEventListener("click", () => leaveComparison());
+$("race-match-human").addEventListener("click", syncRaceToHuman);
 $("play-tab").addEventListener("click", () => setView(false));
 $("race-tab").addEventListener("click", () => setView(true));
 for (const id of ["play-tab", "race-tab"]) {

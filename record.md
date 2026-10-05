@@ -144,3 +144,19 @@ and tutorials (read-only). `stack_training_recon` owns only new
 byte verification against a trusted local bundle manifest plus downloaded dataset
 audit. This check does not replace GPU probability parity or published browser
 verification. The UI worker retains exclusive ownership of web changes.
+
+## 2026-10-05 — Human board beside recorded opponents
+
+Integrated the UI worker's web-only comparison mode. Starting it explicitly creates
+a human game on the recording's seed and cap; opening tabs alone does not reset a
+game. The original board and authoritative API session are reused. Root browser
+checks confirmed that a human drop synchronizes recordings to piece 1, moving the
+recorded timeline to piece 2 leaves the human at piece 1, and switching to Play
+preserves the same comparison state. Worker checks covered desktop/mobile controls,
+pending-response view guards, and 100 actual API placements through the development
+cap with no extra requests. At an exact-cap top-out, the UI reports top-out rather
+than censored survival. JavaScript syntax and diff whitespace checks pass.
+
+The current recording is still the disclosed development seed 0 comparison.
+Final seed 30000 export and browser review remain required after evaluation.
+Tutorial 01 and the deployment guide now explain the human comparison workflow.

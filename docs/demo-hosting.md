@@ -126,8 +126,13 @@ Space URL after release:
    error, and reaching the episode cap is distinct from top-out.
 6. The selected action and any probability alternatives come from the recorded
    decision at that position. They are not an explanation generated after the run.
-7. Returning to Play preserves the human session. Check keyboard controls and a
-   phone-width viewport as well as desktop.
+7. "Start live board · seed N" explicitly starts a new human game beside the
+   recorded players using the exact recording seed. Check the same episode cap,
+   keyboard controls, per-move recording synchronization and the live/recorded labels.
+   Scrubbing recorded moves must leave the human board unchanged. "Match my move"
+   restores the shared piece index. Switching Play/race preserves the human session;
+   "Leave comparison" returns it to uncapped ordinary play without a reset. On narrow
+   screens boards stack so controls remain readable; check for horizontal overflow.
 8. The running image imports the game without Torch. No requests download model
    weights, and no inference service is contacted.
 
