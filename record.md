@@ -66,3 +66,20 @@ Implementation commit `70d84bd8dc5d4a60f3b96455a57d9e6f9416d109`. Root ran `uv r
 Latest checks:117tests passed with actual pinned native CPU encoding enabled, plus Ruff and ty. Root verified race scrubbing to100, final scores and human-game preservation. Final race screenshot `/home/nima/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muvnwvs6-60bf91fb.png`; controls fit1280×800 (bottom786px).
 
 At checkpoint, download session78859 was polled and confirmed still running; cache about12GB. GPU remains22,976MiB used/9,175MiB free; no user response to service-stop question, no workload stopped and no real-weight inference attempted. This is progress with a live download, not a blocked/completed goal. Next: implement bounded training probe, finish download and run real inference/training when memory is available.
+
+
+## 2026-10-05 — GPU interruption authorized
+
+The user explicitly approved temporarily stopping and restoring the local GLM service for Stackcraft GPU training. Read-only inspection confirms Docker container `omarchy-local-ai-glm-4.7-flash.llamacpp.q5xl.32k.rtx-5090-engine` is running with restart policy `unless-stopped`. Stop only when pinned model files and executable probes are ready. Restore with `docker start` after GPU experiments (including failure paths), verify running/health and record the result. No ongoing GLM request has been inspected. Previous turn is classified as progress: committed game, teacher data, and native encoding checks. Download session78859/PID2602150 was re-polled and remains live, about13GB cached at continuation.
+
+Preregistered M4 execution: use development positions only, record unchanged native probabilities before modifications, three head-only steps then five rank4LoRA steps at batch1, label smoothing0.05 and Brier weight0.1. Assert finite nonzero gradients and intended parameter changes, save head plus adapter, and compare fresh-process raw probabilities at absolute tolerance1e-4. Limit initial realGPU exploration to two configurations/30minutes; preserve logs and report failures. Full training and test evaluation remain later gates.
+
+
+M2 real-weight development pilot preregistered: pinned unchanged Clef-flash, development seeds0–1,30-piececap, Random/Heuristic/Clef on identical streams. One warmup atseed42 is excluded from tournament timing. Persist decisions, rawprobabilities, per-decisiontokenlengths, runtimeconfiguration, peakVRAM and elapsedtime. Output runs/clef-development-v1.json. Wrapper timeout900seconds; restoreGLM in finally including failures. This pilot measures native feasibility and informs later budgets, not final test quality.
+
+
+## 2026-10-05 — Real unchanged Clef baseline passed
+
+Pinned weights loaded successfully. runs/clef-development-v1.json contains2paired development seeds0–1/cap30; Clef meanlines0,pieces27.5,55decisions144.26msmean/240.66msp95; heuristic meanlines9,pieces30; allerrorrates0. Warmup+load4.53s. GPU session exited0 and restored GLM; docker exec curl localhost:8080/health returned status ok. Host8080 is unrelated SearXNG; health checks must run inside the exact GLM container. Correct reference attention kernels in use. M2complete. No held-out test was inspected.
+
+M4 code review: CPUtests exercise actual tiny Qwen3.5 hybrid attention with realPEFT, nativehead, checkpointing and gradients. Probe will save each candidate separately and bind reload reference to datasetmanifesthash and fourtrainingrowIDs. Head-only and LoRA use fresh base instances. Keep head-only frozenbackbone in eval mode.

@@ -1,7 +1,6 @@
 # Tutorial 02 — Build a comparison before training
 
-This milestone establishes offline opponents and a replayable tournament. **Clef has not
-been benchmarked yet.** These results cannot establish an advantage from fine-tuning.
+This milestone establishes offline opponents and a replayable tournament. **Unchanged Clef now has a small real-GPU development benchmark.** These results cannot establish an advantage from fine-tuning.
 
 ## Give every player the same information
 
@@ -104,10 +103,22 @@ Artifact SHA-256:
 Regeneration preserves game outcomes but changes timing fields and therefore the
 full artifact hash.
 
-## What remains before a model comparison
+## Actual unchanged Clef development run
 
-Integrate the pinned native Clef decision head, record actual model probabilities,
-verify that no board or legal-action text is truncated, and persist its errors and
-latency with the same runner. Use fresh held-out episode seeds for the final study.
-A good baseline is essential: a large neural model can lose to a few lines of board
-arithmetic, and the report must make that outcome visible.
+The pinned native Clef-flash backbone and joint head ran on RTX 5090 in BF16.
+Reproduce with `uv run --locked --extra ml python scripts/benchmark_clef.py
+--output runs/clef-development-repeat.json --episodes 2 --max-pieces 30`
+when at least25GiB GPU memory is free. Do not stop other workloads without authorization.
+
+On development seeds0–1 (30-piece cap), Clef averaged0lines and27.5pieces;
+the heuristic averaged9lines and reached30pieces both times. No player errored.
+Clef's55decisions averaged144ms (p95 241ms), after a separate warmup.
+These two episodes establish feasibility, not statistical performance. Raw probabilities,
+input-token counts, pinned revisions and timing are retained in
+`runs/clef-development-v1.json`. Reference PyTorch attention kernels were used;
+faster optional kernels were not installed, so latency is implementation-specific.
+The GLM service was temporarily stopped under user authorization and restored;
+its in-container health endpoint returned `{"status":"ok"}`.
+
+Use fresh held-out episode seeds for the final study. A large neural model can lose
+to a few lines of board arithmetic; the report must make that outcome visible.
