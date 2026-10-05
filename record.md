@@ -155,3 +155,10 @@ complete. Then update the plan's M6 status and final outcomes with verified link
 revisions, hashes, measured limitations and fresh-download evidence.
 
 Public-source Tutorial03 exact regeneration recipe executed while epoch02 trained. Verified all six generator-source hashes, generated data/original-study-reproduction with original70d84bd provenance, and matched both original train/validation fileSHA256 exactly in9.8s. No test trajectories generated. This validates the documented route without privateGit history.
+
+
+## 2026-10-05 — Full training complete; validation started
+
+Both epochs completed all827positions and104optimizersteps each. Meantrainingloss2.577967 then1.966718; epoch durations742.48s/744.66s, total1511.25s including hashing/checkpointwork. Intendedhead/LoRA parameters changed; frozenbackbone hashes unchanged. Peakallocated23.23GB/reserved24.18GB. Wrapper exited0 and restored GLM healthy. Fullreport retained as reports/study-training.json; launchsource/supplement available withoutprivateGit. Candidate01/02 copies replaceonly adapterREADME with siblingpreparationhashrecords. No learnedbytes changed.
+
+Validation now runs in session96574 / runs/validation-v1.log under900s GLMwrapper: all215positions for nativebase, FP32base and epoch01; all215 for epoch02. Outputs runs/validation-epoch-01 and -02. Afterward verify restoredhealth and completeness, selectpreregisteredlowestfiniteNLL, freshreloadselected, thenstartall200pairedtestseeds onlyafter selectionhashes recorded.

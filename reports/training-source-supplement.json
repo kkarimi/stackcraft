@@ -1,0 +1,11 @@
+{
+  "source_commit": "d9fcd05",
+  "source_hashes": {
+    "src/stackcraft/engine.py": "0805be38ee968d569fa1c12230730f491490f7d27cfcc570c400ac3b4a546453",
+    "src/stackcraft/pieces.py": "c5bee0f8767aeeab279cfbadb4c7b4c0bbf1f31c1d29b08dda197f0627654b29",
+    "src/stackcraft/schema.py": "35c70d96e8a49e434dc0a3607412a0ce58141306df59e09b1170511694cb6eb5",
+    "src/stackcraft/players/__init__.py": "550bed9237303a845cdcc101542b0b688173a8f5436dd1d08c5f85a5a19fa2b2",
+    "uv.lock": "bc7fae476529578be003856b5f19e09c8cc96e0020ab999e20e1f8210696f9c8"
+  },
+  "verified_equal_to_current_at_training_start": true
+}
