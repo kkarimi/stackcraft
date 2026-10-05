@@ -224,3 +224,18 @@ training table against the real report. No tutorial GPU command was rerun.
 
 Historical Tutorial 01 development-race descriptions remain accurate for the
 currently shipped development manifest and must be revised at the final export.
+
+## 2026-10-05 — Source publication preflight while evaluation runs
+
+At source commit `ac10793`, scanned all 85 tracked files for recognizable Hugging
+Face, GitHub and AWS credential formats and private-key headers; no matches were
+found. No weight binaries, private-key files or .env files are tracked. This is a
+limited source preflight, not a guarantee of secret absence or a substitute for
+reviewing the actual final staged bundle.
+
+The pinned upstream model card identifies Apache-2.0 and Qwen/Qwen3.5-9B. The local
+LICENSE text exactly matches that snapshot's LICENSE after CRLF/LF normalization,
+including its upstream copyright notice; NOTICE records Stackcraft's modifications
+and upstream revision. Upstream LICENSE raw SHA256:
+`bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a`.
+The full evaluation is still live in session 49782; no experiment settings changed.
