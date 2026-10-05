@@ -1,0 +1,1297 @@
+{
+  "checkpoint_sha256": {
+    "adapter/README.md": "bf1fa63446e8ee38c5ac154ade9138a0e2354e3215201f59473102eeb5206fa0",
+    "adapter/adapter_config.json": "bbbce7f19e186b4a79c39d03786bb190d6084e7990a601e8e28672cf1c969741",
+    "adapter/adapter_model.safetensors": "3ed169fe68b20a370bb856f9d91842543374ff3c98fd3bbe139ef2d0b97877a3",
+    "joint_head.safetensors": "4f21c0f315cf1bcf852a9887d158928855eaa9bdcab6b9770d518abf3727fa1b",
+    "reference.json": "adacc63684d28598f8016602bab790cd3967317986b6934dd94a5e14fabe571f",
+    "training_config.json": "3ead31d0a3ccb6a62914c3853ee26332f6412382c5196e40b461182e64d8b329"
+  },
+  "comparisons": {
+    "base_fp32_vs_base": {
+      "base_id": "base",
+      "errors_acceptable": true,
+      "paired_trained_minus_base": {
+        "lines": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": -0.02,
+          "ci95_upper": 0.09,
+          "episodes": 200,
+          "mean_difference": 0.035,
+          "method": "paired episode percentile bootstrap"
+        },
+        "pieces": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": -0.405,
+          "ci95_upper": 0.36,
+          "episodes": 200,
+          "mean_difference": -0.02,
+          "method": "paired episode percentile bootstrap"
+        },
+        "score": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": -2.0,
+          "ci95_upper": 9.0,
+          "episodes": 200,
+          "mean_difference": 3.5,
+          "method": "paired episode percentile bootstrap"
+        }
+      },
+      "positive_mean_lines_signal": false,
+      "trained_id": "base-fp32"
+    },
+    "trained_vs_base": {
+      "base_id": "base",
+      "errors_acceptable": true,
+      "paired_trained_minus_base": {
+        "lines": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": 15.74,
+          "ci95_upper": 17.77,
+          "episodes": 200,
+          "mean_difference": 16.74,
+          "method": "paired episode percentile bootstrap"
+        },
+        "pieces": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": 54.93,
+          "ci95_upper": 60.21,
+          "episodes": 200,
+          "mean_difference": 57.545,
+          "method": "paired episode percentile bootstrap"
+        },
+        "score": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": 1633.0,
+          "ci95_upper": 1848.5,
+          "episodes": 200,
+          "mean_difference": 1738.5,
+          "method": "paired episode percentile bootstrap"
+        }
+      },
+      "positive_mean_lines_signal": true,
+      "trained_id": "trained"
+    },
+    "trained_vs_base_fp32": {
+      "base_id": "base-fp32",
+      "errors_acceptable": true,
+      "paired_trained_minus_base": {
+        "lines": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": 15.705,
+          "ci95_upper": 17.74,
+          "episodes": 200,
+          "mean_difference": 16.705,
+          "method": "paired episode percentile bootstrap"
+        },
+        "pieces": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": 55.01,
+          "ci95_upper": 60.185,
+          "episodes": 200,
+          "mean_difference": 57.565,
+          "method": "paired episode percentile bootstrap"
+        },
+        "score": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": 1629.4875,
+          "ci95_upper": 1845.0,
+          "episodes": 200,
+          "mean_difference": 1735,
+          "method": "paired episode percentile bootstrap"
+        }
+      },
+      "positive_mean_lines_signal": true,
+      "trained_id": "trained"
+    },
+    "trained_vs_heuristic": {
+      "base_id": "heuristic",
+      "errors_acceptable": true,
+      "paired_trained_minus_base": {
+        "lines": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": -60.805,
+          "ci95_upper": -58.619875,
+          "episodes": 200,
+          "mean_difference": -59.72,
+          "method": "paired episode percentile bootstrap"
+        },
+        "pieces": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": -118.925125,
+          "ci95_upper": -113.86987500000001,
+          "episodes": 200,
+          "mean_difference": -116.435,
+          "method": "paired episode percentile bootstrap"
+        },
+        "score": {
+          "bootstrap_samples": 10000,
+          "bootstrap_seed": 2026,
+          "ci95_lower": -6681.5125,
+          "ci95_upper": -6436.0,
+          "episodes": 200,
+          "mean_difference": -6561,
+          "method": "paired episode percentile bootstrap"
+        }
+      },
+      "positive_mean_lines_signal": false,
+      "trained_id": "trained"
+    }
+  },
+  "conclusion": "Selected training checkpoint improves mean lines over both unchanged Clef references; fixed heuristic is much stronger and cheaper.",
+  "evidence": {
+    "audit_source": {
+      "release_path": "code/reports/final-audit-source.md",
+      "sha256": "61db8b121130ffd2eeb0a9c667f53f0c21647e865e93d44fbb9967e71d870020",
+      "size_bytes": 8166
+    },
+    "dataset": {
+      "release_path": "code/reports/dataset-manifest.json",
+      "sha256": "f591ec4c4b853942bd0a89331280b8c3491b3eb87f0b2a69ae4821b9623bd936",
+      "size_bytes": 8175
+    },
+    "evaluation": {
+      "release_path": "evidence/evaluation/report.json",
+      "sha256": "5585574b77e81c8d7dd44464c4dfb09f9511ccec0d9150c3ea44793760416857",
+      "size_bytes": 1225235921
+    },
+    "hardware": {
+      "release_path": "code/reports/evaluation-hardware.json",
+      "sha256": "cea05c0d6f208dbeae498be743d131f645cebe88a5054a8af5a884714582085b",
+      "size_bytes": 1606
+    },
+    "independent_audit": {
+      "release_path": "code/reports/final-audit.json",
+      "sha256": "4766d0224a8bddc8c6e6fe0e86e75937f65abdb261667d5d59bd3d482c8adb89",
+      "size_bytes": 133571
+    },
+    "preregistration": {
+      "release_path": "code/reports/study-preregistration.md",
+      "sha256": "bd6d34b4e71a2e38f4dcdc4a0b0a1aca7f7572e5d063af6b3e8491c6c6382d96",
+      "size_bytes": 4183
+    },
+    "reload": {
+      "release_path": "code/reports/selected-checkpoint-reload.json",
+      "sha256": "57489d34b22627c0fd0e3dc42f7f11231a901c059db7a4ea8cbab0aba2c37cdd",
+      "size_bytes": 630
+    },
+    "request": {
+      "release_path": "evidence/evaluation/request.json",
+      "sha256": "a507e3b947d603b02f56b6df12b160e9e182ee5706d2ac64d8e9f93358f79e62",
+      "size_bytes": 4699
+    },
+    "selection": {
+      "release_path": "evidence/selection/selection.json",
+      "sha256": "025b62587a26bd8cc78c80f362524b8c178190df5188b317299121afa6b1203b",
+      "size_bytes": 8037
+    },
+    "training": {
+      "release_path": "code/reports/study-training.json",
+      "sha256": "c272f9e1dedfedf285c0d7d1a46aa77a89d48019bf621e31a11921f38fc05600",
+      "size_bytes": 63791
+    },
+    "validation": {
+      "release_path": "code/reports/validation-summary.json",
+      "sha256": "2fd17daeeb12dfecf739c2dcd885e80ca3dc4547acaa3d22722ac9a4d747122a",
+      "size_bytes": 7990
+    }
+  },
+  "evidence_path_convention": "Paths are relative to the model release root; source-only copies retain compact reports under reports/. Publication is pending at report creation.",
+  "hardware": {
+    "cpu_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "evaluation_request_sha256": "a507e3b947d603b02f56b6df12b160e9e182ee5706d2ac64d8e9f93358f79e62",
+    "gpus": [
+      {
+        "configured_power_limit_watts": 575.0,
+        "driver_version": "610.57.04",
+        "name": "NVIDIA GeForce RTX 5090",
+        "reported_total_memory_mib": 32607
+      }
+    ],
+    "host_reported_memory_kib": 129391464,
+    "kernel": "7.2.5-3-omarchy",
+    "logical_cpu_count": 32,
+    "observed_at_utc": "2026-10-05T21:20:14.982799+00:00",
+    "python_version": "3.13.16",
+    "schema_version": 1,
+    "scope": "Read-only hardware snapshot during final evaluation; no energy usage or continuous clock/temperature measurement",
+    "trained_runtime_config": {
+      "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+      "cpu_threads": 8,
+      "cuda_matmul_allow_tf32": false,
+      "cuda_version": "13.0",
+      "device": "cuda:0",
+      "dtype": "torch.bfloat16",
+      "encoding_version": "stackcraft-clef-v1",
+      "evaluation_head": "fp32-gathered-rows",
+      "float32_matmul_precision": "highest",
+      "head_dtype": "float32",
+      "max_length": 4096,
+      "model_id": "Cloudflare/clef-flash",
+      "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:checkpoint-sha256-b8133e9775a82c6b952fc1a1b1c805c5bc993fbcd919e81f663ad35e122ab7c7:stackcraft-clef-v1",
+      "source_sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3",
+      "versions": {
+        "huggingface-hub": "1.33.0",
+        "peft": "0.21.2",
+        "safetensors": "0.8.0",
+        "torch": "2.14.1+cu130",
+        "transformers": "5.18.0"
+      }
+    }
+  },
+  "illustration": {
+    "players": {
+      "base": {
+        "evidence": {
+          "release_path": "evidence/evaluation/base/seed-30000.json",
+          "sha256": "429e52aa67bbdae6cd35f469af876b9b7872d61e4b862cb2ea47f40e7ef918d4",
+          "size_bytes": 325003
+        },
+        "final_board": {
+          "aggregate_height": 178,
+          "holes": 86,
+          "max_height": 20
+        },
+        "outcome": {
+          "cap_hit": false,
+          "lines": 0,
+          "pieces": 23,
+          "score": 0,
+          "status": "top_out",
+          "terminal": true
+        }
+      },
+      "base-fp32": {
+        "evidence": {
+          "release_path": "evidence/evaluation/base-fp32/seed-30000.json",
+          "sha256": "87744a7184c3ffbe1a4e7b8e5b526f628993de4135a551117de2c2283c105c34",
+          "size_bytes": 335159
+        },
+        "final_board": {
+          "aggregate_height": 183,
+          "holes": 79,
+          "max_height": 20
+        },
+        "outcome": {
+          "cap_hit": false,
+          "lines": 0,
+          "pieces": 26,
+          "score": 0,
+          "status": "top_out",
+          "terminal": true
+        }
+      },
+      "heuristic": {
+        "evidence": {
+          "release_path": "evidence/evaluation/heuristic/seed-30000.json",
+          "sha256": "5b7508b7a345998a7c677a5153779ca9d46bfd65ada64371c7117f54c6537c09",
+          "size_bytes": 2800853
+        },
+        "final_board": {
+          "aggregate_height": 21,
+          "holes": 1,
+          "max_height": 3
+        },
+        "outcome": {
+          "cap_hit": true,
+          "lines": 78,
+          "pieces": 200,
+          "score": 8800,
+          "status": "cap",
+          "terminal": false
+        }
+      },
+      "random": {
+        "evidence": {
+          "release_path": "evidence/evaluation/random/seed-30000.json",
+          "sha256": "f39dc524807bb0008a9bbe2cd004e152fdb939405d1e50879c81da2942c7a49e",
+          "size_bytes": 318599
+        },
+        "final_board": {
+          "aggregate_height": 184,
+          "holes": 88,
+          "max_height": 20
+        },
+        "outcome": {
+          "cap_hit": false,
+          "lines": 0,
+          "pieces": 24,
+          "score": 0,
+          "status": "top_out",
+          "terminal": true
+        }
+      },
+      "trained": {
+        "evidence": {
+          "release_path": "evidence/evaluation/trained/seed-30000.json",
+          "sha256": "d18bd7010da5c2d98ef02a73585a3cac0a47764a43a597c1d1b2d1280949890c",
+          "size_bytes": 1156045
+        },
+        "final_board": {
+          "aggregate_height": 196,
+          "holes": 28,
+          "max_height": 20
+        },
+        "outcome": {
+          "cap_hit": false,
+          "lines": 16,
+          "pieces": 82,
+          "score": 1600,
+          "status": "top_out",
+          "terminal": true
+        }
+      }
+    },
+    "scope": "Exploratory description of the preselected replay seed, not a causal explanation or extra experiment. Endpoints differ in turn and terminal status. Holes are empty cells below an occupied cell in their column.",
+    "seed": 30000
+  },
+  "independent_audit": {
+    "audit_script_sha256": "867eb41c8319c7c7b428a037b9c8a4f5a5e9c235a15631fae6716aed565626d1",
+    "elapsed_seconds": 63.74646008000127,
+    "episodes_verified": 1000,
+    "method": "Saved replay reconstruction; independent statistics and random.choice paired bootstrap. No new policy decisions/model loads.",
+    "report_sha256": "5585574b77e81c8d7dd44464c4dfb09f9511ccec0d9150c3ea44793760416857",
+    "request_sha256": "a507e3b947d603b02f56b6df12b160e9e182ee5706d2ac64d8e9f93358f79e62",
+    "selection_sha256": "025b62587a26bd8cc78c80f362524b8c178190df5188b317299121afa6b1203b",
+    "status": "passed"
+  },
+  "limitations": [
+    "One training seed; confidence intervals do not include training-seed variability.",
+    "827 synthetic training positions and 215 validation positions; teacher search is bounded and not guaranteed optimal.",
+    "Simplified deterministic turn-based rules, structured board input and one-piece preview, not real-time Tetris.",
+    "All heuristic episodes reach the cap; uncapped survival is unknown.",
+    "Teacher agreement is not a game-quality metric.",
+    "Different policy states and GPU/CPU execution make latency a workload measurement rather than a controlled same-input kernel benchmark.",
+    "No checkpoint, prompt, dataset or policy tuning after opening this final test. A future experiment needs new held-out seeds."
+  ],
+  "players": {
+    "base": {
+      "cap_hit_rate": 0,
+      "cap_hits": 0,
+      "episodes": 200,
+      "error_rate": 0.0,
+      "failed_episodes": 0,
+      "failed_seeds": [],
+      "failure_adjusted": {
+        "lines": {
+          "count": 200,
+          "mean": 0.07,
+          "median": 0.0,
+          "p95": 1
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 26.02,
+          "median": 26.0,
+          "p95": 30
+        },
+        "score": {
+          "count": 200,
+          "mean": 7,
+          "median": 0.0,
+          "p95": 100
+        }
+      },
+      "identity": {
+        "name": "base",
+        "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:stackcraft-clef-v1",
+        "runtime_config": {
+          "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+          "cpu_threads": 8,
+          "cuda_matmul_allow_tf32": false,
+          "cuda_version": "13.0",
+          "device": "cuda:0",
+          "dtype": "torch.bfloat16",
+          "encoding_version": "stackcraft-clef-v1",
+          "evaluation_head": "native",
+          "float32_matmul_precision": "highest",
+          "head_dtype": "bfloat16",
+          "max_length": 4096,
+          "model_id": "Cloudflare/clef-flash",
+          "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:stackcraft-clef-v1",
+          "source_sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3",
+          "versions": {
+            "huggingface-hub": "1.33.0",
+            "peft": "0.21.2",
+            "safetensors": "0.8.0",
+            "torch": "2.14.1+cu130",
+            "transformers": "5.18.0"
+          }
+        }
+      },
+      "input_tokens": {
+        "count": 5204,
+        "mean": 1354.2999615680246,
+        "median": 1286.0,
+        "p95": 2258
+      },
+      "invalid_decisions": 0,
+      "latency_seconds": {
+        "count": 5204,
+        "mean": 0.149109957484823,
+        "median": 0.1393812735186657,
+        "p95": 0.2449162660050206
+      },
+      "load_seconds": [
+        3.866232068015961
+      ],
+      "observed_before_error": {
+        "lines": {
+          "count": 200,
+          "mean": 0.07,
+          "median": 0.0,
+          "p95": 1
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 26.02,
+          "median": 26.0,
+          "p95": 30
+        },
+        "score": {
+          "count": 200,
+          "mean": 7,
+          "median": 0.0,
+          "p95": 100
+        }
+      }
+    },
+    "base-fp32": {
+      "cap_hit_rate": 0,
+      "cap_hits": 0,
+      "episodes": 200,
+      "error_rate": 0.0,
+      "failed_episodes": 0,
+      "failed_seeds": [],
+      "failure_adjusted": {
+        "lines": {
+          "count": 200,
+          "mean": 0.105,
+          "median": 0.0,
+          "p95": 1
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 26,
+          "median": 26.0,
+          "p95": 31
+        },
+        "score": {
+          "count": 200,
+          "mean": 10.5,
+          "median": 0.0,
+          "p95": 100
+        }
+      },
+      "identity": {
+        "name": "base-fp32",
+        "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:stackcraft-clef-v1:head-fp32-ablation",
+        "runtime_config": {
+          "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+          "cpu_threads": 8,
+          "cuda_matmul_allow_tf32": false,
+          "cuda_version": "13.0",
+          "device": "cuda:0",
+          "dtype": "torch.bfloat16",
+          "encoding_version": "stackcraft-clef-v1",
+          "evaluation_head": "fp32-gathered-rows",
+          "float32_matmul_precision": "highest",
+          "head_dtype": "float32",
+          "max_length": 4096,
+          "model_id": "Cloudflare/clef-flash",
+          "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:stackcraft-clef-v1:head-fp32-ablation",
+          "source_sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3",
+          "versions": {
+            "huggingface-hub": "1.33.0",
+            "peft": "0.21.2",
+            "safetensors": "0.8.0",
+            "torch": "2.14.1+cu130",
+            "transformers": "5.18.0"
+          }
+        }
+      },
+      "input_tokens": {
+        "count": 5200,
+        "mean": 1349.7273076923077,
+        "median": 1286.0,
+        "p95": 2258
+      },
+      "invalid_decisions": 0,
+      "latency_seconds": {
+        "count": 5200,
+        "mean": 0.1501883656640264,
+        "median": 0.14096801349660382,
+        "p95": 0.24787959101377055
+      },
+      "load_seconds": [
+        2.1760330779943615
+      ],
+      "observed_before_error": {
+        "lines": {
+          "count": 200,
+          "mean": 0.105,
+          "median": 0.0,
+          "p95": 1
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 26,
+          "median": 26.0,
+          "p95": 31
+        },
+        "score": {
+          "count": 200,
+          "mean": 10.5,
+          "median": 0.0,
+          "p95": 100
+        }
+      }
+    },
+    "heuristic": {
+      "cap_hit_rate": 1,
+      "cap_hits": 200,
+      "episodes": 200,
+      "error_rate": 0.0,
+      "failed_episodes": 0,
+      "failed_seeds": [],
+      "failure_adjusted": {
+        "lines": {
+          "count": 200,
+          "mean": 76.53,
+          "median": 77.0,
+          "p95": 79
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 200,
+          "median": 200.0,
+          "p95": 200
+        },
+        "score": {
+          "count": 200,
+          "mean": 8306.5,
+          "median": 8300.0,
+          "p95": 8800
+        }
+      },
+      "identity": {
+        "name": "heuristic",
+        "revision": "heuristic-v1-height1-holes4-bump1-lines8",
+        "runtime_config": {}
+      },
+      "input_tokens": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null
+      },
+      "invalid_decisions": 0,
+      "latency_seconds": {
+        "count": 40000,
+        "mean": 0.00019850957853268482,
+        "median": 0.00013948898413218558,
+        "p95": 0.00028052800917066634
+      },
+      "load_seconds": [
+        2.1799933165311813e-06
+      ],
+      "observed_before_error": {
+        "lines": {
+          "count": 200,
+          "mean": 76.53,
+          "median": 77.0,
+          "p95": 79
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 200,
+          "median": 200.0,
+          "p95": 200
+        },
+        "score": {
+          "count": 200,
+          "mean": 8306.5,
+          "median": 8300.0,
+          "p95": 8800
+        }
+      }
+    },
+    "random": {
+      "cap_hit_rate": 0,
+      "cap_hits": 0,
+      "episodes": 200,
+      "error_rate": 0.0,
+      "failed_episodes": 0,
+      "failed_seeds": [],
+      "failure_adjusted": {
+        "lines": {
+          "count": 200,
+          "mean": 0.14,
+          "median": 0.0,
+          "p95": 1
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 26.645,
+          "median": 27.0,
+          "p95": 31
+        },
+        "score": {
+          "count": 200,
+          "mean": 14,
+          "median": 0.0,
+          "p95": 100
+        }
+      },
+      "identity": {
+        "name": "random",
+        "revision": "random-v1-rng-0",
+        "runtime_config": {}
+      },
+      "input_tokens": {
+        "count": 0,
+        "mean": null,
+        "median": null,
+        "p95": null
+      },
+      "invalid_decisions": 0,
+      "latency_seconds": {
+        "count": 5329,
+        "mean": 1.4965126650845871e-06,
+        "median": 1.2499804142862558e-06,
+        "p95": 2.8790091164410114e-06
+      },
+      "load_seconds": [
+        3.4689990570768714e-05
+      ],
+      "observed_before_error": {
+        "lines": {
+          "count": 200,
+          "mean": 0.14,
+          "median": 0.0,
+          "p95": 1
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 26.645,
+          "median": 27.0,
+          "p95": 31
+        },
+        "score": {
+          "count": 200,
+          "mean": 14,
+          "median": 0.0,
+          "p95": 100
+        }
+      }
+    },
+    "trained": {
+      "cap_hit_rate": 0,
+      "cap_hits": 0,
+      "episodes": 200,
+      "error_rate": 0.0,
+      "failed_episodes": 0,
+      "failed_seeds": [],
+      "failure_adjusted": {
+        "lines": {
+          "count": 200,
+          "mean": 16.81,
+          "median": 16.0,
+          "p95": 29
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 83.565,
+          "median": 82.0,
+          "p95": 114
+        },
+        "score": {
+          "count": 200,
+          "mean": 1745.5,
+          "median": 1650.0,
+          "p95": 3100
+        }
+      },
+      "identity": {
+        "name": "trained",
+        "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:checkpoint-sha256-b8133e9775a82c6b952fc1a1b1c805c5bc993fbcd919e81f663ad35e122ab7c7:stackcraft-clef-v1",
+        "runtime_config": {
+          "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+          "cpu_threads": 8,
+          "cuda_matmul_allow_tf32": false,
+          "cuda_version": "13.0",
+          "device": "cuda:0",
+          "dtype": "torch.bfloat16",
+          "encoding_version": "stackcraft-clef-v1",
+          "evaluation_head": "fp32-gathered-rows",
+          "float32_matmul_precision": "highest",
+          "head_dtype": "float32",
+          "max_length": 4096,
+          "model_id": "Cloudflare/clef-flash",
+          "revision": "Cloudflare/clef-flash@17f0b0ad64efb65d273590632833508766b2aae6:checkpoint-sha256-b8133e9775a82c6b952fc1a1b1c805c5bc993fbcd919e81f663ad35e122ab7c7:stackcraft-clef-v1",
+          "source_sha256": "0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3",
+          "versions": {
+            "huggingface-hub": "1.33.0",
+            "peft": "0.21.2",
+            "safetensors": "0.8.0",
+            "torch": "2.14.1+cu130",
+            "transformers": "5.18.0"
+          }
+        }
+      },
+      "input_tokens": {
+        "count": 16713,
+        "mean": 1532.1127864536588,
+        "median": 1304,
+        "p95": 2259
+      },
+      "invalid_decisions": 0,
+      "latency_seconds": {
+        "count": 16713,
+        "mean": 0.20681440101212237,
+        "median": 0.17184428698965348,
+        "p95": 0.3090000880183652
+      },
+      "load_seconds": [
+        2.5281899149995297
+      ],
+      "observed_before_error": {
+        "lines": {
+          "count": 200,
+          "mean": 16.81,
+          "median": 16.0,
+          "p95": 29
+        },
+        "pieces": {
+          "count": 200,
+          "mean": 83.565,
+          "median": 82.0,
+          "p95": 114
+        },
+        "score": {
+          "count": 200,
+          "mean": 1745.5,
+          "median": 1650.0,
+          "p95": 3100
+        }
+      }
+    }
+  },
+  "protocol": {
+    "bootstrap_samples": 10000,
+    "bootstrap_seed": 2026,
+    "checkpoint_selection": "lowest finite validation NLL over all 215 positions; exact tie selects earlier of epoch-01 and epoch-02",
+    "ci_method": "paired episode percentile bootstrap",
+    "episodes_per_player": 200,
+    "failure_policy": "zero lines/score/pieces on errors; retain all pairs",
+    "final_test": true,
+    "max_error_rate": 0.0,
+    "max_pieces": 200,
+    "primary_metric": "lines",
+    "rules_version": "stackcraft-v1",
+    "secondary_metrics": [
+      "score",
+      "pieces"
+    ],
+    "seeds": [
+      30000,
+      30001,
+      30002,
+      30003,
+      30004,
+      30005,
+      30006,
+      30007,
+      30008,
+      30009,
+      30010,
+      30011,
+      30012,
+      30013,
+      30014,
+      30015,
+      30016,
+      30017,
+      30018,
+      30019,
+      30020,
+      30021,
+      30022,
+      30023,
+      30024,
+      30025,
+      30026,
+      30027,
+      30028,
+      30029,
+      30030,
+      30031,
+      30032,
+      30033,
+      30034,
+      30035,
+      30036,
+      30037,
+      30038,
+      30039,
+      30040,
+      30041,
+      30042,
+      30043,
+      30044,
+      30045,
+      30046,
+      30047,
+      30048,
+      30049,
+      30050,
+      30051,
+      30052,
+      30053,
+      30054,
+      30055,
+      30056,
+      30057,
+      30058,
+      30059,
+      30060,
+      30061,
+      30062,
+      30063,
+      30064,
+      30065,
+      30066,
+      30067,
+      30068,
+      30069,
+      30070,
+      30071,
+      30072,
+      30073,
+      30074,
+      30075,
+      30076,
+      30077,
+      30078,
+      30079,
+      30080,
+      30081,
+      30082,
+      30083,
+      30084,
+      30085,
+      30086,
+      30087,
+      30088,
+      30089,
+      30090,
+      30091,
+      30092,
+      30093,
+      30094,
+      30095,
+      30096,
+      30097,
+      30098,
+      30099,
+      30100,
+      30101,
+      30102,
+      30103,
+      30104,
+      30105,
+      30106,
+      30107,
+      30108,
+      30109,
+      30110,
+      30111,
+      30112,
+      30113,
+      30114,
+      30115,
+      30116,
+      30117,
+      30118,
+      30119,
+      30120,
+      30121,
+      30122,
+      30123,
+      30124,
+      30125,
+      30126,
+      30127,
+      30128,
+      30129,
+      30130,
+      30131,
+      30132,
+      30133,
+      30134,
+      30135,
+      30136,
+      30137,
+      30138,
+      30139,
+      30140,
+      30141,
+      30142,
+      30143,
+      30144,
+      30145,
+      30146,
+      30147,
+      30148,
+      30149,
+      30150,
+      30151,
+      30152,
+      30153,
+      30154,
+      30155,
+      30156,
+      30157,
+      30158,
+      30159,
+      30160,
+      30161,
+      30162,
+      30163,
+      30164,
+      30165,
+      30166,
+      30167,
+      30168,
+      30169,
+      30170,
+      30171,
+      30172,
+      30173,
+      30174,
+      30175,
+      30176,
+      30177,
+      30178,
+      30179,
+      30180,
+      30181,
+      30182,
+      30183,
+      30184,
+      30185,
+      30186,
+      30187,
+      30188,
+      30189,
+      30190,
+      30191,
+      30192,
+      30193,
+      30194,
+      30195,
+      30196,
+      30197,
+      30198,
+      30199
+    ],
+    "total_episodes": 1000,
+    "training_seeds": [
+      42
+    ]
+  },
+  "provenance": {
+    "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+    "encoding_version": "stackcraft-clef-v1",
+    "installed_versions": {
+      "huggingface-hub": "1.33.0",
+      "peft": "0.21.2",
+      "safetensors": "0.8.0",
+      "torch": "2.14.1+cu130",
+      "transformers": "5.18.0"
+    },
+    "precision_policy": "native BF16 base; FP32 trained head; optional base-fp32 ablation",
+    "rules_version": "stackcraft-v1",
+    "source_commit": "e524f0c15c2dd60ebfdc1374d66836c79e1e6dd6",
+    "source_dirty": false,
+    "source_hashes": {
+      "scripts/evaluate_clef.py": "70a47e9314ec9d7351a939bae32f07f14bd08f6106b60ce6155687c0540b92dd",
+      "src/stackcraft/clef.py": "c505f35d27121ba9ec9db3c663927ac8b28304f4ed864765be61ce96c8c86e13",
+      "src/stackcraft/data.py": "74b68a1f391a3128d2e499c7e86b6c94a1f2a2bef33ffe75c8631207065bd991",
+      "src/stackcraft/engine.py": "0805be38ee968d569fa1c12230730f491490f7d27cfcc570c400ac3b4a546453",
+      "src/stackcraft/evaluation.py": "df56f9d36655e79573a014a5c55c2571bc5e04e2c20f1b37e2d939b871e889e6",
+      "src/stackcraft/pieces.py": "c5bee0f8767aeeab279cfbadb4c7b4c0bbf1f31c1d29b08dda197f0627654b29",
+      "src/stackcraft/players/__init__.py": "550bed9237303a845cdcc101542b0b688173a8f5436dd1d08c5f85a5a19fa2b2",
+      "src/stackcraft/provenance.py": "0728104f22361ad2a8b4471e6eef0467852d94f650d0259d7f5f674c0086f13b",
+      "src/stackcraft/schema.py": "35c70d96e8a49e434dc0a3607412a0ce58141306df59e09b1170511694cb6eb5",
+      "src/stackcraft/tournament.py": "288ed447a32e0845f52097372a644fc211b1632790655f620801d3ce1639d559",
+      "src/stackcraft/training.py": "f7e48b041b331cf2b68674ec2abb1059dd1da47cb261697b46260b4f0169dba8",
+      "uv.lock": "bc7fae476529578be003856b5f19e09c8cc96e0020ab999e20e1f8210696f9c8"
+    },
+    "source_identity_method": "exact-git-root"
+  },
+  "reload": {
+    "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+    "elapsed_seconds": 5.802506145002553,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "initial_free_vram": 33179500544,
+    "max_absolute_probability_difference": 0.0,
+    "reload": true,
+    "row_ids": [
+      "seed-10000-turn-0",
+      "seed-10000-turn-1",
+      "seed-10000-turn-2",
+      "seed-10000-turn-3"
+    ],
+    "source_commit": "7a21f6491bcaf2afacc9aa5b5e2733a35c41a7a8",
+    "source_dirty": false,
+    "source_identity_method": "exact-git-root",
+    "status": "passed",
+    "tolerance": 0.0001,
+    "torch": "2.14.1+cu130",
+    "total_vram": 33711521792
+  },
+  "runtime": {
+    "decision_latency_scope": "All Player.choose calls, including encoding and probability transfer; no excluded warmup; cached local model initialization recorded separately. Policies visit different states.",
+    "energy_measured": false,
+    "final_evaluation_wrapper_seconds": 5103.112404823303,
+    "monetary_cost_measured": false,
+    "trained_to_heuristic_mean_decision_latency_ratio": 1041.8358778494417,
+    "wrapper_scope": "Includes service stop/restore and health checks, evaluation, model loading and report writing; not pure inference time."
+  },
+  "schema_version": 1,
+  "selection": {
+    "checkpoint_sha256": {
+      "adapter/README.md": "bf1fa63446e8ee38c5ac154ade9138a0e2354e3215201f59473102eeb5206fa0",
+      "adapter/adapter_config.json": "bbbce7f19e186b4a79c39d03786bb190d6084e7990a601e8e28672cf1c969741",
+      "adapter/adapter_model.safetensors": "3ed169fe68b20a370bb856f9d91842543374ff3c98fd3bbe139ef2d0b97877a3",
+      "joint_head.safetensors": "4f21c0f315cf1bcf852a9887d158928855eaa9bdcab6b9770d518abf3727fa1b",
+      "reference.json": "adacc63684d28598f8016602bab790cd3967317986b6934dd94a5e14fabe571f",
+      "training_config.json": "3ead31d0a3ccb6a62914c3853ee26332f6412382c5196e40b461182e64d8b329"
+    },
+    "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+    "decision_rule": "lowest finite mean target NLL over all 215 validation positions; exact tie chooses earlier epoch",
+    "selected_key": "epoch-02",
+    "selection_sha256": "025b62587a26bd8cc78c80f362524b8c178190df5188b317299121afa6b1203b",
+    "validation": {
+      "epoch-01": {
+        "players": {
+          "base": {
+            "available_subset_mean_brier": 0.9231725575578064,
+            "complete_probability_coverage": true,
+            "correct": 21,
+            "error_rate": 0.0,
+            "failed_predictions": [],
+            "finite_subset_mean_nll": 2.9527020509302693,
+            "finite_subset_nll_positions": 215,
+            "mean_brier": 0.9231725575578064,
+            "mean_nll": 2.9527020509302693,
+            "missing_probabilities": [],
+            "nll_is_infinite": false,
+            "positions": 215,
+            "probability_positions": 215,
+            "selection_performed": false,
+            "teacher_agreement": 0.09767441860465116,
+            "zero_target_probability_count": 0
+          },
+          "base-fp32": {
+            "available_subset_mean_brier": 0.9231017245023939,
+            "complete_probability_coverage": true,
+            "correct": 22,
+            "error_rate": 0.0,
+            "failed_predictions": [],
+            "finite_subset_mean_nll": 2.9523931327950934,
+            "finite_subset_nll_positions": 215,
+            "mean_brier": 0.9231017245023939,
+            "mean_nll": 2.9523931327950934,
+            "missing_probabilities": [],
+            "nll_is_infinite": false,
+            "positions": 215,
+            "probability_positions": 215,
+            "selection_performed": false,
+            "teacher_agreement": 0.10232558139534884,
+            "zero_target_probability_count": 0
+          },
+          "trained": {
+            "available_subset_mean_brier": 0.7221895727255984,
+            "complete_probability_coverage": true,
+            "correct": 89,
+            "error_rate": 0.0,
+            "failed_predictions": [],
+            "finite_subset_mean_nll": 1.8608697515370076,
+            "finite_subset_nll_positions": 215,
+            "mean_brier": 0.7221895727255984,
+            "mean_nll": 1.8608697515370076,
+            "missing_probabilities": [],
+            "nll_is_infinite": false,
+            "positions": 215,
+            "probability_positions": 215,
+            "selection_performed": false,
+            "teacher_agreement": 0.413953488372093,
+            "zero_target_probability_count": 0
+          }
+        },
+        "provenance": {
+          "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+          "encoding_version": "stackcraft-clef-v1",
+          "installed_versions": {
+            "huggingface-hub": "1.33.0",
+            "peft": "0.21.2",
+            "safetensors": "0.8.0",
+            "torch": "2.14.1+cu130",
+            "transformers": "5.18.0"
+          },
+          "precision_policy": "native BF16 base; FP32 trained head; optional base-fp32 ablation",
+          "rules_version": "stackcraft-v1",
+          "source_commit": "ada38885b55ae3e4b6705a18dec98d194d37447e",
+          "source_dirty": false,
+          "source_hashes": {
+            "scripts/evaluate_clef.py": "70a47e9314ec9d7351a939bae32f07f14bd08f6106b60ce6155687c0540b92dd",
+            "src/stackcraft/clef.py": "c505f35d27121ba9ec9db3c663927ac8b28304f4ed864765be61ce96c8c86e13",
+            "src/stackcraft/data.py": "74b68a1f391a3128d2e499c7e86b6c94a1f2a2bef33ffe75c8631207065bd991",
+            "src/stackcraft/engine.py": "0805be38ee968d569fa1c12230730f491490f7d27cfcc570c400ac3b4a546453",
+            "src/stackcraft/evaluation.py": "df56f9d36655e79573a014a5c55c2571bc5e04e2c20f1b37e2d939b871e889e6",
+            "src/stackcraft/pieces.py": "c5bee0f8767aeeab279cfbadb4c7b4c0bbf1f31c1d29b08dda197f0627654b29",
+            "src/stackcraft/players/__init__.py": "550bed9237303a845cdcc101542b0b688173a8f5436dd1d08c5f85a5a19fa2b2",
+            "src/stackcraft/provenance.py": "0728104f22361ad2a8b4471e6eef0467852d94f650d0259d7f5f674c0086f13b",
+            "src/stackcraft/schema.py": "35c70d96e8a49e434dc0a3607412a0ce58141306df59e09b1170511694cb6eb5",
+            "src/stackcraft/tournament.py": "288ed447a32e0845f52097372a644fc211b1632790655f620801d3ce1639d559",
+            "src/stackcraft/training.py": "f7e48b041b331cf2b68674ec2abb1059dd1da47cb261697b46260b4f0169dba8",
+            "uv.lock": "bc7fae476529578be003856b5f19e09c8cc96e0020ab999e20e1f8210696f9c8"
+          },
+          "source_identity_method": "exact-git-root"
+        },
+        "report_sha256": "ce401ef9fe1d25c11c7a0e3845def347967d8617223307ad823e23a90c3f0033"
+      },
+      "epoch-02": {
+        "players": {
+          "trained": {
+            "available_subset_mean_brier": 0.7089798657211578,
+            "complete_probability_coverage": true,
+            "correct": 92,
+            "error_rate": 0.0,
+            "failed_predictions": [],
+            "finite_subset_mean_nll": 1.7759231168523646,
+            "finite_subset_nll_positions": 215,
+            "mean_brier": 0.7089798657211578,
+            "mean_nll": 1.7759231168523646,
+            "missing_probabilities": [],
+            "nll_is_infinite": false,
+            "positions": 215,
+            "probability_positions": 215,
+            "selection_performed": false,
+            "teacher_agreement": 0.42790697674418604,
+            "zero_target_probability_count": 0
+          }
+        },
+        "provenance": {
+          "base_revision": "17f0b0ad64efb65d273590632833508766b2aae6",
+          "encoding_version": "stackcraft-clef-v1",
+          "installed_versions": {
+            "huggingface-hub": "1.33.0",
+            "peft": "0.21.2",
+            "safetensors": "0.8.0",
+            "torch": "2.14.1+cu130",
+            "transformers": "5.18.0"
+          },
+          "precision_policy": "native BF16 base; FP32 trained head; optional base-fp32 ablation",
+          "rules_version": "stackcraft-v1",
+          "source_commit": "7a21f6491bcaf2afacc9aa5b5e2733a35c41a7a8",
+          "source_dirty": false,
+          "source_hashes": {
+            "scripts/evaluate_clef.py": "70a47e9314ec9d7351a939bae32f07f14bd08f6106b60ce6155687c0540b92dd",
+            "src/stackcraft/clef.py": "c505f35d27121ba9ec9db3c663927ac8b28304f4ed864765be61ce96c8c86e13",
+            "src/stackcraft/data.py": "74b68a1f391a3128d2e499c7e86b6c94a1f2a2bef33ffe75c8631207065bd991",
+            "src/stackcraft/engine.py": "0805be38ee968d569fa1c12230730f491490f7d27cfcc570c400ac3b4a546453",
+            "src/stackcraft/evaluation.py": "df56f9d36655e79573a014a5c55c2571bc5e04e2c20f1b37e2d939b871e889e6",
+            "src/stackcraft/pieces.py": "c5bee0f8767aeeab279cfbadb4c7b4c0bbf1f31c1d29b08dda197f0627654b29",
+            "src/stackcraft/players/__init__.py": "550bed9237303a845cdcc101542b0b688173a8f5436dd1d08c5f85a5a19fa2b2",
+            "src/stackcraft/provenance.py": "0728104f22361ad2a8b4471e6eef0467852d94f650d0259d7f5f674c0086f13b",
+            "src/stackcraft/schema.py": "35c70d96e8a49e434dc0a3607412a0ce58141306df59e09b1170511694cb6eb5",
+            "src/stackcraft/tournament.py": "288ed447a32e0845f52097372a644fc211b1632790655f620801d3ce1639d559",
+            "src/stackcraft/training.py": "f7e48b041b331cf2b68674ec2abb1059dd1da47cb261697b46260b4f0169dba8",
+            "uv.lock": "bc7fae476529578be003856b5f19e09c8cc96e0020ab999e20e1f8210696f9c8"
+          },
+          "source_identity_method": "exact-git-root"
+        },
+        "report_sha256": "9482be5ac08b85a7bafc18d8f70a35ba277f476d9a96dd0684553e937abc4d2a"
+      }
+    }
+  },
+  "status": "final evaluation complete; publication pending",
+  "training": {
+    "config": {
+      "batch_size": 1,
+      "brier_weight": 0.1,
+      "clip_gradient_norm": 1.0,
+      "epochs": 2,
+      "gradient_accumulation": 8,
+      "label_smoothing": 0.05,
+      "learning_rate": 1e-05,
+      "max_length": 4096,
+      "mode": "lora",
+      "optimizer": "AdamW",
+      "rank": 4,
+      "seed": 42,
+      "selection": "external validation only; this script does not choose a checkpoint",
+      "weight_decay": 0.01
+    },
+    "dataset_counts": {
+      "train": 827,
+      "validation": 215
+    },
+    "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+    "dataset_split_sha256": {
+      "train": "edd682761db95a4f25bb30a284489c54d9336a36da0a9b19d2cda860b428baa8",
+      "validation": "eff9cdc5932e935959ac4d26dce6470d335090f7428a91930001954266d133bc"
+    },
+    "elapsed_seconds": 1511.2463698700012,
+    "epochs": [
+      {
+        "checkpoint": "runs/study-v1/epoch-01",
+        "epoch": 1,
+        "examples": 827,
+        "mean_training_loss": 2.5779671531346287,
+        "optimizer_steps": 104,
+        "peak_allocated_bytes": 23230341120,
+        "peak_reserved_bytes": 24178065408,
+        "seconds": 742.4755487579969,
+        "shuffle_order_sha256": "b6e0d7189b1d965472f1132dda2e9be3a35093dae838baf5d8e0c0d3471b6198"
+      },
+      {
+        "checkpoint": "runs/study-v1/epoch-02",
+        "epoch": 2,
+        "examples": 827,
+        "mean_training_loss": 1.9667175294878694,
+        "optimizer_steps": 104,
+        "peak_allocated_bytes": 23226543104,
+        "peak_reserved_bytes": 24178065408,
+        "seconds": 744.6554337799898,
+        "shuffle_order_sha256": "b9d20efe77959592c99e9247a58d844be69df50db595bd87c6d7e595f5d2e0c4"
+      }
+    ],
+    "frozen_parameters_unchanged": true,
+    "source_commit": "d9fcd05c02e9327d4d791f2338725092cede8bdd",
+    "source_dirty": true,
+    "source_hashes": {
+      "scripts/train_clef.py": "e83586cf0fd0d7bb8c4aa15f9b858b9f9ffdb915622e355deb9513788d5054aa",
+      "src/stackcraft/clef.py": "c505f35d27121ba9ec9db3c663927ac8b28304f4ed864765be61ce96c8c86e13",
+      "src/stackcraft/data.py": "74b68a1f391a3128d2e499c7e86b6c94a1f2a2bef33ffe75c8631207065bd991",
+      "src/stackcraft/training.py": "f7e48b041b331cf2b68674ec2abb1059dd1da47cb261697b46260b4f0169dba8"
+    },
+    "test_trajectories_used": false,
+    "trainable_parameters": 132582404,
+    "validation_used_for_training": false
+  }
+}

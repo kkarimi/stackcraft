@@ -135,6 +135,9 @@
 .race-report-link { text-align: center; margin: 9px 0 0; font-size: 11px; }
 .race-report-link a { color: var(--accent); text-underline-offset: 3px; }
 
+/* Reserve two title lines so real player names keep every board aligned. */
+.race-card-heading { min-height: 42px; }
+
 /* One authoritative human board is moved between Play and the comparison view. */
 .race-view.with-human { max-width: 1124px; }
 .race-join-controls { margin: 0 0 20px; padding: 12px 15px; border: 1px solid #3c4436; border-radius: 9px; background: #c4f57806; }

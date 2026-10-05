@@ -66,7 +66,7 @@ def test_packaged_race_replays_validate_against_current_engine():
         response = client.get("/static/baseline-demo.json")
         assert response.status_code == 200
         race = response.json()
-        assert len(race["players"]) == 2
+        assert [player["id"] for player in race["players"]] == ["base", "trained", "heuristic"]
         for player in race["players"]:
             assert player["replay"]["seed"] == race["seed"]
             replay = client.post("/api/replays", json=player["replay"])

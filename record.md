@@ -249,3 +249,24 @@ trained-player inference settings. It is bound to the frozen evaluation request
 hash. The power limit is not measured consumption; this snapshot is not an energy
 or continuous clock trace. Tutorial 05 links it for interpreting latency. No
 hardware settings, dependency versions or evaluation source changed.
+
+## 2026-10-05 — Final evaluation and independent audit complete
+
+All five players completed all 200 frozen seeds (1,000 episodes), with no errors
+or invalid decisions. Mean lines: native base 0.070, FP32-head base 0.105, trained
+16.810, random 0.140, heuristic 76.530. Trained minus native base is +16.74 lines
+(paired 95% interval [15.74, 17.77]); trained minus heuristic is -59.72
+([-60.805, -58.619875]). Only the heuristic hit the 200-piece cap, in every game.
+These results support task adaptation, not superiority over a cheap heuristic.
+
+Independent CPU audit replayed all saved observations/actions and recomputed
+all summaries and all twelve paired metric intervals; all matched. Exact audit
+result and source are archived in reports/final-audit.json and
+reports/final-audit-source.md. Report SHA256:
+5585574b77e81c8d7dd44464c4dfb09f9511ccec0d9150c3ea44793760416857.
+
+The GPU wrapper exited zero and restored the authorized GLM container running
+and healthy. Root independently checked its in-container /health: status ok.
+Exported fixed seed 30000 (base, trained, heuristic) to runs/demo-final-v1.json
+and deliberately replaced the packaged development manifest. Final browser,
+Docker, report and release bundle checks follow; no new training or test tuning.

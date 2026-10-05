@@ -1,10 +1,12 @@
 # Tutorial 05 — Select on validation, then measure complete games
 
-The two-epoch training run, validation selection and selected-checkpoint reload
-are complete. Epoch 02 was selected on validation. Held-out game evaluation is
-running, so no improved-play claim is made here. This tutorial gives the frozen
-procedure and measured training/validation evidence; final game results belong
-in the released report.
+Training, validation selection, selected-checkpoint reload and the held-out game
+evaluation are complete. Epoch 02 cleared **16.81 lines per game**, versus **0.07**
+for native Clef and **76.53** for the cheap heuristic on all 200 reserved seeds.
+This tutorial gives the frozen procedure and explains the measured outcome. See
+[the final study](../../reports/final-study.md) for full results and limitations,
+and [the compact JSON](../../reports/final-summary.json) for exact metrics and hashes.
+Publication is pending; the experiment results are complete.
 
 ## Separate learning, selection and final testing
 
@@ -232,3 +234,48 @@ After test results are opened, do not use them to choose between epochs or chang
 the observation format. A subsequent experiment needs a new preregistered study
 and fresh held-out sequences. The current report should preserve failures and
 limitations alongside the playable recorded comparison.
+
+
+## Completed outcome and what it teaches
+
+All five players completed the 200 paired seeds at the declared 200-piece cap:
+
+| Player | Mean lines | Median lines | Mean pieces | Cap hits |
+| --- | ---: | ---: | ---: | ---: |
+| Native base | 0.070 | 0 | 26.020 | 0/200 |
+| Unchanged FP32 head | 0.105 | 0 | 26.000 | 0/200 |
+| Selected epoch 02 | 16.810 | 16 | 83.565 | 0/200 |
+| Random | 0.140 | 0 | 26.645 | 0/200 |
+| Fixed heuristic | 76.530 | 77 | 200.000 | 200/200 |
+
+There were zero inference errors and zero invalid decisions. The paired mean line
+gain over native base was **16.74 [15.74, 17.77]** (95% percentile bootstrap,
+10,000 replicates, seed 2026). Against the unchanged FP32 head, the gain was
+**16.705 [15.705, 17.74]**, so the observed improvement cannot be attributed to head
+precision alone. Against the heuristic the difference was
+**−59.72 [−60.805, −58.619875]**. Both the improvement and this large shortfall belong
+in the result. The heuristic's eventual survival remains unknown because every
+one of its games reached the cap.
+
+The selected model's mean decision latency was **206.8 ms**, compared with the
+heuristic's **0.1985 ms**, about 1,042 times slower on these measured workloads.
+Policies visited different states, and neural inference used the GPU while the
+heuristic used the CPU. This is an operational comparison, not an isolated
+same-input speed benchmark. The final wrapper took 85.1 minutes, including model
+loading, report writing and service restoration. Energy and monetary costs were
+not measured. The simple heuristic remains the practical choice for this game.
+
+An independent CPU audit replayed all 1,000 saved episodes and independently
+recomputed every paired interval. See [its results](../../reports/final-audit.json).
+The learned model passes the narrow improvement test over its unchanged base;
+that does not turn its 42.79% teacher agreement into a general measure of game
+quality. The final report includes score/survival intervals, all latency summaries,
+hardware, source identities and portable release evidence paths.
+
+To replicate the analysis, first verify the report/checkpoint/dataset hashes in
+[final-summary.json](../../reports/final-summary.json), then use the frozen source
+and commands above in fresh output directories. Reproducing inference needs the
+GPU runtime; inspecting metrics and replaying saved actions do not. Reproduction
+uses the already disclosed sequences, so it is not a new blind test. Any follow-up
+training or design change needs a separate declared experiment and fresh test
+seeds. No post-test tuning was used to produce the results reported here.

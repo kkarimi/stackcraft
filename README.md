@@ -2,7 +2,35 @@
 
 A playable, deterministic falling-block game for studying decision models. The goal is a fair comparison of a heuristic player, unchanged Clef-flash, and a fine-tuned model on identical piece sequences.
 
-**Status:** the playable game, data, native Clef baseline and real GPU training/reload gates are complete. Full two-epoch training and validation selection are complete; epoch 02 reloads with exact reference-probability parity. The held-out game evaluation is running, and publication remains pending. See [the project plan](plan.md) for milestones and acceptance criteria.
+**Status:** training, validation selection, fresh-process reload and the 1,000-game
+held-out evaluation are complete. The final report and recorded demo are being
+reviewed for release; publication remains pending. See [the project plan](plan.md)
+for milestones and acceptance criteria.
+
+## What the experiment found
+
+On 200 paired sequences per player, with a 200-piece cap:
+
+| Player | Mean lines | Mean pieces placed | Mean decision time |
+| --- | ---: | ---: | ---: |
+| Unchanged Clef-flash | 0.070 | 26.020 | 149.11 ms |
+| Unchanged FP32-head control | 0.105 | 26.000 | 150.19 ms |
+| Fine-tuned Clef-flash | 16.810 | 83.565 | 206.81 ms |
+| Random legal placement | 0.140 | 26.645 | 0.0015 ms |
+| Fixed heuristic | 76.530 | 200.000 | 0.1985 ms |
+
+Fine-tuning improved mean lines over native Clef by **16.74**, with a paired 95%
+bootstrap interval of **[15.74, 17.77]**. The same improvement remains against the
+unchanged FP32-head control. The heuristic cleared substantially more lines than
+the trained model and was about 1,042 times faster per decision on this machine.
+All players had zero errors or invalid decisions. The heuristic reached the cap
+in every game; its uncapped survival was not measured.
+
+This is a successful adaptation experiment and a clear example of why a cheap
+baseline matters. It does not establish that a large model is the best tool for
+this game. See [the full study report](reports/final-study.md) for medians,
+uncertainty, validation results, limitations and reproducible evidence.
+
 
 ## Run locally
 
@@ -13,7 +41,7 @@ uv sync --locked
 uv run --locked stackcraft serve --port 8087
 ```
 
-Open http://127.0.0.1:8087. The game needs no GPU or model credential. Sessions are local, in memory, and expire when the server restarts; download a replay to retain a game. The local service retains 128 sessions and limits each to 2,000 placements. Use a single server worker. Public hosting and authentication are not configured yet.
+Open http://127.0.0.1:8087. The game needs no GPU or model credential. Sessions are local, in memory, and expire when the server restarts; download a replay to retain a game. The local service retains 128 sessions and limits each to 2,000 placements. Use a single server worker. The public demo release is being prepared; the game does not require an account.
 
 ## Development
 

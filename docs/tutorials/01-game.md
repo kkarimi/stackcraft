@@ -109,9 +109,26 @@ fine-tuning helps.
 
 ## Watch recorded players side by side
 
-Choose **Watch a race** to load a real development episode for Random and Heuristic. The packaged `baseline-demo.json` contains the same seed and both action traces; the service rebuilds frames through the authoritative replay engine. Scrubbing to piece100 shows Random stopped at26 while Heuristic reaches37lines. Returning to Play preserves the human game.
+Choose **Watch a race** to load the packaged recordings for unchanged Clef-flash,
+the Stackcraft fine-tune and the heuristic. The release's `baseline-demo.json`
+contains their actual action traces for **seed 30000**, fixed before inspecting
+results, with the same **200-piece cap**. The service reconstructs every frame
+through the authoritative replay engine. This replaces the earlier development
+Random/Heuristic example; it does not rerun model inference in your browser.
 
-The boards are synchronized by placements, not decision time. Playback is explicitly recorded and does not imply live model inference or model speed. A player that tops out keeps its final board visible while other recordings continue. This lets a visitor compare outcomes without requiring a GPU server; later real Clef runs can use the same replay format.
+At the final frame of this illustrative seed, unchanged Clef has topped out after
+23 pieces without clearing a line, the fine-tune has topped out after 82 pieces
+with 16 lines, and the heuristic has reached the 200-piece cap with 78 lines. These
+are one game's outcomes, not the aggregate result across 200 held-out seeds.
+Consult the full study report to assess overall performance and uncertainty.
+
+The boards are synchronized by placements, not decision time. Playback is
+explicitly recorded and does not imply live inference or model speed. A player
+that tops out keeps its final board visible while other recordings continue.
+Expand a recorded choice to inspect its actual selected-action probability and
+up to three alternatives; these are model outputs, not generated explanations.
+The provenance section lists the source artifact hashes. Returning to Play
+preserves the human game.
 
 ## Play alongside recorded opponents
 

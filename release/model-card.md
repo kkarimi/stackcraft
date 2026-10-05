@@ -69,10 +69,17 @@ cleared. Report score, survival, cap hits, failures and latency. Paired95% boots
 intervals use10000 episode resamples with seed2026. Failed episodes remain in the
 analysis, assigned zero primary outcomes with partial outcomes reported separately.
 
-**Insert verified held-out results here before publication.** A successful GPU
-training/checkpoint test is not evidence of better play. The initial unchanged
-model cleared zero lines in two short development games; those games are not the
-test result. The heuristic may outperform the neural model substantially.
+**Insert verified held-out results here before publication.**
+
+Fine-tuning improved complete-game play over both unchanged Clef references in
+this study. The fixed heuristic still cleared substantially more lines and used
+about one thousandth of the trained model's decision time on this workstation.
+All five policies had zero errors and invalid decisions. Every heuristic game hit
+the 200-piece cap; no neural or random game did. This is evidence of task adaptation,
+not a reason to prefer this 9B model over the heuristic for the simplified game.
+See [the readable study report](code/reports/final-study.md) and
+[the hardware/runtime snapshot](code/reports/evaluation-hardware.json).
+
 
 Only one training seed, one small synthetic dataset, one simplified game ruleset
 and one hardware/software configuration are studied. The finite cap censors

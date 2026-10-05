@@ -47,7 +47,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M2: Offline tournaments, replayable race, native encoding and actual unchanged Clef GPU baseline verified. Development seeds0–1 yielded0mean lines for Clef versus9heuristic at30pieces, zero errors;144ms mean Clef decision latency.
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
-- [ ] M5: Both training epochs and complete validation passed. Epoch 02 selected by preregistered NLL rule (1.7759 versus 1.8609); fresh-process reload reproduced probabilities exactly. The frozen 200-seed, five-player evaluation is running. Human-alongside comparison UI and final results remain.
+- [ ] M5: Both training epochs and complete validation passed. Epoch 02 selected by preregistered NLL rule (1.7759 versus 1.8609); fresh-process reload reproduced probabilities exactly. The frozen 200-seed, five-player evaluation finished with 1,000 successful episodes and passed independent replay/statistics review. Final report and actual-recording browser checks remain.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
 
 ## Milestones
@@ -156,21 +156,20 @@ M0–M4 are complete. The local game, replay and recorded comparison are playabl
 The dataset contains 827 training and 215 validation rows with fixed disjoint seed
 pools and independently checked sample labels. Both full training epochs completed;
 epoch 02 won the preregistered validation selection, and its fresh-process reload
-matched reference probabilities exactly. The final test and release remain in
+matched reference probabilities exactly. The final test passed independent evidence review; release remains in
 progress. Human-alongside play is implemented and browser-verified. The integrated
 checks passed 262 tests (including the separately enabled native CPU encoding
 check), Ruff and ty. Release tooling is ready for actual final evaluation evidence.
 
 ## Next Action
 
-Poll live evaluation session `49782` and `runs/final-evaluation/progress.json`.
-Do not restart while its process is alive. All 200 seeds (30000–30199), the
-200-piece cap, five players and frozen selection remain fixed. Do not tune from
-partial test results or change protected evaluation source files. The GPU wrapper
-will restore GLM and check health on completion or its 21600-second timeout.
+The final evaluation finished successfully and the authorized GLM service was
+restored and verified healthy. All 1,000 persisted episodes and all paired
+intervals passed independent CPU review. Do not tune from these test results
+or change the selected checkpoint.
 
 The optional human board beside recorded bots is integrated and browser-verified.
-Export the fixed seed 30000 demo after all 1000 episodes finish, then repeat the
-comparison browser check with those actual model recordings. Update results and tutorials, build and review the release,
+The fixed seed 30000 demo is exported and installed; repeat the comparison
+browser and Docker checks with those actual model recordings. Update results and tutorials, build and review the release,
 confirm new-project publication settings, publish and verify fresh downloads.
 The local game is available on port 8087. Keep the goal active until M5 and M6 pass.

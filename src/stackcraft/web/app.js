@@ -463,7 +463,7 @@ async function loadRace() {
   if (racePlayers || raceLoading) return;
   raceLoading = true;
   $("race-loading").hidden = false;
-  $("race-loading").textContent = "Loading recorded baseline games…";
+  $("race-loading").textContent = "Loading recorded player games…";
   try {
     const manifest = await api("/static/baseline-demo.json");
     if (manifest.schema_version !== 1 || !Number.isSafeInteger(manifest.seed) || !Number.isSafeInteger(manifest.max_pieces) || manifest.max_pieces < 1 || !Array.isArray(manifest.players) || manifest.players.length < 2 || manifest.players.length > 4) {
@@ -483,7 +483,7 @@ async function loadRace() {
     raceManifest = manifest;
     racePlayers = loaded.map(raceCard);
     raceMax = Math.max(...racePlayers.map((player) => player.frames.length - 1));
-    $("race-label").textContent = typeof manifest.label === "string" ? manifest.label : "Recorded development baseline";
+    $("race-label").textContent = typeof manifest.label === "string" ? manifest.label : "Recorded player comparison";
     $("race-context").textContent = `Seed ${manifest.seed} · ${manifest.max_pieces}-piece episode cap · Same seven-bag sequence`;
     $("race-inference-label").textContent = "No live model inference";
     $("race-caption").textContent = typeof manifest.disclaimer === "string" ? manifest.disclaimer : "Recorded development games, not a held-out benchmark. Playback speed does not represent decision latency.";
