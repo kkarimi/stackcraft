@@ -2,7 +2,6 @@
 
 import argparse
 import json
-import subprocess
 from pathlib import Path
 
 
@@ -44,16 +43,15 @@ def main() -> None:
         print(f"Saved {args.episodes} paired development episodes to {args.output}")
     elif args.command == "generate-data":
         from stackcraft.data import DatasetConfig, generate_dataset, write_dataset
+        from stackcraft.provenance import source_identity
 
         if args.output.exists():
             parser.error(f"output already exists: {args.output}; choose a new path")
         try:
-            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-            dirty = subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()
-            if dirty:
-                commit += "+working-tree"
-        except (OSError, subprocess.CalledProcessError):
-            commit = "unversioned"
+            identity = source_identity(Path(__file__).resolve().parents[2])
+        except ValueError as error:
+            parser.error(str(error))
+        commit = identity["source_commit"] + ("+working-tree" if identity["source_dirty"] else "")
         bundle = generate_dataset(DatasetConfig(), source_commit=commit)
         write_dataset(bundle, args.output)
         print(f"Saved expert dataset and manifest to {args.output}")

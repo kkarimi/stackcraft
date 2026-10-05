@@ -55,7 +55,9 @@ Preregistered training: seed42, two epochs, batch1, accumulation8, rank4/alpha8,
 no LoRA dropout, AdamW lr1e-5/weight_decay0.01, gradient norm cap1.0, label smoothing
 0.05 and Brier sum weight0.1. BF16 backbone, FP32 head, text-layer LoRA including
 both hybrid attention types and MLPs. Vision, output and other original parameters
-remain frozen. Select only between epoch01/02 using lowest finite target NLL on
+remain frozen. There are132,582,404 trainable parameters:121,762,820 in the
+joint head and10,819,584 in LoRA. This is why the head is a substantial part of
+the saved artifact, even though most backbone weights stay frozen. Select only between epoch01/02 using lowest finite target NLL on
 all215 validation positions; exact ties choose the earlier epoch.
 
 ## Evaluation and limitations

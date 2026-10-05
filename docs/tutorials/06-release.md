@@ -16,6 +16,13 @@ contains exact train/validation JSONL files and the generator manifest. The demo
 repository runs the game and replays cached model decisions without downloading a
 9B model or renting GPU hardware.
 
+The source bundle also contains `source-manifest.json` with its source commit and
+file hashes. Scripts use an exact Git root when available, otherwise they verify
+that manifest. Changed, missing or newly added source files mark the run as modified;
+an unrelated parent repository is never mistaken for Stackcraft's source identity.
+See Tutorial03 for hash-checked reproduction of the original dataset bytes without
+access to the original Git repository.
+
 These are different visibility decisions. A private GitHub repository does not
 make files inside a public model repository or public Space private. In particular,
 the reproducibility source in the model release and the Space's game source are

@@ -18,7 +18,6 @@ import hashlib
 import importlib.metadata
 import json
 import math
-import subprocess
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -35,6 +34,7 @@ from stackcraft.players import (
     observe,
     validate_decision,
 )
+from stackcraft.provenance import source_identity
 from stackcraft.replay import replay_states
 from stackcraft.schema import RULES_VERSION, GameState
 from stackcraft.tournament import run_episode
@@ -325,10 +325,7 @@ def _release() -> None:
 
 def _provenance() -> dict[str, Any]:
     root = Path(__file__).resolve().parents[1]
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    dirty = bool(
-        subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip()
-    )
+    identity = source_identity(root)
     paths = [Path(__file__).resolve(), root / "uv.lock"] + [
         root / "src/stackcraft" / name
         for name in (
@@ -341,10 +338,13 @@ def _provenance() -> dict[str, Any]:
             "players/__init__.py",
             "schema.py",
             "data.py",
+            "provenance.py",
         )
     ]
     return {
-        "source_commit": commit + ("+working-tree" if dirty else ""),
+        **identity,
+        "source_commit": identity["source_commit"]
+        + ("+working-tree" if identity["source_dirty"] else ""),
         "source_hashes": {str(path.relative_to(root)): file_hash(path) for path in paths},
         "rules_version": RULES_VERSION,
         "base_revision": MODEL_REVISION,

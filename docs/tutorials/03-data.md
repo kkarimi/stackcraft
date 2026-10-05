@@ -132,3 +132,41 @@ errors. Mean search decision time was 8.33 ms versus 0.183 ms for the heuristic.
 The collection and comparison jobs ran concurrently on CPU, so these times are
 illustrative, not isolated performance benchmarks. Five capped games are insufficient
 to establish broad superiority. No neural model was evaluated.
+
+## Reproduce from the public source bundle without private Git access
+
+The model release includes `code/` with source, a lockfile and a source manifest.
+From that directory, `uv sync --locked` installs the game/data tools. The regular
+`stackcraft generate-data` command records the bundle's source identity and flags
+modified source files. Its provenance will therefore differ from the original
+M3 commit even when generator logic is unchanged.
+
+To reproduce the original study bytes exactly, first verify that every generator
+source file matches the original dataset manifest, then use its recorded commit
+in the generator API. This avoids falsely stamping changed code with an old commit:
+
+```bash
+uv run --locked python - <<'PY'
+import hashlib
+import json
+from pathlib import Path
+from stackcraft.data import DatasetConfig, generate_dataset, write_dataset
+
+manifest = json.loads(Path('reports/dataset-manifest.json').read_text())
+for name, expected in manifest['source_hashes'].items():
+    path = Path('src/stackcraft') / name
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == expected, name
+output = Path('data/original-study-reproduction')
+assert not output.exists(), 'Choose a new output directory'
+bundle = generate_dataset(DatasetConfig(), source_commit=manifest['source_commit'])
+write_dataset(bundle, output)
+for split in ('train', 'validation'):
+    actual = hashlib.sha256((output / f'{split}.jsonl').read_bytes()).hexdigest()
+    assert actual == manifest['splits'][split]['sha256'], split
+print('Both original split hashes match')
+PY
+```
+
+Use the downloaded, audited study dataset for reproducing the published training
+run. If any source hash fails, investigate or generate a clearly new dataset; do
+not suppress the check or reuse the original study's identity.

@@ -1,105 +1,155 @@
-# Stackcraft evidence
+# Tutorial 06 — Ship an experiment another person can inspect
 
+Publication is the last milestone, after training, validation selection and held-out
+evaluation. A model upload alone is insufficient: the artifact must load, its claims
+must match measured games, and the demo must distinguish recorded model decisions
+from live human play. This tutorial describes the release process; publication links
+and verified results are recorded in the final release report when available.
 
-## Record format
+## Separate the four deliverables
 
+The source repository contains the simulator, native model adapter, training and
+evaluation scripts, tests, locked environment and tutorials. The model repository
+contains the selected checkpoint's LoRA weights and separately trained decision
+head, plus source and evidence needed to reproduce the study. The dataset repository
+contains exact train/validation JSONL files and the generator manifest. The demo
+repository runs the game and replays cached model decisions without downloading a
+9B model or renting GPU hardware.
 
-Before experiments, record question, baseline, method, metric, budget/stop condition, starting commit, expected artifacts and decision rule. Afterward append actual commands, concise results, artifact paths/hashes, limitations and next action. Keep raw logs and model files in ignored run directories.
+The source bundle also contains `source-manifest.json` with its source commit and
+file hashes. Scripts use an exact Git root when available, otherwise they verify
+that manifest. Changed, missing or newly added source files mark the run as modified;
+an unrelated parent repository is never mistaken for Stackcraft's source identity.
+See Tutorial03 for hash-checked reproduction of the original dataset bytes without
+access to the original Git repository.
 
-## 2026-10-05 — Goal setup
+These are different visibility decisions. A private GitHub repository does not
+make files inside a public model repository or public Space private. In particular,
+the reproducibility source in the model release and the Space's game source are
+public if those repositories are public. Review the concrete local bundle, proposed
+owners and visibility before creating external repositories.
 
+The proposed destinations are `kkarimi/stackcraft` on GitHub and
+`nima1/stackcraft-clef-flash-lora`, `nima1/stackcraft-data`, and Space
+`nima1/stackcraft` on Hugging Face. They are proposals until the owner approves this
+new project's publication settings. Do not infer approval from a previous project.
 
-The user requested a goal to achieve the proposed Tetris-style project. The active goal covers game, baselines, expert data, real GPU fine-tuning, evaluation, tutorials and release. `plan.md` is the durable execution document. Existing preferences retained: uv, local commits, plans inside the repository, and safe delegation. No benchmark or training claim is made.
+## Preserve evidence while preparing checkpoint metadata
 
-Research sources inspected in the preceding discussion:
+Raw epoch checkpoints remain under the training run directory. PEFT can generate
+an `adapter/README.md` with placeholders and a local cache path. Before validation,
+copy each epoch checkpoint into a separate candidate directory and replace only
+that documentation with accurate upstream attribution and loading instructions.
+Compare every other file's SHA256 with the raw checkpoint and record the mapping.
+The preparation script performs these checks and writes a sibling provenance file:
 
-- https://huggingface.co/Cloudflare/clef-flash — base decision model and native interface.
-- https://github.com/MersivMedia/clef-finetune — community training code; real Clef GPU training explicitly unverified at inspection.
-- https://app.routerplus.com/docs/playground#tetris-royale — existing model comparison game; not evidence of fine-tuning improvements.
-- https://developers.cloudflare.com/workers-ai/models/clef-flash/ — optional hosted baseline; pricing and limits require rechecking before use.
+```bash
+uv run --locked --extra ml python scripts/prepare_checkpoint.py \
+  --source runs/study-v1/epoch-01 --output checkpoints/candidates/epoch-01
+uv run --locked --extra ml python scripts/prepare_checkpoint.py \
+  --source runs/study-v1/epoch-02 --output checkpoints/candidates/epoch-02
+```
+This edits no learned weights or training configuration.
 
-Next action: M0 foundation. No paid job, credential use or remote publication has begun.
+Validate those exact candidate directories, then freeze the selected directory's
+complete file/hash mapping. Do not revise it after selection. Model cards, reports
+and release links belong outside `model/checkpoint/`, so adding release documentation
+does not silently change the checkpoint used in validation and test evaluation.
 
-## 2026-10-05 — Foundation and GPU reconnaissance
+A final model repository must contain both `joint_head.safetensors` and
+`adapter/adapter_model.safetensors`. Loading only the adapter discards the learned
+joint head. Loading the selected checkpoint requires the pinned upstream
+`Cloudflare/clef-flash` snapshot and Stackcraft's strict loader, not a generic
+text-generation pipeline. See Tutorial04 for the reason and serialization checks.
 
+## Assemble and audit a local release
 
-Initial contract/plan commit: `53db6bd`. Resolved Python 3.13.16 through uv 0.12.23, FastAPI 0.142.2, uvicorn 0.54.0, pytest 9.1.1, Ruff 0.16.10 and ty 0.0.84. Actual versions are in `uv.lock`. `stackcraft --help` and focused root-code Ruff/ty checks passed. Engine and web UI are delegated with exclusive files defined by `docs/interfaces.md`; an independent worker is implementing offline baselines next.
+After final evaluation and the fixed-seed demo export, run the release builder
+from the source repository. Use its `--help` for the exact implemented arguments;
+it takes the selected checkpoint, frozen selection, complete evaluation directory,
+audited dataset and a new output directory. It must reject incomplete evaluation,
+mismatched hashes or a missing selected checkpoint reference.
 
-Read-only inspection found 32,607 MiB total GPU memory, about 22,976 MiB used by root-owned llama-server in Docker container `omarchy-local-ai-glm-4.7-flash.llamacpp.q5xl.32k.rtx-5090-engine`, leaving about 9 GB free. No workload was stopped. User authorization to temporarily stop/restore it was requested asynchronously; no answer recorded yet.
+The builder stages separate model, dataset and demo directories and a release
+manifest. It includes only explicit source/build inputs. Environments, credentials,
+Git history, local service data, raw upstream backbone weights and arbitrary files
+from the working directory are excluded. This is safer and more reproducible than
+uploading the repository directory recursively and hoping ignore patterns cover it.
 
-Clef-flash source revision inspected: `17f0b0ad64efb65d273590632833508766b2aae6`. No local Clef cache found. Backbone shards total 18,819,627,488 bytes, before its separate decision head. Native `systemone()` uses inference mode; training must use encoded/collated records and `ClefModel.forward`. Targets must follow lexicographically sorted `EncodedQuestion.option_ids`. Encoding silently truncates the state after reserving question tokens, so complete board/schema length must be checked first. The native loader pins one device and downloads an unpinned snapshot when passed an ID; resolve the pinned local snapshot explicitly. Do not copy the community wrapper's full FP32 vocabulary embedding cast, which allocates roughly 3.79 GiB; gather option-token rows first, then verify equivalence before adopting that optimization.
+Audit the concrete staged files:
 
-Future M4 probe decision: start with BF16 inference and head-only steps, then rank-4 LoRA at batch one with checkpointing if sufficient free memory. Record finite gradients and parameter changes, then test unrounded probability parity after a fresh-process reload at predeclared absolute tolerance 1e-4. Limit initial probe execution to two configurations and 30 minutes. This is a proposed probe, not a measured fit or training result.
+- Model and dataset cards describe synthetic data, teacher bias, simplified rules,
+  the selected training configuration and actual complete-game outcomes.
+- Negative results, model errors, the FP32-head ablation and the cheap heuristic
+  remain visible. There are no unmeasured claims of superiority or calibrated confidence.
+- Every planned test seed is represented for every preregistered player, including
+  failures; aggregate uncertainty agrees with the stored episode outcomes.
+- The fixed demo seed is30000, chosen before results, with actual action probabilities.
+- Dataset bytes and checkpoint bytes match their frozen hashes. The trained
+  checkpoint's probability references identify the same four training positions.
+- LICENSE and NOTICE retain the Apache-2.0 attribution for Clef-flash/Qwen and
+  identify Stackcraft as an independent project.
+- Cards have no placeholder metrics or paths that require the author's machine.
 
-Sources: official pinned `joint_schema_model.py` and `model.safetensors.index.json` under https://huggingface.co/Cloudflare/clef-flash/tree/17f0b0ad64efb65d273590632833508766b2aae6 ; community code https://github.com/MersivMedia/clef-finetune/blob/main/src/clef_finetune/model.py .
+A release manifest identifies bytes, not scientific correctness. Independent replay
+checks, selection review and honest documentation are still needed. Keep the
+manifest hash and source commit with the final release report.
 
-## 2026-10-05 — M0/M1 verified; offline portion of M2
+## Validate the game-only deployment
 
+Follow [the deployment guide](../demo-hosting.md) to build the pinned Docker image.
+It installs through uv's lockfile with no ML extra, runs as UID1000 and listens on
+port7860 for a Docker Space. Use the same image configuration locally first.
 
-Validation:83 pytest tests passed; Ruff check/format and ty passed; JavaScript `node --check` passed. Built a wheel and installed it into an isolated environment: HTML, CSS, JS, health, game creation and a validated move all passed. Switched development test client to httpx2 because the installed Starlette emits a deprecation warning for httpx.
+Test a human game, a downloaded/reloaded replay, the recorded comparison, probability
+displays, scrubbing to final outcomes and returning to the preserved human session.
+Check desktop and phone layouts. The recorded race must not imply that changing
+playback speed changes inference speed. It illustrates one sequence; the report
+summarizes all200 paired sequences.
 
-Independent engine review compared legal landings to a separate nearest-obstacle calculation over1,067 states/40seeds and checked cell conservation and replay equality. Engine golden fixture pins seed42 first28 pieces. Independent service/UI review found two concrete issues now fixed: pointer buttons retained focus and disabled game shortcuts; a lost move response could cause a second placement on retry. Pointer controls now restore board focus. Move API requires expected_pieces and returns409 on stale state; UI refreshes after uncertain responses and disables moves if it cannot refresh. A server regression test proves repeated stale requests cannot advance again.
+The public demonstration needs CPU hosting because neural inference already happened
+during evaluation. This removes ongoing GPU expense and makes the portfolio usable
+when the training machine is offline. An interactive live-model endpoint would be a
+separate deployment with admission, latency and concurrency requirements.
 
-Browser at http://localhost:8087 verified button move/rotate/drop, keyboard controls after pointer rotation, uploaded replay stepping to2/2 and return to preserved live state. Simulated fetch failure after a committed move refreshed the browser to the correct2-piece state; the next deliberate drop reached3. Desktop1280×800 shows full board and controls; mobile390×844 has no horizontal overflow and functional controls. Screenshot: `/home/nima/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muvnlig0-1a4cfb1d.png`. A local server remains running on8087 (8080 was occupied by another service); no existing service was stopped.
+## Publish only the approved bundle
 
-Offline pilot preregistration and complete reproduction are in tutorial02. Seeds0–19,100-piececap, fixed heuristic weights,20paired episodes. Random meanlines0.10, score10, pieces26.9; heuristic meanlines35.95, score3900, pieces100. Both error rates0; heuristic cap-hit100%, so unrestricted survival is unknown. Decision-only mean latency was0.00162ms random and0.17928ms heuristic on this machine. All40 replay outcomes were independently recomputed by the root. `runs/baselines-development.json` SHA256 `ed4973c69496cdc0ebb5720e3beaae621406988a6d298233c10ab962e1c499af`. CLI integration smoke used development seed1000 and10pieces in `runs/cli-smoke.json`. Exclude these development seeds from later held-out test pools.
+Confirm concrete destinations and visibility after the local bundle is reviewable.
+Use existing CLI authentication; do not put access tokens in code, Git, model cards,
+commands or chat. Create the approved GitHub repository and push the reviewed local
+commits. Create the approved model, dataset and Docker Space repositories, uploading
+the corresponding staged directories only. The Space can use the default free CPU
+hardware; this study does not authorize a paid GPU upgrade.
 
-Next: complete real Clef baseline and build a one-preview search expert/dataset while GPU permission remains pending. No model results, publication or goal completion claimed.
+Save immutable Hugging Face commit revisions returned by each upload, together with
+the Git commit and model/dataset/demo URLs. Repository names alone are mutable;
+revisions identify which bytes were checked. A successful upload does not establish
+that the Space builds or the model loads.
 
-## 2026-10-05 — Native encoder, search data and recorded race
+## Verify the actual release, not the local staging copy
 
+Download the uploaded model and dataset into a new directory using those exact
+revisions. Compare every released file against the release manifest. Run the dataset
+audit on downloaded JSONL files and its manifest. Use a fresh Python process to load
+the downloaded checkpoint onto the pinned upstream backbone and compare its four
+raw reference probability distributions at maximum absolute tolerance1e-4.
 
-Added a recorded Random/Heuristic race with authoritative replay reconstruction and human-session preservation. Root browser verified seed0 final outcomes: Random26pieces/top-out/0lines; Heuristic100pieces/capped/37lines/4100score. Playback is visibly recorded, with Clef pending and no live-model speed claim. Recorded boards use the same piece index; the shorter run freezes at its final state.
+The existing probe script can perform that final serialization check:
 
-Optional ML stack resolves Torch2.14.1+cu130, torchvision0.29.1+cu130, Transformers5.18.0, PEFT0.21.2, HuggingFaceHub1.33.0 and Pillow12.3.0. Imports and native processor construction pass. A pinned release download is live via exec session78859; no weights were loaded into GPU. Independent reviewer confirmed native source SHA256 `0e304cf7c6500e8bb59bef7e2afd2c6373f82596dfb3b57d1aa93c175e2dc3a3`, correct sorted-choice mapping, and exact segment token preflight. Actual CPU encoder tests on14fixtures used848–2248tokens and rejected too-small limits before truncation. `ClefPlayer` records source/revision/encoding/context/dtype/device and unrounded probabilities; tournament artifacts retain runtime metadata and input-token counts when available. Full inference remains unverified.
+```bash
+uv run --locked --extra ml python scripts/probe_clef_training.py \
+  --dataset DOWNLOADED_DATASET \
+  --reload DOWNLOADED_MODEL/checkpoint \
+  --output runs/released-model-reload
+```
 
-M3 preregistration and pilot evidence are in tutorial03. Two complete generations matched exactly:827train,215validation, with6within-training and2cross-split duplicates excluded. Seed pools10000–10023train,20000–20005validation,30000–30199reservedtest; no test trajectories generated. Source hashes accompany every manifest. Root inspected collector/expert/audit code and the independent16-position teacher recomputation report. The separate five-seed development search tournament averaged38.6lines versus37.8heuristic; both hit100pieces, so this is not robust superiority evidence. Pilot artifacts predate the last provenance-validator edit and must be regenerated from committed source before release.
+Run this only with sufficient free GPU memory. On the original workstation, use the
+approved GLM stop/restore wrapper and verify restored health afterward. Another
+machine must arrange its own workloads; the workstation-specific wrapper is not a
+portable permission to stop services.
 
-Before final M3 generation: commit reviewed implementation; generate once using recorded clean commit; compare observations/action values/labels to the historical reproducible pilot ignoring only source_commit; audit all hashes and split exclusions. Stop on any difference or failed audit. Expected destination `data/study-v1`. Final test seeds stay untouched.
-
-
-## 2026-10-05 — Committed M3 artifact accepted
-
-
-Implementation commit `70d84bd8dc5d4a60f3b96455a57d9e6f9416d109`. Root ran `uv run --locked --extra ml stackcraft generate-data --output data/study-v1` from the clean commit. Structural/provenance audit returned827train/215validation; all six source hashes matched current files. Removing only source_commit metadata produced exact row equality with the independently checked historical pilot, including every observation, teacher value and label. Final JSONL hashes: train `edd682761db95a4f25bb30a284489c54d9336a36da0a9b19d2cda860b428baa8`, validation `eff9cdc5932e935959ac4d26dce6470d335090f7428a91930001954266d133bc`. Compact manifest committed in `reports/dataset-manifest.json`; rawdata ignored. Reserved test seeds untouched.
-
-Latest checks:117tests passed with actual pinned native CPU encoding enabled, plus Ruff and ty. Root verified race scrubbing to100, final scores and human-game preservation. Final race screenshot `/home/nima/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muvnwvs6-60bf91fb.png`; controls fit1280×800 (bottom786px).
-
-At checkpoint, download session78859 was polled and confirmed still running; cache about12GB. GPU remains22,976MiB used/9,175MiB free; no user response to service-stop question, no workload stopped and no real-weight inference attempted. This is progress with a live download, not a blocked/completed goal. Next: implement bounded training probe, finish download and run real inference/training when memory is available.
-
-
-## 2026-10-05 — GPU interruption authorized
-
-The user explicitly approved temporarily stopping and restoring the local GLM service for Stackcraft GPU training. Read-only inspection confirms Docker container `omarchy-local-ai-glm-4.7-flash.llamacpp.q5xl.32k.rtx-5090-engine` is running with restart policy `unless-stopped`. Stop only when pinned model files and executable probes are ready. Restore with `docker start` after GPU experiments (including failure paths), verify running/health and record the result. No ongoing GLM request has been inspected. Previous turn is classified as progress: committed game, teacher data, and native encoding checks. Download session78859/PID2602150 was re-polled and remains live, about13GB cached at continuation.
-
-Preregistered M4 execution: use development positions only, record unchanged native probabilities before modifications, three head-only steps then five rank4LoRA steps at batch1, label smoothing0.05 and Brier weight0.1. Assert finite nonzero gradients and intended parameter changes, save head plus adapter, and compare fresh-process raw probabilities at absolute tolerance1e-4. Limit initial realGPU exploration to two configurations/30minutes; preserve logs and report failures. Full training and test evaluation remain later gates.
-
-
-M2 real-weight development pilot preregistered: pinned unchanged Clef-flash, development seeds0–1,30-piececap, Random/Heuristic/Clef on identical streams. One warmup atseed42 is excluded from tournament timing. Persist decisions, rawprobabilities, per-decisiontokenlengths, runtimeconfiguration, peakVRAM and elapsedtime. Output runs/clef-development-v1.json. Wrapper timeout900seconds; restoreGLM in finally including failures. This pilot measures native feasibility and informs later budgets, not final test quality.
-
-
-## 2026-10-05 — Real unchanged Clef baseline passed
-
-Pinned weights loaded successfully. runs/clef-development-v1.json contains2paired development seeds0–1/cap30; Clef meanlines0,pieces27.5,55decisions144.26msmean/240.66msp95; heuristic meanlines9,pieces30; allerrorrates0. Warmup+load4.53s. GPU session exited0 and restored GLM; docker exec curl localhost:8080/health returned status ok. Host8080 is unrelated SearXNG; health checks must run inside the exact GLM container. Correct reference attention kernels in use. M2complete. No held-out test was inspected.
-
-M4 code review: CPUtests exercise actual tiny Qwen3.5 hybrid attention with realPEFT, nativehead, checkpointing and gradients. Probe will save each candidate separately and bind reload reference to datasetmanifesthash and fourtrainingrowIDs. Head-only and LoRA use fresh base instances. Keep head-only frozenbackbone in eval mode.
-
-
-## 2026-10-05 — M4 training and M5 preregistration
-
-Real-weight probe from e38ac53 passed3head-only and5rank4LoRA steps. Both trainable groups changed; full frozen parameter hashes were unchanged. All recorded losses and gradients finite, head and LoRA gradients nonzero. LoRA peak allocated23,180,389,888bytes/reserved23,595,057,152bytes; step time0.67–1.32s on1302–2252tokens. Wrapper restored GLM and verified its in-container health. Fresh-process parity is the remaining M4 gate; artifacts runs/probe-v1 and runs/probe-reload-v1.
-
-Conditional on M4 reload passing, preregister M5: one seed42, BF16 native backbone, FP32 native head, rank4/alpha8/dropout0 text-only LoRA, no quantization, max4096tokens, AdamW lr1e-5/weight_decay0.01, batch1, gradient accumulation8 (last partial group normalized by actual size), norm clip1, CE label smoothing0.05 plus Brier sum weight0.1. Train exactly two epochs over the827 fixed training positions shuffled deterministically per epoch; save both epoch checkpoints. Bounded search is these two checkpoints only; exclude feasibility-probe checkpoints. Use all215 validation positions to select the epoch with lowest finite mean target NLL; exact tie chooses earlier epoch. Report teacher agreement and Brier as diagnostics, not selection overrides. If either candidate has inference errors or nonfinite NLL it is ineligible. If both fail, preserve evidence and reconsider before tests. Initial fulltraining timeout3600s; no test access during training/selection.
-
-Freeze final evaluation at200paired seeds30000–30199 and200piececap, bootstrap10000replicates/seed2026, error threshold0. Primary comparison selectedtrained versus unchanged nativeBF16headClef. Include an unchangedFP32head ablation to separate precision change from learning, plus random and heuristic. Same rules, complete observation encoding, pinnedbackbone, legalchoices and preview. Three neural policies at200×200moves and144ms imply4.8h worst-case, but unchangedbase dies around28pieces in development; expect much less. Allow bounded per-policy execution with incremental artifacts; never drop failedseeds or quietly reducepool. Record exact checkpoint and validation evidence hashes before any testepisode. Publish negative outcomes honestly; no tuning after testresults.
-
-Fresh LoRA reload v1 correctly rejected PEFT's shortened target list. Saved496adapter tensors independently map exactly248intended text layers; weights were sound. Loader now expands saved targets over every backbone module and requires exact target equality, rejecting accidental vision/MTP/output matches. A32-layer tiny-backbone regression reproduces PEFT shortening. New saves use explicit full targets and canonical pinned model ID. Original failed artifact and probe weights preserved; retry uses same checkpoint, not a new training configuration. Head-only fresh-process reload passed independently; GLM restored healthy on both success and rejectedreload.
-
-M4 complete: head-only fresh reload maxabsoluteprobabilitydifference0.0 (tolerance1e-4); unchanged saved LoRA checkpoint retry after semantic-target validation also0.0. Both fresh processes loaded pinned weights; no retraining needed for reload fix. Compact reports/gpu-feasibility.json retains success and original rejectedreload with sourcehashes. Fulltraining preregistration above is now enabled; output runs/study-v1 with two epoch checkpoints,3600second wrapper timeout and restored GLM health.
-
-
-M6 preparation while training runs: GitHub CLI is authenticated as kkarimi and HuggingFace as nima1. Read-only destination checks found no existing kkarimi/stackcraft, nima1/stackcraft-clef-flash-lora, dataset nima1/stackcraft-data or Space nima1/stackcraft. No repositories created or uploads performed. Root prepared cards, Apache-2.0 license/NOTICE and tutorial06; final metrics remain explicitly pending. Raw epoch checkpoints will remain immutable. Before validation, candidate copies may replace only autogenerated adapter/README.md to remove placeholders/localcachepaths; compare all other bytes, then selection/test bind these candidate hashes. This is documentation-only preparation, not weight or configuration tuning.
-
-CPU demo packaging reviewed: pinned Python3.13.16/uv image digests, nonroot UID1000, game-only install and noTorch. Worker verified actualimage12bd960f10c2d03bf85d3cec836c25880b09cfff6dad84cfc0aa33966af12308, health, configurableport, human move/replay equality and packaged raceassets; temporarycontainer removed. Root browser on8087 verified olddevelopmentrace stillscrubs toactual26/100piece outcomes and returning preserves humanonepiece game. New probability UI awaitsactual finalmodelrecordings. Export fixedseed30000 beforetest; fullresultsURL optional/HTTPSonly and remainsunset.
-
-Independent evaluation review led to stricter complete215prediction eligibility, rawmetric recomputation, bothcandidate evidence/lowestNLLselection, allfiveplayersrequired, fullresume source/dependency identity and completedepisode/player consistency. Root set8CPUthreads and disabledTF32 explicitly, matching measuredconfiguration. Focusedselection/evaluation and exporttests passed; one broader run caught an in-progress testedit, fixed by owner before integration. No held-outtest generated.
+Check the published Space's `/health`, static assets, human moves and recorded race
+in a browser. Verify model/dataset links and any private GitHub access expectations.
+Record failures and correct the actual published bundle before declaring release
+complete. Then update the plan's M6 status and final outcomes with verified links,
+revisions, hashes, measured limitations and fresh-download evidence.

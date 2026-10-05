@@ -12,7 +12,6 @@ import importlib.metadata
 import json
 import math
 import random
-import subprocess
 import time
 from pathlib import Path
 from typing import Any
@@ -20,6 +19,7 @@ from typing import Any
 from stackcraft.clef import ClefPlayer, encode_observation
 from stackcraft.data import audit_dataset
 from stackcraft.players import observe
+from stackcraft.provenance import source_identity
 from stackcraft.schema import GameState
 
 STUDY_HASHES = {
@@ -188,17 +188,21 @@ def train_epoch(
 
 def source_metadata() -> dict[str, Any]:
     root = Path(__file__).resolve().parents[1]
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    dirty = subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip()
+    identity = source_identity(root)
     files = [
         Path(__file__).resolve(),
         root / "src/stackcraft/training.py",
         root / "src/stackcraft/clef.py",
         root / "src/stackcraft/data.py",
+        root / "src/stackcraft/provenance.py",
+        root / "src/stackcraft/engine.py",
+        root / "src/stackcraft/pieces.py",
+        root / "src/stackcraft/schema.py",
+        root / "src/stackcraft/players/__init__.py",
+        root / "uv.lock",
     ]
     return {
-        "source_commit": commit,
-        "source_dirty": bool(dirty),
+        **identity,
         "source_hashes": {
             str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in files
