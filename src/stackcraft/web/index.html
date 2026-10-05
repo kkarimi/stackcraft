@@ -17,10 +17,10 @@
     <main>
       <section class="intro" aria-labelledby="page-title">
         <div><p class="eyebrow">THE PLACEMENT LAB / 001</p><h1 id="page-title">Make your next move<span>.</span></h1><p class="subtitle">A familiar game. Room to think. Every placement counts.</p></div>
-        <span class="mode-pill">TURN-BASED <span>·</span> NO TIMER</span>
+        <div class="view-tabs" role="tablist" aria-label="Game view"><button id="play-tab" class="view-tab active" role="tab" aria-selected="true" aria-controls="play-view" tabindex="0">Play</button><button id="race-tab" class="view-tab" role="tab" aria-selected="false" aria-controls="race-view" tabindex="-1">Watch a race <span aria-hidden="true">↗</span></button></div>
       </section>
       <div id="error" class="error-banner" role="alert" hidden></div>
-      <section class="game-layout" aria-label="Stackcraft game">
+      <section id="play-view" class="game-layout" role="tabpanel" aria-labelledby="play-tab">
         <aside class="left-rail">
           <div class="panel player-card"><p class="eyebrow">AT THE CONTROLS</p><div class="player-name"><span class="avatar" aria-hidden="true">YOU</span><div><h2>Human intuition</h2><p>Your board. Your call.</p></div></div><div class="player-status"><span class="status-dot"></span><span id="player-status">Ready to play</span></div></div>
           <div class="panel stats-panel" aria-label="Game statistics"><div class="stat primary-stat"><span>SCORE</span><strong id="score">0</strong></div><div class="stat-row"><div class="stat"><span>LINES</span><strong id="lines">0</strong></div><div class="stat"><span>PLACED</span><strong id="pieces">0</strong></div></div></div>
@@ -38,6 +38,13 @@
           <div class="how-to"><p class="eyebrow">TAKE YOUR TIME</p><h2>Find the fit.</h2><p>Move the ghost. Rotate your piece. Drop when it feels right.</p><ul class="keyboard-help"><li><span>Choose position</span><span><kbd>←</kbd> <kbd>→</kbd></span></li><li><span>Rotate</span><kbd>↑</kbd></li><li><span>Place piece</span><kbd>space</kbd></li></ul><p class="helper">Or tap a column on the board.</p></div>
           <div class="replay-tools"><p class="eyebrow">EVERY MOVE, REPLAYABLE</p><button id="download-replay" class="secondary-button"><span aria-hidden="true">↓</span> Save replay</button><button id="load-replay" class="text-button"><span aria-hidden="true">↑</span> Open a replay</button><input id="replay-file" type="file" accept=".json,application/json" hidden><p class="helper">A tiny JSON file. An exact rerun.</p></div>
         </aside>
+      </section>
+      <section id="race-view" class="race-view" role="tabpanel" aria-labelledby="race-tab" hidden>
+        <div class="race-intro"><div><p class="eyebrow">SAME PIECES. DIFFERENT DECISIONS.</p><h2 id="race-label">Recorded development baseline</h2><p id="race-context" class="helper">Loading verified replay frames…</p></div><div class="race-disclosure"><span class="recorded-badge">RECORDED REPLAY</span><span>No live model · Clef comparison pending</span></div></div>
+        <div id="race-loading" class="race-loading" role="status">Loading recorded baseline games…</div>
+        <div id="race-boards" class="race-boards" aria-label="Recorded player boards"></div>
+        <div id="race-transport" class="race-transport panel" hidden><div class="race-position-row"><label for="race-position">PIECE INDEX</label><span id="race-progress">0 / 0</span></div><input id="race-position" type="range" min="0" max="0" value="0" aria-label="Race piece index"><div class="race-buttons"><button id="race-restart" class="control-button" aria-label="Restart recorded race" title="Restart recorded race">↺</button><button id="race-prev" class="control-button" aria-label="Previous race move">←</button><button id="race-play" class="primary-button" aria-label="Play recorded race">Play race <span aria-hidden="true">▶</span></button><button id="race-next" class="control-button" aria-label="Next race move">→</button><span class="race-speed">Synchronized by pieces placed.<br>Finished boards stay on their final frame.</span></div></div>
+        <p class="race-caption">A development example, not a held-out benchmark. Playback speed is for viewing; it does not represent decision latency.</p>
       </section>
       <div id="announcement" class="sr-only" aria-live="polite" aria-atomic="true"></div>
       <footer class="site-footer"><p><strong>Built for fair comparisons.</strong> Deterministic seven-bag pieces. One-piece preview. Straight drops.</p><details><summary>The research rules</summary><p>Stackcraft is a simplified, turn-based falling-block game on a 10 × 20 board. There is no gravity timer, hold, wall kick, tuck or T-spin bonus. Clear 1 / 2 / 3 / 4 lines to score 100 / 300 / 500 / 800 points. All players will use the same rules. Model comparisons are coming after verified baseline runs.</p></details><span class="footer-version">STACKCRAFT / RULES V1</span></footer>

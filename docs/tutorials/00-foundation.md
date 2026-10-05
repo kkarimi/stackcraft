@@ -12,7 +12,7 @@ uv run --locked stackcraft --help
 uv run --locked stackcraft --version
 ```
 
-The help lists `serve` and `tournament`; the version is `stackcraft 0.1.0`. uv creates `.venv` and installs the package locally. `pyproject.toml` describes dependencies while `uv.lock` records exact resolved versions. Committing both lets another person recreate the environment. `--locked` detects a stale lock instead of silently selecting new versions.
+The help lists `serve`, `tournament` and `generate-data`; the version is `stackcraft 0.1.0`. uv creates `.venv` and installs the package locally. `pyproject.toml` describes dependencies while `uv.lock` records exact resolved versions. Committing both lets another person recreate the environment. `--locked` detects a stale lock instead of silently selecting new versions.
 
 Development dependencies are a dependency group, installed by default, rather than an optional product feature. This keeps pytest and linting separate from game requirements. A future ML extra will isolate Torch and large model dependencies so someone can play the game without a GPU. The code does not import a model from the CLI startup path.
 

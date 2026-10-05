@@ -106,3 +106,9 @@ that an interface is usable.
 Next, measure random and heuristic players before adding a model. A playable
 game establishes the experimental environment; it does not yet demonstrate that
 fine-tuning helps.
+
+## Watch recorded players side by side
+
+Choose **Watch a race** to load a real development episode for Random and Heuristic. The packaged `baseline-demo.json` contains the same seed and both action traces; the service rebuilds frames through the authoritative replay engine. Scrubbing to piece100 shows Random stopped at26 while Heuristic reaches37lines. Returning to Play preserves the human game.
+
+The boards are synchronized by placements, not decision time. Playback is explicitly recorded and does not imply live model inference or model speed. A player that tops out keeps its final board visible while other recordings continue. This lets a visitor compare outcomes without requiring a GPU server; later real Clef runs can use the same replay format.

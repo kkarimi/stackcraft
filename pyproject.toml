@@ -10,6 +10,17 @@ readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = ["fastapi", "uvicorn"]
 
+[project.optional-dependencies]
+ml = [
+    "torch==2.14.1",
+    "torchvision",
+    "transformers==5.18.0",
+    "peft==0.21.2",
+    "safetensors>=0.8,<1",
+    "huggingface-hub>=1.33,<2",
+    "pillow>=12,<13",
+]
+
 [project.scripts]
 stackcraft = "stackcraft.cli:main"
 
@@ -34,3 +45,15 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.uv]
+required-version = ">=0.12.23,<0.13"
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu130", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cu130", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true

@@ -59,3 +59,18 @@ def test_input_validation_and_health():
             assert client.post("/api/games", json={"seed": seed}).status_code == 422
         assert client.post("/api/replays", json={"actions": "not a list"}).status_code == 422
         assert client.post("/api/replays", json={"actions": ["r0x0"] * 2001}).status_code == 422
+
+
+def test_packaged_race_replays_validate_against_current_engine():
+    with TestClient(create_app()) as client:
+        response = client.get("/static/baseline-demo.json")
+        assert response.status_code == 200
+        race = response.json()
+        assert len(race["players"]) == 2
+        for player in race["players"]:
+            assert player["replay"]["seed"] == race["seed"]
+            replay = client.post("/api/replays", json=player["replay"])
+            assert replay.status_code == 200
+            final = replay.json()["frames"][-1]
+            assert final["pieces"] <= race["max_pieces"]
+            assert final["score"] == player["replay"]["final"]["score"]

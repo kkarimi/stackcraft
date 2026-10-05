@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import subprocess
 from pathlib import Path
 
 
@@ -17,6 +18,8 @@ def main() -> None:
     tournament.add_argument("--episodes", type=int, default=20)
     tournament.add_argument("--max-pieces", type=int, default=100)
     tournament.add_argument("--output", type=Path, required=True)
+    generate = commands.add_parser("generate-data", help="Generate and audit expert-labelled data")
+    generate.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "serve":
         import uvicorn
@@ -39,6 +42,21 @@ def main() -> None:
             json.dump(result, output, indent=2, allow_nan=False)
             output.write("\n")
         print(f"Saved {args.episodes} paired development episodes to {args.output}")
+    elif args.command == "generate-data":
+        from stackcraft.data import DatasetConfig, generate_dataset, write_dataset
+
+        if args.output.exists():
+            parser.error(f"output already exists: {args.output}; choose a new path")
+        try:
+            commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+            dirty = subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()
+            if dirty:
+                commit += "+working-tree"
+        except (OSError, subprocess.CalledProcessError):
+            commit = "unversioned"
+        bundle = generate_dataset(DatasetConfig(), source_commit=commit)
+        write_dataset(bundle, args.output)
+        print(f"Saved expert dataset and manifest to {args.output}")
 
 
 if __name__ == "__main__":

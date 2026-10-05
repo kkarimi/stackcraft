@@ -2,7 +2,7 @@
 
 A playable, deterministic falling-block game for studying decision models. The goal is a fair comparison of a heuristic player, unchanged Clef-flash, and a fine-tuned model on identical piece sequences.
 
-**Status:** playable game, replay and offline baseline tournament implemented. No Clef model has been trained or evaluated yet. See [the project plan](plan.md) for milestones and acceptance criteria.
+**Status:** playable game, recorded side-by-side race, offline baselines and search-expert data implemented. No Clef model has been trained or evaluated yet. See [the project plan](plan.md) for milestones and acceptance criteria.
 
 ## Run locally
 
@@ -35,3 +35,13 @@ uv run --locked stackcraft tournament --seed-start 1000 --episodes 20 --max-piec
 ```
 
 This runs random and fixed heuristic players on identical seeds, records every decision and replay, and refuses to overwrite an existing result. See [tutorial02](docs/tutorials/02-baselines.md). Development scores are not held-out model results.
+
+## Expert-labelled data
+
+```bash
+uv run --locked stackcraft generate-data --output data/study-v1
+```
+
+This generates training/validation episodes from fixed disjoint seed pools, labels moves with bounded search, removes duplicate observations and writes a hashed manifest. Final test seeds remain reserved. See [tutorial03](docs/tutorials/03-data.md).
+
+Optional Clef tooling uses `uv sync --locked --extra ml`. Its actual tokenizer/native encoder has been checked on CPU; real-weight inference and training are pending. See [native adapter documentation](docs/clef.md).

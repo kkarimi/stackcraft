@@ -44,8 +44,8 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) User selected Tetris-style Stackcraft and requested an active goal. Goal and durable plan created.
 - [x] (2026-10-05) M0: Isolated repository, locked Python 3.13.16 environment, rules/interfaces and tutorial00 validated, including clean wheel installation.
 - [x] (2026-10-05) M1: Deterministic engine, playable browser UI, replay and tutorial01 verified by behavioral tests, independent landing review and desktop/mobile interaction.
-- [ ] M2: Offline random/heuristic tournament and tutorial02 implemented;20-seed pilot replay-verified. Remaining: native unchanged Clef adapter and real baseline measurements.
-- [ ] M3: Generate search-expert data, freeze splits, audit leakage, and write data tutorial.
+- [ ] M2: Offline tournament and recorded race implemented;20-seed pilot replay-verified. Native Clef adapter and real CPU tokenization checked. Remaining: real unchanged Clef weight loading and baseline measurements.
+- [ ] M3: Search expert, disjoint splits, deduplication, tutorial03 and827/215-row pilot verified. Remaining: regeneration against committed source and final artifact audit.
 - [ ] M4: Verify real GPU training, decision-head gradients, save/reload, memory, and feasibility tutorial.
 - [ ] M5: Train, select on validation, evaluate held-out games, integrate comparison UI, and write evaluation tutorial.
 - [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
@@ -157,4 +157,4 @@ M0 and M1 are complete. The local game and replay service are playable;83 tests,
 ## Next Action
 
 
-Continue M2/M3: implement a native Clef observation encoder and pinned model loading path, and a bounded search expert using only one-piece preview. Freeze data split seed pools excluding development seeds0–19 and1000; audit expert decisions and cross-split duplicates before generating a training dataset. GPU service permission is pending; CPU work can continue.
+Regenerate the M3 dataset against the committed source and confirm game examples match the audited pilot. Continue the pinned Clef download (live exec session78859 at this checkpoint; revalidate the handle/process, do not blindly restart). Real M2 inference and M4 GPU probes need sufficient free memory; the GLM service permission question remains pending. Model code, encoded input integrity, and all offline game/data work are ready for the next gate.

@@ -59,6 +59,8 @@ def run_episode(player: Player, seed: int, max_pieces: int = 100) -> dict[str, A
             else:
                 event["action_id"] = decision.action_id
                 event["probabilities"] = decision.probabilities
+                if (input_tokens := getattr(player, "last_input_tokens", None)) is not None:
+                    event["input_tokens"] = input_tokens
                 state = step(state, decision.action_id).state
                 actions.append(decision.action_id)
         event["decision_seconds"] = duration
@@ -70,7 +72,11 @@ def run_episode(player: Player, seed: int, max_pieces: int = 100) -> dict[str, A
     return {
         "schema_version": 1,
         "rules_version": RULES_VERSION,
-        "player": {"name": player.name, "revision": player.revision},
+        "player": {
+            "name": player.name,
+            "revision": player.revision,
+            "runtime_config": getattr(player, "runtime_config", {}),
+        },
         "seed": seed,
         "max_pieces": max_pieces,
         "outcome": {

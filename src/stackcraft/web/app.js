@@ -19,6 +19,12 @@ let frameIndex = 0;
 let replayArtifact = null;
 let replayTimer = null;
 let activeSeed = 42;
+let raceVisible = false;
+let raceLoading = false;
+let racePlayers = null;
+let raceIndex = 0;
+let raceMax = 0;
+let raceTimer = null;
 const cells = Array.from({ length: 200 }, () => {
   const cell = document.createElement("div");
   cell.className = "cell";
@@ -212,7 +218,7 @@ $("play-again").addEventListener("click", restart);
 $("seed").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); restart(); } });
 document.addEventListener("keydown", (event) => {
   if (event.target.matches("input, textarea, select, button, a, summary") || event.ctrlKey || event.metaKey || event.altKey) return;
-  if (frames || busy || !stateSynced || !live || live.terminal) return;
+  if (raceVisible || frames || busy || !stateSynced || !live || live.terminal) return;
   const handler = { ArrowLeft: () => move(-1), ArrowRight: () => move(1), ArrowUp: rotate, " ": drop, Enter: drop }[event.key];
   if (handler) { event.preventDefault(); if (!event.repeat || event.key.startsWith("Arrow")) handler(); }
 });
@@ -276,5 +282,165 @@ $("exit-replay").addEventListener("click", () => {
   replayArtifact = null;
   render();
   if (!live) restart();
+});
+
+// Race state is separate from the human session and its imported replay.
+function stopRace() {
+  if (raceTimer !== null) clearInterval(raceTimer);
+  raceTimer = null;
+  $("race-play").textContent = "Play race ▶";
+  $("race-play").setAttribute("aria-label", "Play recorded race");
+}
+
+function raceCard(player, index) {
+  const card = document.createElement("article");
+  card.className = "race-card";
+  const heading = document.createElement("div");
+  heading.className = "race-card-heading";
+  const name = document.createElement("h3");
+  name.id = `race-player-${index}`;
+  name.textContent = player.name;
+  const status = document.createElement("span");
+  status.className = "race-player-status";
+  heading.append(name, status);
+  const wrap = document.createElement("div");
+  wrap.className = "board-wrap";
+  const board = document.createElement("div");
+  board.className = "board race-board";
+  board.setAttribute("role", "img");
+  const boardCells = Array.from({ length: 200 }, () => {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    board.append(cell);
+    return cell;
+  });
+  wrap.append(board);
+  const metrics = document.createElement("dl");
+  metrics.className = "race-metrics";
+  const values = {};
+  for (const [key, label] of [["lines", "LINES"], ["score", "SCORE"], ["pieces", "PLACED"]]) {
+    const group = document.createElement("div");
+    const term = document.createElement("dt");
+    term.textContent = label;
+    const value = document.createElement("dd");
+    values[key] = value;
+    group.append(term, value);
+    metrics.append(group);
+  }
+  const details = document.createElement("p");
+  details.className = "race-piece-detail";
+  const revision = document.createElement("p");
+  revision.className = "race-revision";
+  revision.textContent = player.revision;
+  revision.title = `Player revision: ${player.revision}`;
+  card.setAttribute("aria-labelledby", name.id);
+  card.append(heading, wrap, metrics, details, revision);
+  $("race-boards").append(card);
+  return { ...player, board, boardCells, status, values, details };
+}
+
+function renderRace() {
+  if (!racePlayers) return;
+  for (const player of racePlayers) {
+    const index = Math.min(raceIndex, player.frames.length - 1);
+    const state = player.frames[index];
+    for (let i = 0; i < player.boardCells.length; i++) {
+      const value = state.board[Math.floor(i / 10)][i % 10];
+      player.boardCells[i].className = `cell${value ? " filled" : ""}`;
+      player.boardCells[i].style.setProperty("--piece-color", `var(--piece-${value || 1})`);
+    }
+    for (const key of ["lines", "score", "pieces"]) player.values[key].textContent = state[key].toLocaleString();
+    const ended = index === player.frames.length - 1;
+    player.status.textContent = state.terminal ? "TOPPED OUT" : ended ? "RECORDING ENDED" : "RECORDED";
+    player.status.classList.toggle("ended", ended);
+    player.details.textContent = state.terminal ? "No legal placements remain" : `Current ${state.current} · Next ${state.next_piece}`;
+    player.board.setAttribute("aria-label", `${player.name} recorded board. ${state.pieces} pieces placed, ${state.lines} lines, score ${state.score}.${state.terminal ? " Topped out." : ""}`);
+  }
+  $("race-position").value = raceIndex;
+  $("race-position").max = raceMax;
+  $("race-progress").textContent = `${raceIndex} / ${raceMax}`;
+  $("race-prev").disabled = raceIndex === 0;
+  $("race-next").disabled = raceIndex === raceMax;
+  $("race-play").disabled = raceMax === 0;
+  $("race-restart").disabled = raceMax === 0;
+}
+
+async function loadRace() {
+  if (racePlayers || raceLoading) return;
+  raceLoading = true;
+  $("race-loading").hidden = false;
+  $("race-loading").textContent = "Loading recorded baseline games…";
+  try {
+    const manifest = await api("/static/baseline-demo.json");
+    if (manifest.schema_version !== 1 || !Number.isSafeInteger(manifest.seed) || !Number.isSafeInteger(manifest.max_pieces) || manifest.max_pieces < 1 || !Array.isArray(manifest.players) || manifest.players.length < 2 || manifest.players.length > 4) {
+      throw new Error("The recorded race manifest has an unsupported format.");
+    }
+    for (const player of manifest.players) {
+      if (typeof player.name !== "string" || typeof player.revision !== "string" || player.replay?.seed !== manifest.seed || !Array.isArray(player.replay?.actions) || player.replay.actions.length > manifest.max_pieces) {
+        throw new Error("Race players must use the same seed and the declared episode cap.");
+      }
+    }
+    const loaded = await Promise.all(manifest.players.map(async (player) => {
+      const result = await api("/api/replays", { method: "POST", body: JSON.stringify(player.replay) });
+      if (!Array.isArray(result.frames) || result.frames.length !== player.replay.actions.length + 1) throw new Error("A race replay has an invalid frame count.");
+      return { ...player, frames: result.frames };
+    }));
+    $("race-boards").replaceChildren();
+    racePlayers = loaded.map(raceCard);
+    raceMax = Math.max(...racePlayers.map((player) => player.frames.length - 1));
+    $("race-label").textContent = typeof manifest.label === "string" ? manifest.label : "Recorded development baseline";
+    $("race-context").textContent = `Seed ${manifest.seed} · ${manifest.max_pieces}-piece episode cap · Same seven-bag sequence`;
+    $("race-loading").hidden = true;
+    $("race-transport").hidden = false;
+    renderRace();
+  } catch (error) {
+    $("race-loading").textContent = `Race unavailable: ${error.message} Switch to Play and back to retry.`;
+    $("race-context").textContent = "No comparison results are available yet.";
+  } finally { raceLoading = false; }
+}
+
+function setView(watchRace) {
+  raceVisible = watchRace;
+  stopReplay();
+  stopRace();
+  $("play-view").hidden = watchRace;
+  $("race-view").hidden = !watchRace;
+  for (const [id, active] of [["play-tab", !watchRace], ["race-tab", watchRace]]) {
+    $(id).classList.toggle("active", active);
+    $(id).setAttribute("aria-selected", String(active));
+    $(id).tabIndex = active ? 0 : -1;
+  }
+  if (watchRace) loadRace();
+}
+$("play-tab").addEventListener("click", () => setView(false));
+$("race-tab").addEventListener("click", () => setView(true));
+for (const id of ["play-tab", "race-tab"]) {
+  $(id).addEventListener("keydown", (event) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const watchRace = event.key === "End" || (event.key !== "Home" && !raceVisible);
+    setView(watchRace);
+    $(watchRace ? "race-tab" : "play-tab").focus();
+  });
+}
+function seekRace(index) {
+  if (!racePlayers) return;
+  raceIndex = Math.max(0, Math.min(raceMax, index));
+  renderRace();
+}
+$("race-position").addEventListener("input", (event) => { stopRace(); seekRace(Number(event.target.value)); });
+$("race-restart").addEventListener("click", () => { stopRace(); seekRace(0); });
+$("race-prev").addEventListener("click", () => { stopRace(); seekRace(raceIndex - 1); });
+$("race-next").addEventListener("click", () => { stopRace(); seekRace(raceIndex + 1); });
+$("race-play").addEventListener("click", () => {
+  if (raceTimer !== null) return stopRace();
+  if (!racePlayers || raceMax === 0) return;
+  if (raceIndex === raceMax) seekRace(0);
+  $("race-play").textContent = "Pause race Ⅱ";
+  $("race-play").setAttribute("aria-label", "Pause recorded race");
+  raceTimer = setInterval(() => {
+    seekRace(raceIndex + 1);
+    if (raceIndex === raceMax) stopRace();
+  }, 160);
 });
 restart();
