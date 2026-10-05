@@ -34,6 +34,14 @@ an `adapter/README.md` with placeholders and a local cache path. Before validati
 copy each epoch checkpoint into a separate candidate directory and replace only
 that documentation with accurate upstream attribution and loading instructions.
 Compare every other file's SHA256 with the raw checkpoint and record the mapping.
+The preparation script performs these checks and writes a sibling provenance file:
+
+```bash
+uv run --locked --extra ml python scripts/prepare_checkpoint.py \
+  --source runs/study-v1/epoch-01 --output checkpoints/candidates/epoch-01
+uv run --locked --extra ml python scripts/prepare_checkpoint.py \
+  --source runs/study-v1/epoch-02 --output checkpoints/candidates/epoch-02
+```
 This edits no learned weights or training configuration.
 
 Validate those exact candidate directories, then freeze the selected directory's
