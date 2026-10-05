@@ -123,3 +123,14 @@
 @media (min-width: 791px) and (max-height: 900px) {
   .race-intro .eyebrow { display: none; }
 }
+.race-piece-detail > summary { cursor: pointer; width: fit-content; }
+.race-piece-detail[open] { background: #1c202a; border: 1px solid var(--line); border-radius: 6px; padding: 7px; }
+.race-alternatives { color: var(--muted); font-size: 9px; line-height: 1.6; overflow-wrap: anywhere; }
+.race-alternatives p { margin: 6px 0; }
+.race-player-status.failed { color: #f17986; }
+.race-provenance { max-width: 610px; margin: 9px auto 0; font-size: 9px; color: var(--muted); }
+.race-provenance summary { cursor: pointer; width: fit-content; }
+.race-provenance ul { padding-left: 16px; overflow-wrap: anywhere; font-family: ui-monospace, monospace; }
+
+.race-report-link { text-align: center; margin: 9px 0 0; font-size: 11px; }
+.race-report-link a { color: var(--accent); text-underline-offset: 3px; }

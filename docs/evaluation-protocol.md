@@ -7,20 +7,24 @@ select checkpoints, or start games.
 
 ## Decisions that must be frozen before opening the test results
 
-The episode cap is **pending measured GPU feasibility**. A 100-piece cap is the
-initial cost candidate; every development heuristic game reached that cap, so
-200 pieces should be considered if measured inference time permits it. Neither
-candidate is a frozen final cap yet. Measure only development episodes to choose
-the cap, then record the chosen cap and expected runtime before test execution.
-If 200 episodes are infeasible, record a revised sample-size rationale before
-examining any test results; do not silently publish a smaller successful subset.
+The final episode cap is now **frozen at 200 pieces**, using all 200 reserved seeds.
+This was chosen before inspecting any test results. The unchanged-model development
+pilot measured approximately 144 ms per decision. If all three neural players reach
+every cap, 120,000 decisions would take roughly 4.8 hours at that rate, excluding
+loading and reporting. Earlier base development games died much sooner; runtime
+must still be measured and reported rather than promised. Each episode is saved
+atomically so interrupted evaluation can resume without discarding difficult games.
 
 Freeze the selected trained checkpoint and original pinned Clef revision, input
 encoding, precision, hardware/runtime configuration, heuristic revision, all
 seeds, cap, inference failure behavior, bootstrap parameters and compute budget.
-The same legal placements and one-piece preview must reach every player. Base
-and trained model must use the same encoding and numerics except for learned
-parameters. A changed base quantization would be a separate comparison.
+The same legal placements and one-piece preview must reach every player. Primary
+base is the pinned native model with its original BF16 head. Training uses an FP32
+head; therefore an explicitly named `base-fp32` ablation keeps the original weights
+but uses the same FP32 wrapper as training. Report trained-versus-native-base as
+the primary comparison and trained-versus-base-fp32 to separate training from head
+precision effects. Backbone BF16, input encoding, context limit, device and source
+revision must agree. A changed base quantization would be a separate comparison.
 
 Checkpoint selection uses validation only. Teacher-action agreement and target
 cross-entropy on validation positions are diagnostic selection metrics, separate
@@ -103,3 +107,50 @@ position_report = summarize_positions(validation_rows, predictions_by_record_id)
 Toy tests verify known constant paired improvements, mismatched-pair rejection,
 failure retention, metadata consistency and proper probability-score arithmetic.
 Passing them verifies report mechanics, not any model's game performance.
+
+## Execute and resume a frozen evaluation
+
+`scripts/evaluate_clef.py positions --dataset data/study-v1 --checkpoint PATH
+--output NEWDIR` evaluates the entire validation split and writes unrounded
+predictions plus NLL/agreement/Brier evidence. Its default players are native base,
+base-fp32 and trained. Model loading is sequential to fit one GPU; this is real
+inference and must follow memory admission. `--players trained` evaluates another
+candidate without rerunning the unchanged baselines.
+
+After validation, run `scripts/select_checkpoint.py` with both explicit epoch
+checkpoint/report pairs and a new output directory, as shown in Tutorial 05.
+It recomputes metrics from the raw predictions, verifies both checkpoint trees,
+selects by the preregistered rule, and copies self-contained validation evidence.
+Its `selection.json` contains schema_version 1,
+selection_split `validation`, selected_key, decision_rule, checkpoint_sha256 mapping,
+validation_metrics, validation_evidence `{path,sha256}`, test_seeds, their canonical
+JSON SHA256 as test_seeds_sha256, max_pieces 200, encoding_version, max_length,
+players, head_dtypes, bootstrap_samples 10000, bootstrap_seed 2026, max_error_rate
+0.0. Validation evidence must be the script's position report for the same checkpoint;
+its path is relative to selection.json. Checkpoint hashes include every checkpoint
+file. Set head_dtypes to `{base: bfloat16, base-fp32: float32, trained: float32}`
+when all three neural players are included.
+
+Both epoch candidates and their eligibility reasons are mandatory in the selection
+artifact. Before opening test seeds, the evaluator checks all 215 positions,
+complete finite probability metrics, zero inference errors, checkpoint/dataset
+binding, and the lowest-NLL winner with an earlier-epoch tie rule. All five players,
+including the FP32-head ablation, are required by this study.
+
+```sh
+uv run --locked --extra ml python scripts/evaluate_clef.py tournament \
+  --checkpoint PATH --seeds 30000:30200 --max-pieces 200 \
+  --final-test --selection-file selection.json --output runs/final-evaluation
+```
+
+The default includes all five players. The final-test switch is an explicit
+acknowledgment that these held-out seeds will now be consumed. Without it, the
+script rejects any overlap with the reserved pool before loading a player.
+
+Every completed episode is stored as `PLAYER/seed-N.json`; `progress.json` records
+progress, and the final `report.json` includes all episodes and paired comparisons.
+Repeat exactly the same command with `--resume` after an interruption. The script
+checks request, source hashes, selected checkpoint, frozen protocol and saved replay
+outcomes, skips completed players without loading them, and resumes missing seeds.
+It never retries or deletes a recorded error episode. Loading is timed separately;
+there are no silently excluded warmup decisions.

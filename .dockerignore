@@ -1,0 +1,12 @@
+# Send only game source and locked build inputs to Docker.
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!src/stackcraft/
+!src/stackcraft/**
+**/__pycache__/
+**/*.pyc

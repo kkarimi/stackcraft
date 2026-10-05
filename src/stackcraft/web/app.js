@@ -327,8 +327,12 @@ function raceCard(player, index) {
     group.append(term, value);
     metrics.append(group);
   }
-  const details = document.createElement("p");
+  const details = document.createElement("details");
   details.className = "race-piece-detail";
+  const decisionSummary = document.createElement("summary");
+  const alternatives = document.createElement("div");
+  alternatives.className = "race-alternatives";
+  details.append(decisionSummary, alternatives);
   const revision = document.createElement("p");
   revision.className = "race-revision";
   revision.textContent = player.revision;
@@ -336,7 +340,7 @@ function raceCard(player, index) {
   card.setAttribute("aria-labelledby", name.id);
   card.append(heading, wrap, metrics, details, revision);
   $("race-boards").append(card);
-  return { ...player, board, boardCells, status, values, details };
+  return { ...player, board, boardCells, status, values, details, decisionSummary, alternatives };
 }
 
 function renderRace() {
@@ -351,9 +355,50 @@ function renderRace() {
     }
     for (const key of ["lines", "score", "pieces"]) player.values[key].textContent = state[key].toLocaleString();
     const ended = index === player.frames.length - 1;
-    player.status.textContent = state.terminal ? "TOPPED OUT" : ended ? "RECORDING ENDED" : "RECORDED";
+    const failed = ended && player.outcome?.status === "error";
+    player.status.textContent = failed ? "PLAYER ERROR" : state.terminal ? "TOPPED OUT" : ended ? player.outcome?.cap_hit ? "CAP REACHED" : "RECORDING ENDED" : "RECORDED";
     player.status.classList.toggle("ended", ended);
-    player.details.textContent = state.terminal ? "No legal placements remain" : `Current ${state.current} · Next ${state.next_piece}`;
+    player.status.classList.toggle("failed", failed);
+    player.alternatives.replaceChildren();
+    const decision = player.decisions?.[index];
+    const distribution = decision?.probabilities;
+    if (failed) {
+      player.decisionSummary.textContent = "Inference error · details";
+      const message = document.createElement("p");
+      message.textContent = decision?.error?.message || player.errors?.[0]?.message || "The recorded player failed at this position.";
+      player.alternatives.append(message);
+    } else if (decision?.action_id) {
+      const probability = distribution?.[decision.action_id];
+      player.decisionSummary.textContent = `Next ${decision.action_id}${typeof probability === "number" ? ` · ${(probability * 100).toFixed(1)}%` : " · chosen"}`;
+      const context = document.createElement("p");
+      context.textContent = `Recorded choice for ${state.current}; preview ${state.next_piece}.`;
+      player.alternatives.append(context);
+      if (distribution) {
+        const heading = document.createElement("p");
+        heading.textContent = "Other recorded options";
+        player.alternatives.append(heading);
+        const options = Object.entries(distribution).filter(([id]) => id !== decision.action_id).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 3);
+        for (const [id, value] of options) {
+          const line = document.createElement("div");
+          line.textContent = `${id}: ${(value * 100).toFixed(1)}%`;
+          player.alternatives.append(line);
+        }
+      } else {
+        const noProbabilities = document.createElement("p");
+        noProbabilities.textContent = "This player does not report probabilities.";
+        player.alternatives.append(noProbabilities);
+      }
+      if (typeof decision.decision_seconds === "number") {
+        const latency = document.createElement("p");
+        latency.textContent = `Measured decision: ${(decision.decision_seconds * 1000).toFixed(1)} ms. Playback is independent.`;
+        player.alternatives.append(latency);
+      }
+    } else {
+      player.decisionSummary.textContent = state.terminal ? "No legal placements remain" : ended ? "Recording ended" : `Current ${state.current} · Next ${state.next_piece}`;
+      const note = document.createElement("p");
+      note.textContent = ended ? "No next recorded decision." : "This older replay contains moves only, without per-decision probabilities.";
+      player.alternatives.append(note);
+    }
     player.board.setAttribute("aria-label", `${player.name} recorded board. ${state.pieces} pieces placed, ${state.lines} lines, score ${state.score}.${state.terminal ? " Topped out." : ""}`);
   }
   $("race-position").value = raceIndex;
@@ -390,6 +435,27 @@ async function loadRace() {
     raceMax = Math.max(...racePlayers.map((player) => player.frames.length - 1));
     $("race-label").textContent = typeof manifest.label === "string" ? manifest.label : "Recorded development baseline";
     $("race-context").textContent = `Seed ${manifest.seed} · ${manifest.max_pieces}-piece episode cap · Same seven-bag sequence`;
+    $("race-inference-label").textContent = "No live model inference";
+    $("race-caption").textContent = typeof manifest.disclaimer === "string" ? manifest.disclaimer : "Recorded development games, not a held-out benchmark. Playback speed does not represent decision latency.";
+    $("race-report-link-wrap").hidden = true;
+    $("race-report-link").removeAttribute("href");
+    if (typeof manifest.report_url === "string") {
+      try {
+        const reportUrl = new URL(manifest.report_url);
+        if (reportUrl.protocol === "https:" && reportUrl.hostname && !reportUrl.username && !reportUrl.password) {
+          $("race-report-link").href = reportUrl.href;
+          $("race-report-link-wrap").hidden = false;
+        }
+      } catch { /* An invalid optional link must not prevent replay. */ }
+    }
+    $("race-source-list").replaceChildren();
+    const sources = Array.isArray(manifest.sources) ? manifest.sources : [];
+    $("race-provenance").hidden = sources.length === 0;
+    for (const source of sources) {
+      const line = document.createElement("li");
+      line.textContent = `${source.file || "Source artifact"} · SHA-256 ${source.sha256 || "not supplied"}`;
+      $("race-source-list").append(line);
+    }
     $("race-loading").hidden = true;
     $("race-transport").hidden = false;
     renderRace();
