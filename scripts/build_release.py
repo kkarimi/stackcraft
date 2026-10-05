@@ -231,27 +231,53 @@ def selection_evidence_files(selection_path: Path) -> list[Path]:
 def render_model_card(template: str, report: dict[str, Any], selection: dict[str, Any]) -> str:
     summary = report["trained_vs_base"]
     rows = [
-        "| Player | Mean lines | Mean score | Mean placed | Cap hits | Errors | Mean decision ms |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Player | Lines mean (median) | Score mean (median) | "
+        "Placed mean (median) | Cap hits | Errors |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    timing = [
+        "| Player | Decision mean ms | Median ms | p95 ms | Invalid decisions |",
+        "| --- | ---: | ---: | ---: | ---: |",
     ]
     for name in PLAYERS:
         player = summary["players"][name]
         primary = player["failure_adjusted"]
-        rows.append(
-            f"| {name} | {primary['lines']['mean']:.3f} | {primary['score']['mean']:.3f} "
-            f"| {primary['pieces']['mean']:.3f} | {player['cap_hit_rate']:.1%} "
-            f"| {player['error_rate']:.1%} | {player['latency_seconds']['mean'] * 1000:.3f} |"
+        outcomes = " | ".join(
+            f"{primary[metric]['mean']:.3f} ({primary[metric]['median']:.1f})"
+            for metric in ("lines", "score", "pieces")
         )
-    delta = summary["paired_trained_minus_base"]["lines"]
+        rows.append(
+            f"| {name} | {outcomes} | {player['cap_hit_rate']:.1%} | {player['error_rate']:.1%} |"
+        )
+        latency = player["latency_seconds"]
+        values = " | ".join(
+            f"{latency[key] * 1000:.3f}" if latency[key] is not None else "unavailable"
+            for key in ("mean", "median", "p95")
+        )
+        timing.append(f"| {name} | {values} | {player['invalid_decisions']} |")
+    comparisons = [
+        "| Comparison (first minus second) | Mean lines difference | Paired 95% interval |",
+        "| --- | ---: | ---: |",
+    ]
+    for key, (first, second) in COMPARISONS.items():
+        delta = report[key]["paired_trained_minus_base"]["lines"]
+        comparisons.append(
+            f"| {first} − {second} | {delta['mean_difference']:.3f} | "
+            f"[{delta['ci95_lower']:.3f}, {delta['ci95_upper']:.3f}] |"
+        )
     results = (
         "Verified final outcomes on all 200 paired seeds, with a 200-piece cap. "
-        "Lines, score and placed-piece means use the preregistered zero-on-error policy. "
-        "Cap hits indicate censored survival. "
-        "Decision latency includes recorded first-call effects.\n\n"
+        "Lines, score and placed-piece summaries use the preregistered zero-on-error policy. "
+        "Cap hits indicate censored survival.\n\n"
         + "\n".join(rows)
-        + f"\n\nTrained minus native-base mean lines: {delta['mean_difference']:.3f}; "
-        f"paired 95% bootstrap interval [{delta['ci95_lower']:.3f}, {delta['ci95_upper']:.3f}]. "
-        "The full reports retain raw outcomes, all failed seeds and probability logs."
+        + "\n\nEach paired 95% bootstrap interval resamples complete episode differences. "
+        "Trained versus native base is the primary comparison; the heuristic and FP32-head "
+        "comparisons are separate checks. Intervals are not adjusted for multiple comparisons.\n\n"
+        + "\n".join(comparisons)
+        + "\n\nDecision latency includes recorded first-call effects, tokenization and policy "
+        "overhead, but excludes game rendering and replay playback.\n\n"
+        + "\n".join(timing)
+        + "\n\nThe full reports retain raw outcomes, all failed seeds and probability logs."
     )
     card = template.replace(
         "**Release preparation: full-study results and selected checkpoint are pending.**",

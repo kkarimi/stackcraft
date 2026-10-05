@@ -186,3 +186,19 @@ that native CPU encoding test was then enabled separately and passed (262 total)
 Ruff lint/format and ty passed; the human-API focused suite passed all five tests.
 No protected evaluation source or selected-checkpoint bytes changed. The frozen
 GPU job remains live, with 157 native-base episodes saved at this check.
+
+## 2026-10-05 — Complete result summaries before final evidence arrives
+
+The model-card renderer currently exposes only the primary comparison interval.
+Extend its presentation to include all four preregistered comparisons, outcome
+medians, and latency distribution/invalid-decision counts already calculated by
+the frozen evaluator. This changes reporting only, not metrics or study selection.
+Check with synthetic development fixtures before consuming the final report.
+
+Renderer changes passed all 17 release tests plus focused Ruff/format/ty checks.
+The card now shows all four paired line differences and intervals, mean/median
+outcomes, cap/error rates, latency mean/median/p95 and invalid counts. It identifies
+the primary comparison and discloses that intervals are not adjusted for multiple
+comparisons. A read-only integrity audit confirmed all 12 protected source hashes,
+all six selected-checkpoint files and the frozen selection still match the running
+request. No final outcome claim is made from incomplete games.

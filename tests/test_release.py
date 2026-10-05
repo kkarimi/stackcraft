@@ -186,6 +186,11 @@ def test_model_card_uses_verified_results_and_rejects_other_pending_text(
     assert "epoch-01" in card
     assert "| base-fp32 |" in card
     assert "paired 95% bootstrap interval" in card
+    for first, second in script.COMPARISONS.values():
+        assert f"| {first} − {second} |" in card
+    assert "Lines mean (median)" in card
+    assert "Median ms | p95 ms | Invalid decisions" in card
+    assert "not adjusted for multiple comparisons" in card
     assert "pending" not in card.lower()
     with pytest.raises(ValueError, match="pending"):
         script.render_model_card(
