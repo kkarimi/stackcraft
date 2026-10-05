@@ -4,13 +4,14 @@ ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
     UV_PYTHON_DOWNLOADS=never \
     UV_LINK_MODE=copy
 WORKDIR /opt/build
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock README.md LICENSE NOTICE ./
 COPY src/ ./src/
 RUN uv sync --locked --no-dev --no-editable --python /usr/local/bin/python
 
 FROM python:3.13-slim-bookworm@sha256:5024f48ba9441d4b13a95d3945abc6365538e3a31109833367a1923523c6efed AS runtime
 RUN useradd --create-home --uid 1000 stackcraft
 COPY --from=builder --chown=1000:1000 /opt/venv /opt/venv
+COPY --chown=1000:1000 LICENSE NOTICE /home/stackcraft/
 USER 1000
 WORKDIR /home/stackcraft
 ENV PORT=7860 \

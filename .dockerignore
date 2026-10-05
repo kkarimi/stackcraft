@@ -5,6 +5,8 @@
 !pyproject.toml
 !uv.lock
 !README.md
+!LICENSE
+!NOTICE
 !src/
 !src/stackcraft/
 !src/stackcraft/**
