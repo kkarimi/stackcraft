@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "reload": true,
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "total_vram": 33711521792,
+  "initial_free_vram": 33179500544,
+  "torch": "2.14.1+cu130",
+  "dataset_manifest_sha256": "aeddcfc1ea5390f12122d2e786c1e2030dcc97d3790b6d7523432548198b1f94",
+  "row_ids": [
+    "seed-10000-turn-0",
+    "seed-10000-turn-1",
+    "seed-10000-turn-2",
+    "seed-10000-turn-3"
+  ],
+  "source_commit": "7a21f6491bcaf2afacc9aa5b5e2733a35c41a7a8",
+  "source_dirty": false,
+  "source_identity_method": "exact-git-root",
+  "max_absolute_probability_difference": 0.0,
+  "tolerance": 0.0001,
+  "elapsed_seconds": 5.802506145002553
+}
