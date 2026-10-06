@@ -59,9 +59,20 @@ Open http://127.0.0.1:8087. The game needs no GPU or model credential. Sessions 
 ```bash
 uv run --locked ruff check .
 uv run --locked ruff format --check .
-uv run --locked ty check
+uv run --locked ty check src/stackcraft --exclude src/stackcraft/training.py
 uv run --locked pytest
 ```
+
+These commands check the game without installing ML packages. Full-repository
+type checking also covers training scripts and requires the ML extra:
+
+```bash
+uv run --locked --extra ml ty check
+```
+
+Installing that extra does not run GPU inference. When keeping an ML environment,
+use `--extra ml` on uv commands to prevent synchronization from removing those
+optional packages.
 
 The committed lockfile fixes dependency versions; `uv sync --locked` refuses to silently update it. Python 3.13 is selected by `.python-version`. No pip activation or global dependency installation is needed.
 

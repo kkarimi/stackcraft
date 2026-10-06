@@ -368,3 +368,11 @@ Git/LFS hashes; it still rejects unknown files and malformed metadata. The actua
 published dataset passed this check without deleting any cache files. Forty-eight
 focused tests cover the installed writer and adversarial tree-cache variants.
 The next source bundle includes this fix and accurate Docker hosting status.
+
+A fresh anonymous clone of public GitHub commit ef972f1 installed only the 25
+game/dev packages through the lockfile. Offline checks: 261 passed, six optional
+checks skipped; Ruff/format, scoped game type check and CLI/server/engine smoke
+passed. Full ty needs optional ML imports, so README/Tutorial00 now distinguish
+the scoped no-ML check from `uv run --locked --extra ml ty check`. They also
+explain retaining --extra ml when working in an ML environment. No source
+diagnostics were suppressed and no runtime dependency was added to the game.

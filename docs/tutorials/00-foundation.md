@@ -14,7 +14,7 @@ uv run --locked stackcraft --version
 
 The help lists `serve`, `tournament` and `generate-data`; the version is `stackcraft 0.1.0`. uv creates `.venv` and installs the package locally. `pyproject.toml` describes dependencies while `uv.lock` records exact resolved versions. Committing both lets another person recreate the environment. `--locked` detects a stale lock instead of silently selecting new versions.
 
-Development dependencies are a dependency group, installed by default, rather than an optional product feature. This keeps pytest and linting separate from game requirements. A future ML extra will isolate Torch and large model dependencies so someone can play the game without a GPU. The code does not import a model from the CLI startup path.
+Development dependencies are a dependency group, installed by default, rather than an optional product feature. This keeps pytest and linting separate from game requirements. The ML extra isolates Torch and large model dependencies so someone can play the game without a GPU. The code does not import a model from the CLI startup path.
 
 ## 2. Write the rules before comparing players
 
@@ -33,9 +33,20 @@ FastAPI serves the small JSON API and static HTML/CSS/JavaScript together. This 
 ```bash
 uv run --locked ruff check .
 uv run --locked ruff format --check .
-uv run --locked ty check
+uv run --locked ty check src/stackcraft --exclude src/stackcraft/training.py
 uv run --locked pytest
 ```
+
+These commands check the game without installing ML packages. Full-repository
+type checking also covers training scripts and requires the ML extra:
+
+```bash
+uv run --locked --extra ml ty check
+```
+
+Installing that extra does not run GPU inference. When keeping an ML environment,
+use `--extra ml` on uv commands to prevent synchronization from removing those
+optional packages.
 
 Ruff catches common source mistakes and applies one formatting style. ty checks Python types. pytest verifies outcomes such as a cleared row, an unchanged state after an illegal move, and a replay that reaches the original final board. Passing checks does not prove model quality; that requires a later held-out tournament.
 
