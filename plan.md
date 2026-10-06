@@ -1,7 +1,7 @@
 # Complete Stackcraft
 
 
-Status: active. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
+Status: active; hosted CPU deployment deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
 
 ## Purpose
 
@@ -34,7 +34,7 @@ Python owns the authoritative simulator and legal placements. The web client dis
 ## Definition of Done
 
 
-A clean checkout installs through a committed uv lockfile, runs the game and replays without model credentials, passes engine and integration checks, and reproduces documented evaluation procedures. The comparison demo visibly identifies real inference, cached replay, and unavailable players. A saved trained model reloads and reproduces reference probabilities within a declared tolerance. Published results compare the trained model to unchanged Clef-flash and a heuristic on untouched sequences, including uncertainty and failures. Dataset provenance, model revisions, rules, splits, training configuration, and reproduction tutorials accompany the release. Release links and fresh-download validation must exist before completing the goal.
+A clean checkout installs through a committed uv lockfile, runs the game and replays without model credentials, passes engine and integration checks, and reproduces documented evaluation procedures. The comparison demo visibly identifies real inference, cached replay, and unavailable players. A saved trained model reloads and reproduces reference probabilities within a declared tolerance. Published results compare the trained model to unchanged Clef-flash and a heuristic on untouched sequences, including uncertainty and failures. Dataset provenance, model revisions, rules, splits, training configuration, and reproduction tutorials accompany the release. Release links and fresh-download validation for GitHub, model and dataset must exist before completing the goal. The user deferred hosted CPU deployment on 2026-10-06; retain the verified local game/Docker demo and do not require a public Space for completion.
 
 An honest negative training result is acceptable scientific evidence; silently replacing Clef with another model or calling an untrained adapter a fine-tune is not. If Clef training is infeasible after bounded probes, report the evidence and obtain a scope decision for a smaller student or rented compute.
 
@@ -48,7 +48,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
 - [x] (2026-10-05) M5: Selected epoch 02 passed exact fresh-process reload and all 1,000 final games. Independent replay/statistics and narrative audits passed. Trained mean lines 16.81 versus native 0.07 and heuristic 76.53. Fixed-seed three-bot recordings with live human play passed desktop/mobile checks; CPU Docker smoke passed. Final report and Tutorial 05 complete.
-- [ ] M6: Review and publish code/model/data/demo as authorized; verify fresh downloads and write release tutorial.
+- [ ] M6: Publish public code/model/data, verify fresh downloads and checkpoint parity, and finish release records. User deferred hosted CPU deployment; the verified local game/Docker demo remains included.
 
 ## Milestones
 
@@ -163,13 +163,15 @@ Publication and fresh-download verification remain outstanding under M6.
 
 ## Next Action
 
-The user approved all four repositories PUBLIC on 2026-10-06: GitHub
-`kkarimi/stackcraft`, Hugging Face model `nima1/stackcraft-clef-flash-lora`,
-dataset `nima1/stackcraft-data`, and CPU demo Space `nima1/stackcraft`.
-Public reproducibility/game source was explicitly disclosed and approved.
+The user approved public GitHub `kkarimi/stackcraft`, model
+`nima1/stackcraft-clef-flash-lora` and dataset `nima1/stackcraft-data`.
+On 2026-10-06 the user said "Forget the cpu hosting for now" after Hugging Face's
+Docker PRO requirement. Hosted deployment is explicitly deferred; do not create
+a Space or purchase any subscription. Keep the local game and Docker instructions.
 
-Add the approved cross-links, rebuild and verify the final bundle, publish,
-record immutable revisions, verify fresh downloads and checkpoint parity,
-and test the hosted demo. Preserve all frozen checkpoint/evaluation bytes.
-The existing GLM stop/restore authorization applies to the bounded reload check.
-No paid hardware is authorized. Complete M6 before marking the goal complete.
+Complete the compressed model upload, update release documentation to reflect
+this deferral, verify fresh model/dataset downloads and bounded GPU reload parity,
+and record public source/release revisions. The previous desktop/mobile/Docker
+checks satisfy the retained local-demo requirement. Mark M6 complete after the
+remaining publication and verification evidence exists, without claiming a hosted
+demo. Existing GLM stop/restore authorization applies to the reload check.

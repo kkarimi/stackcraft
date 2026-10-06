@@ -1,8 +1,10 @@
-"""CPU-only verification of three downloaded repositories against a trusted local manifest.
+"""CPU-only verification of downloaded repositories against a trusted local manifest.
 
 The trust anchor must come from independently retained local release preparation,
 not from the same unverified download. This checks integrity against that anchor,
 not publisher authenticity, model output parity, or whether a download was fresh.
+Model and dataset are always required. Demo verification requires its directory,
+unless the caller explicitly selects --skip-demo; skipped scope is recorded.
 
 Only these unlisted Hugging Face bookkeeping files are tolerated: root
 .gitattributes; .cache/huggingface/{.gitignore,.gitignore.lock,CACHEDIR.TAG}; and
@@ -295,12 +297,25 @@ def verify_bundle(
     }
 
 
-def verify_release(trusted_manifest: Path, roots: dict[str, Path], output: Path) -> dict[str, Any]:
+def verify_release(
+    trusted_manifest: Path,
+    roots: dict[str, Path],
+    output: Path,
+    *,
+    skip_demo: bool = False,
+) -> dict[str, Any]:
     if output.exists() or output.is_symlink():
         raise FileExistsError("verification output already exists; choose a new file")
     trusted_manifest = regular_input(trusted_manifest)
-    if set(roots) != set(BUNDLES):
-        raise ValueError("verification needs model, dataset and demo directories")
+    if type(skip_demo) is not bool:
+        raise ValueError("skip_demo must be an explicit boolean")
+    bundles = BUNDLES[:2] if skip_demo else BUNDLES
+    if set(roots) != set(bundles):
+        raise ValueError(
+            "skip-demo verification needs only model and dataset directories"
+            if skip_demo
+            else "verification needs model, dataset and demo directories"
+        )
     roots = {name: regular_input(path, directory=True) for name, path in roots.items()}
     for name, root in roots.items():
         if any(
@@ -339,7 +354,7 @@ def verify_release(trusted_manifest: Path, roots: dict[str, Path], output: Path)
         bundle: verify_bundle(
             roots[bundle], expected[bundle], checkpoint if bundle == "model" else None
         )
-        for bundle in BUNDLES
+        for bundle in bundles
     }
     dataset = roots["dataset"]
     if sha256(dataset / "manifest.json") != manifest.get("dataset_manifest_sha256"):
@@ -353,7 +368,14 @@ def verify_release(trusted_manifest: Path, roots: dict[str, Path], output: Path)
     result = {
         "schema_version": 1,
         "status": "verified",
-        "scope": "CPU payload integrity and dataset audit against caller-supplied trust anchor",
+        "scope": (
+            "CPU model/dataset payload integrity and dataset audit against caller-supplied "
+            "trust anchor; demo explicitly skipped and not checked"
+            if skip_demo
+            else "CPU model/dataset/demo payload integrity and dataset audit against "
+            "caller-supplied trust anchor"
+        ),
+        "skipped_bundles": ["demo"] if skip_demo else [],
         "trusted_manifest_sha256": sha256(trusted_manifest),
         "bundles": verified,
         "dataset_counts": counts,
@@ -371,21 +393,35 @@ def verify_release(trusted_manifest: Path, roots: dict[str, Path], output: Path)
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trusted-manifest", type=Path, required=True)
-    for bundle in BUNDLES:
+    for bundle in BUNDLES[:2]:
         parser.add_argument(f"--{bundle}", type=Path, required=True)
+    demo = parser.add_mutually_exclusive_group(required=True)
+    demo.add_argument("--demo", type=Path, help="Downloaded demo directory to verify")
+    demo.add_argument(
+        "--skip-demo", action="store_true", help="Explicitly verify only model and dataset"
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         report = verify_release(
             args.trusted_manifest,
-            {bundle: getattr(args, bundle) for bundle in BUNDLES},
+            {
+                bundle: getattr(args, bundle)
+                for bundle in (BUNDLES[:2] if args.skip_demo else BUNDLES)
+            },
             args.output,
+            skip_demo=args.skip_demo,
         )
     except (OSError, ValueError, KeyError, TypeError) as error:
         parser.error(str(error))
     print(
         json.dumps(
-            {"status": report["status"], "output": str(args.output), "gpu_parity_checked": False}
+            {
+                "status": report["status"],
+                "output": str(args.output),
+                "gpu_parity_checked": False,
+                "skipped_bundles": report["skipped_bundles"],
+            }
         )
     )
     return 0

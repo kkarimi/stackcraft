@@ -33,7 +33,13 @@ The owner approved all four destinations as public on 2026-10-06: `kkarimi/stack
 `nima1/stackcraft-clef-flash-lora`, `nima1/stackcraft-data`, and Space
 `nima1/stackcraft` on Hugging Face. This approval explicitly includes the source
 inside the public model and Space repositories. The final release report in GitHub
-records immutable revisions and actual download/hosting verification.
+records immutable revisions and actual download verification.
+
+The owner subsequently deferred hosted CPU deployment on 2026-10-06 after the
+Docker subscription prerequisite was discovered. The delivered release therefore
+contains public GitHub/model/dataset artifacts and a verified local Docker demo;
+Space creation and hosted-browser checks below are future steps, not completion
+claims for this release.
 
 ## Preserve evidence while preparing checkpoint metadata
 
@@ -232,3 +238,21 @@ in a browser. Verify model/dataset links and any private GitHub access expectati
 Record failures and correct the actual published bundle before declaring release
 complete. Then update the plan's M6 status and final outcomes with verified links,
 revisions, hashes, measured limitations and fresh-download evidence.
+
+## Verification when hosting is deferred
+
+For this release, explicitly skip the unhosted demo while retaining all model,
+dataset and checkpoint-byte checks:
+
+```bash
+uv run --locked --extra ml python scripts/verify_release.py \
+  --trusted-manifest LOCAL_RELEASE/release-manifest.json \
+  --model DOWNLOADED_MODEL --dataset DOWNLOADED_DATASET \
+  --skip-demo --output runs/released-files-verification.json
+```
+
+The report names the skipped bundle; it makes no claim about a downloaded Space.
+The publication report records the two actual download origins and immutable
+revisions. A local Docker smoke check does not count as a fresh Space download.
+The full three-repository CLI above applies only after all three HF repositories
+exist. The downloaded checkpoint must still pass the GPU parity check above.

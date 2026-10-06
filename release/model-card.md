@@ -30,10 +30,9 @@ in one forward pass, with no generated text or command parsing.
 Related releases: [source and tutorials](https://github.com/kkarimi/stackcraft),
 [model](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
 [dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
-[planned CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
-The hosted demo awaits Hugging Face's Docker-account subscription requirement;
-[local Docker instructions](https://github.com/kkarimi/stackcraft/blob/main/docs/demo-hosting.md)
-work without that subscription.
+[local playable demo](https://github.com/kkarimi/stackcraft/blob/main/docs/demo-hosting.md).
+The owner deferred hosted deployment. The game and Docker image need no GPU
+or Hugging Face subscription when run locally.
 
 ## Intended use
 

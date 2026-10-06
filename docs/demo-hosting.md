@@ -93,8 +93,9 @@ hourly charge, but it is not subscription-free hosting. Static Spaces have diffe
 requirements and cannot run this Python HTTP service unchanged. See the
 [official Spaces overview](https://huggingface.co/docs/hub/spaces-overview).
 The initial `nima1/stackcraft` creation returned HTTP 402; no subscription or paid
-hardware was purchased. Resolve the account requirement or choose another CPU host
-before following the deployment steps below.
+hardware was purchased. The owner then deferred hosted deployment on 2026-10-06.
+The following Space steps are a future option, not an existing hosted release.
+The local Docker procedure above is complete and verified.
 
 Once publication is authorized, the Space repository needs the Dockerfile,
 `.dockerignore`, `pyproject.toml`, `uv.lock`, `src/` including the reviewed replay

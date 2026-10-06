@@ -84,6 +84,7 @@ def test_success_checks_separate_roots_and_uploaded_manifests(release, tmp_path)
     assert report["gpu_parity_checked"] is False
     assert report["publisher_authenticity_checked"] is False
     assert report["download_freshness_checked"] is False
+    assert report["skipped_bundles"] == []
     for bundle in CLI.BUNDLES:
         assert report["bundles"][bundle]["verified_files"] >= 2
         assert report["bundles"][bundle]["release_files_sha256"] == CLI.sha256(
@@ -219,7 +220,10 @@ def test_arbitrary_cache_payloads_are_not_ignored(release, tmp_path, name, conte
         CLI.verify_release(trusted, roots, tmp_path / "verification.json")
 
 
-def test_dataset_schema_audited_even_when_corruption_is_rehashed_consistently(release, tmp_path):
+@pytest.mark.parametrize("skip_demo", [False, True])
+def test_dataset_schema_audited_even_when_corruption_is_rehashed_consistently(
+    release, tmp_path, skip_demo
+):
     trusted, roots, _ = release
     dataset = roots["dataset"]
     rows = [json.loads(line) for line in (dataset / "train.jsonl").read_text().splitlines()]
@@ -239,8 +243,10 @@ def test_dataset_schema_audited_even_when_corruption_is_rehashed_consistently(re
         trusted_json["files"][f"dataset/{name}"] = entry(dataset / name)
     trusted_json["dataset_manifest_sha256"] = CLI.sha256(dataset / "manifest.json")
     trusted.write_text(json.dumps(trusted_json))
+    if skip_demo:
+        roots = {name: root for name, root in roots.items() if name != "demo"}
     with pytest.raises(ValueError, match="teacher label"):
-        CLI.verify_release(trusted, roots, tmp_path / "verification.json")
+        CLI.verify_release(trusted, roots, tmp_path / "verification.json", skip_demo=skip_demo)
 
 
 def test_output_cannot_modify_a_verified_download(release):
@@ -384,3 +390,85 @@ def test_actual_downloaded_dataset_tree_cache_integration():
     report = CLI.verify_bundle(root, expected, None)
     assert report["verified_files"] == len(expected)
     assert any("/trees/" in name for name in report["ignored_huggingface_metadata"])
+
+
+def test_explicit_skip_demo_verifies_only_model_and_dataset(release, tmp_path):
+    trusted, roots, counts = release
+    # A bad demo is deliberately outside this explicitly selected scope.
+    (roots["demo"] / "README.md").write_text("not verified")
+    selected = {name: roots[name] for name in ("model", "dataset")}
+    report = CLI.verify_release(trusted, selected, tmp_path / "verified.json", skip_demo=True)
+    assert report["status"] == "verified"
+    assert set(report["bundles"]) == {"model", "dataset"}
+    assert report["skipped_bundles"] == ["demo"]
+    assert "demo explicitly skipped and not checked" in report["scope"]
+    assert report["dataset_counts"] == counts
+    for name in selected:
+        assert report["bundles"][name]["release_files_sha256"] == CLI.sha256(
+            selected[name] / "release-files.json"
+        )
+
+
+@pytest.mark.parametrize("bundle", ["model", "dataset"])
+def test_skip_demo_keeps_payload_integrity_checks(release, tmp_path, bundle):
+    trusted, roots, _ = release
+    path = roots[bundle] / "README.md"
+    path.write_bytes(b"X" * path.stat().st_size)
+    selected = {name: roots[name] for name in ("model", "dataset")}
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
+        CLI.verify_release(trusted, selected, tmp_path / "verified.json", skip_demo=True)
+
+
+@pytest.mark.parametrize(
+    "names,skip_demo",
+    [(("model", "dataset"), False), (("model", "dataset", "demo"), True), (("model",), True)],
+)
+def test_roots_must_match_explicit_verification_scope(release, tmp_path, names, skip_demo):
+    trusted, roots, _ = release
+    selected = {name: roots[name] for name in names}
+    with pytest.raises(ValueError, match="verification needs"):
+        CLI.verify_release(trusted, selected, tmp_path / "verified.json", skip_demo=skip_demo)
+
+
+@pytest.mark.parametrize("flags", [[], ["--skip-demo", "--demo", "unused"]])
+def test_cli_requires_exactly_one_demo_mode(release, tmp_path, flags):
+    trusted, roots, _ = release
+    with pytest.raises(SystemExit) as error:
+        CLI.main(
+            [
+                "--trusted-manifest",
+                str(trusted),
+                "--model",
+                str(roots["model"]),
+                "--dataset",
+                str(roots["dataset"]),
+                "--output",
+                str(tmp_path / "verified.json"),
+                *flags,
+            ]
+        )
+    assert error.value.code == 2
+    assert not (tmp_path / "verified.json").exists()
+
+
+def test_cli_skip_demo_records_scope(release, tmp_path, capsys):
+    trusted, roots, _ = release
+    output = tmp_path / "verified.json"
+    assert (
+        CLI.main(
+            [
+                "--trusted-manifest",
+                str(trusted),
+                "--model",
+                str(roots["model"]),
+                "--dataset",
+                str(roots["dataset"]),
+                "--skip-demo",
+                "--output",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    assert json.loads(output.read_text())["skipped_bundles"] == ["demo"]
+    assert json.loads(capsys.readouterr().out)["skipped_bundles"] == ["demo"]

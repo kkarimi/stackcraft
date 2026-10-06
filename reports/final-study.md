@@ -216,7 +216,8 @@ records their unchanged uncompressed hashes and sizes. These portable paths
 are relative to the model repository root and do not require access to private Git
 history. See the [model release](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
 [dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
-[CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+[local demo instructions](https://github.com/kkarimi/stackcraft/blob/main/docs/demo-hosting.md).
+The owner deferred hosted deployment; no live Space is claimed.
 [Tutorial 05](../docs/tutorials/05-evaluation.md) gives the reproduction procedure.
 
 The principal limitations are one training seed, a small synthetic dataset, an

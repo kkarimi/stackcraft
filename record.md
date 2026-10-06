@@ -394,3 +394,12 @@ Compression measurement: 1,017 evidence files, 2,222,025,418 raw bytes, became
 tests passed, including exact extraction paths/bytes and malformed archives.
 The strict downloaded-payload verifier must run before extraction into its root;
 extraction restores the original evidence/ layout for offline inspection.
+
+## 2026-10-06 — Hosted CPU deployment explicitly deferred
+
+User answered the hosting question: "Forget the cpu hosting for now". This changes
+the remaining release scope to public GitHub/model/dataset with the verified
+local game and Docker demo retained. Do not create a Space, buy PRO, or require
+external hosting as a completion gate. Model publication and fresh-download/GPU
+parity checks continue. Remove promised live-demo links and clarify this deferral
+in release cards/tutorials before the final documentation revision.
