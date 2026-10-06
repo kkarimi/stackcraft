@@ -30,7 +30,10 @@ in one forward pass, with no generated text or command parsing.
 Related releases: [source and tutorials](https://github.com/kkarimi/stackcraft),
 [model](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
 [dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
-[playable CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+[planned CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+The hosted demo awaits Hugging Face's Docker-account subscription requirement;
+[local Docker instructions](https://github.com/kkarimi/stackcraft/blob/main/docs/demo-hosting.md)
+work without that subscription.
 
 ## Intended use
 
@@ -56,22 +59,22 @@ synthetic teacher preferences, not human demonstrations or globally optimal move
 Exact duplicate observations are removed across splits. Six source hashes and
 exact file hashes accompany the dataset manifest.
 
-Preregistered training: seed42, two epochs, batch1, accumulation8, rank4/alpha8,
-no LoRA dropout, AdamW lr1e-5/weight_decay0.01, gradient norm cap1.0, label smoothing
+Preregistered training: seed 42, two epochs, batch 1, accumulation 8, rank 4/alpha 8,
+no LoRA dropout, AdamW lr 1e-5/weight_decay 0.01, gradient norm cap 1.0, label smoothing
 0.05 and Brier sum weight0.1. BF16 backbone, FP32 head, text-layer LoRA including
 both hybrid attention types and MLPs. Vision, output and other original parameters
-remain frozen. There are132,582,404 trainable parameters:121,762,820 in the
-joint head and10,819,584 in LoRA. This is why the head is a substantial part of
-the saved artifact, even though most backbone weights stay frozen. Select only between epoch01/02 using lowest finite target NLL on
-all215 validation positions; exact ties choose the earlier epoch.
+remain frozen. There are 132,582,404 trainable parameters: 121,762,820 in the
+joint head and 10,819,584 in LoRA. This is why the head is a substantial part of
+the saved artifact, even though most backbone weights stay frozen. Select only between epoch 01/02 using lowest finite target NLL on
+all 215 validation positions; exact ties choose the earlier epoch.
 
 ## Evaluation and limitations
 
-Final preregistered comparison: 200 untouched seeds30000–30199, 200-piece cap,
+Final preregistered comparison: 200 untouched seeds 30000–30199, 200-piece cap,
 selected model versus unchanged native BF16-head Clef, unchanged FP32-head
 ablation, random legal placement and a cheap heuristic. Primary metric is lines
-cleared. Report score, survival, cap hits, failures and latency. Paired95% bootstrap
-intervals use10000 episode resamples with seed2026. Failed episodes remain in the
+cleared. Report score, survival, cap hits, failures and latency. Paired 95% bootstrap
+intervals use 10000 episode resamples with seed 2026. Failed episodes remain in the
 analysis, assigned zero primary outcomes with partial outcomes reported separately.
 
 **Insert verified held-out results here before publication.**
@@ -113,9 +116,9 @@ print(player.choose(observe(new_game(42))))
 ```
 
 `trust_pinned_code=True` executes reviewed, hash-checked upstream Python. It is
-not a sandbox. The measured RTX5090 inference baseline allocated19.7GB; bounded
-LoRA training allocated23.2GB. Load only with sufficient free VRAM. Context is
-limited to4096tokens, with explicit rejection before any state truncation.
+not a sandbox. The measured RTX 5090 inference baseline allocated 19.7 GB; bounded
+LoRA training allocated 23.2 GB. Load only with sufficient free VRAM. Context is
+limited to 4096 tokens, with explicit rejection before any state truncation.
 
 See the released tutorials, training configuration, artifact hashes and evaluation
 report for exact reproduction. Apache-2.0; see LICENSE and NOTICE for upstream

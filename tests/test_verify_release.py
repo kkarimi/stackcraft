@@ -1,5 +1,6 @@
 """Verify separate downloaded roots using generated small dataset and toy payloads."""
 
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -246,3 +247,140 @@ def test_output_cannot_modify_a_verified_download(release):
     trusted, roots, _ = release
     with pytest.raises(ValueError, match="outside downloaded"):
         CLI.verify_release(trusted, roots, roots["model"] / "verification.json")
+
+
+def write_tree_fixture(trusted, root, *, lfs=False):
+    """Make the documented format with revision/etag metadata for every payload."""
+    commit = "a" * 40
+    expected = {
+        name.removeprefix("model/"): value
+        for name, value in json.loads(trusted.read_text())["files"].items()
+        if name.startswith("model/")
+    }
+    files = {}
+    for name, value in expected.items():
+        raw = (root / name).read_bytes()
+        blob = hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest()
+        info = {"size": len(raw), "blob_id": blob}
+        etag = blob
+        if lfs and name == "checkpoint/head.bin":
+            info.update(lfs_sha256=value["sha256"], lfs_size=len(raw), xet_hash="B" * 64)
+            etag = value["sha256"]
+        files[name] = info
+        metadata = root / f".cache/huggingface/download/{name}.metadata"
+        metadata.parent.mkdir(parents=True, exist_ok=True)
+        metadata.write_text(f"{commit}\n{etag}\n123.0\n")
+    path = root / f".cache/huggingface/trees/{commit}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"format_version": 1, "files": files}))
+    return path
+
+
+@pytest.mark.parametrize("lfs", [False, True])
+def test_full_revision_bound_tree_with_git_or_lfs_hashes_is_accepted(release, tmp_path, lfs):
+    trusted, roots, _ = release
+    tree = write_tree_fixture(trusted, roots["model"], lfs=lfs)
+    report = CLI.verify_release(trusted, roots, tmp_path / "verified.json")
+    ignored = report["bundles"]["model"]["ignored_huggingface_metadata"]
+    assert tree.relative_to(roots["model"]).as_posix() in ignored
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        "extra_payload",
+        "missing_payload",
+        "traversal",
+        "unknown_field",
+        "size",
+        "blob_hash",
+        "lfs_hash",
+        "lfs_size",
+        "xet_hash",
+        "revision",
+        "etag",
+        "missing_metadata",
+        "duplicate_json_key",
+        "bool_version",
+        "oversized",
+        "wrong_filename",
+    ],
+)
+def test_tree_cache_cannot_hide_unexpected_or_mismatched_content(release, tmp_path, change):
+    trusted, roots, _ = release
+    root = roots["model"]
+    tree = write_tree_fixture(trusted, root, lfs=True)
+    data = json.loads(tree.read_text())
+    if change == "extra_payload":
+        data["files"]["unlisted.py"] = data["files"]["README.md"]
+    elif change == "missing_payload":
+        del data["files"]["README.md"]
+    elif change == "traversal":
+        data["files"]["../README.md"] = data["files"].pop("README.md")
+    elif change == "unknown_field":
+        data["files"]["README.md"]["unexpected"] = "arbitrary hidden data"
+    elif change == "size":
+        data["files"]["README.md"]["size"] += 1
+    elif change == "blob_hash":
+        data["files"]["README.md"]["blob_id"] = "0" * 40
+    elif change == "lfs_hash":
+        data["files"]["checkpoint/head.bin"]["lfs_sha256"] = "0" * 64
+    elif change == "lfs_size":
+        data["files"]["checkpoint/head.bin"]["lfs_size"] += 1
+    elif change == "xet_hash":
+        data["files"]["checkpoint/head.bin"]["xet_hash"] = "not a hash"
+    elif change == "revision":
+        tree = tree.rename(tree.with_name("b" * 40 + ".json"))
+    elif change == "etag":
+        metadata = root / ".cache/huggingface/download/README.md.metadata"
+        metadata.write_text("a" * 40 + "\n" + "0" * 40 + "\n123.0\n")
+    elif change == "missing_metadata":
+        (root / ".cache/huggingface/download/README.md.metadata").unlink()
+    elif change == "bool_version":
+        data["format_version"] = True
+    elif change == "wrong_filename":
+        tree = tree.rename(tree.with_name("arbitrary.json"))
+    tree.write_text(json.dumps(data))
+    if change == "duplicate_json_key":
+        tree.write_text(
+            tree.read_text().replace(
+                '"format_version": 1', '"format_version": 1, "format_version": 1'
+            )
+        )
+    elif change == "oversized":
+        tree.write_text(tree.read_text() + " " * 20000)
+    with pytest.raises(ValueError, match="unexpected payload"):
+        CLI.verify_release(trusted, roots, tmp_path / "verified.json")
+
+
+def test_installed_huggingface_tree_writer_is_accepted(release, tmp_path):
+    tree_cache = pytest.importorskip("huggingface_hub._tree_cache")
+    trusted, roots, _ = release
+    tree = write_tree_fixture(trusted, roots["model"], lfs=True)
+    data = json.loads(tree.read_text())
+    entries = {
+        name: tree_cache.TreeCacheEntry.from_json(info) for name, info in data["files"].items()
+    }
+    tree.unlink()
+    tree_cache.write_tree_cache(str(tree.parent.parent), "a" * 40, entries)
+    report = CLI.verify_release(trusted, roots, tmp_path / "verified.json")
+    assert (
+        tree.relative_to(roots["model"]).as_posix()
+        in report["bundles"]["model"]["ignored_huggingface_metadata"]
+    )
+
+
+def test_actual_downloaded_dataset_tree_cache_integration():
+    """Read-only local integration; public downloads are absent on clean checkouts."""
+    trusted = ROOT / "runs/release-public-v1/release-manifest.json"
+    root = ROOT / "runs/download-public-v1/dataset"
+    if not trusted.is_file() or not (root / ".cache/huggingface/trees").is_dir():
+        pytest.skip("actual revision-pinned release download is not present")
+    expected = {
+        name.removeprefix("dataset/"): value
+        for name, value in json.loads(trusted.read_text())["files"].items()
+        if name.startswith("dataset/")
+    }
+    report = CLI.verify_bundle(root, expected, None)
+    assert report["verified_files"] == len(expected)
+    assert any("/trees/" in name for name in report["ignored_huggingface_metadata"])

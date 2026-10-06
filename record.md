@@ -360,3 +360,11 @@ or paid hardware was purchased. Asked the user to enable PRO or supply another
 CPU host; model upload continues independently. Updated current source hosting
 instructions to disclose the actual prerequisite. Rebuild release source metadata
 after hosting is resolved; no frozen model/dataset/evaluation bytes will change.
+
+Fresh Hugging Face 1.33 downloads include a revision-keyed tree cache that the
+original verifier did not allow. The verifier now checks exact cache schema,
+complete expected payload set, canonical paths, per-file revision/etag, size and
+Git/LFS hashes; it still rejects unknown files and malformed metadata. The actual
+published dataset passed this check without deleting any cache files. Forty-eight
+focused tests cover the installed writer and adversarial tree-cache variants.
+The next source bundle includes this fix and accurate Docker hosting status.

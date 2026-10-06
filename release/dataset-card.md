@@ -21,9 +21,9 @@ configs:
 # Stackcraft search-teacher positions
 
 A synthetic dataset for a deterministic, simplified falling-block placement game.
-**827 training positions and215 validation positions**, generated entirely by
+**827 training positions and 215 validation positions**, generated entirely by
 code. No human demonstrations, personal data, web scraping or human row-by-row
-label review are claimed. Independent agent review recomputed16 pilot labels;
+label review are claimed. Independent agent review recomputed 16 pilot labels;
 that sample audit is not a review of every row.
 
 Each row contains a visible board, current piece, one next piece, all legal actions,
@@ -36,7 +36,10 @@ only the visible observation. Read the dataset schema and tutorial03 before use.
 Related releases: [source and tutorials](https://github.com/kkarimi/stackcraft),
 [model](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
 [dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
-[playable CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+[planned CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+The hosted demo awaits Hugging Face's Docker-account subscription requirement;
+[local Docker instructions](https://github.com/kkarimi/stackcraft/blob/main/docs/demo-hosting.md)
+work without that subscription.
 
 ## Generation
 
@@ -45,10 +48,10 @@ It rewards current line clears and the best next afterboard, using fixed weights
 for aggregate height, holes, bumpiness and cleared lines. No later pieces are
 available. Labels are heuristic recommendations, not proofs of optimal play.
 
-Collection cycles random, heuristic and search-expert policies, at a40-piece cap,
-to expose different board conditions. Training seeds10000–10023 and validation
-seeds20000–20005 are disjoint. Six within-training and two cross-split duplicate
-observations were excluded. Final test seeds30000–30199 are reserved for complete
+Collection cycles random, heuristic and search-expert policies, at a 40-piece cap,
+to expose different board conditions. Training seeds 10000–10023 and validation
+seeds 20000–20005 are disjoint. Six within-training and two cross-split duplicate
+observations were excluded. Final test seeds 30000–30199 are reserved for complete
 game evaluation; there is no test-position split for training or selection.
 
 Source commit: `70d84bd8dc5d4a60f3b96455a57d9e6f9416d109`.

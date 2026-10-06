@@ -6,7 +6,8 @@ not publisher authenticity, model output parity, or whether a download was fresh
 
 Only these unlisted Hugging Face bookkeeping files are tolerated: root
 .gitattributes; .cache/huggingface/{.gitignore,.gitignore.lock,CACHEDIR.TAG}; and
-download metadata/empty locks corresponding to expected payloads or .gitattributes.
+download metadata/empty locks corresponding to expected payloads or .gitattributes;
+and complete revision-bound tree caches matching those payloads and their hashes.
 Incomplete downloads, upload metadata, arbitrary cache files and symlinks fail.
 Ignored files are individually listed in the verification report.
 """
@@ -150,6 +151,98 @@ def _parent_directories(paths: set[str]) -> set[str]:
     }
 
 
+def _unique_json_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("tree cache contains duplicate JSON keys")
+        result[key] = value
+    return result
+
+
+def _hf_tree_cache(
+    relative: str,
+    path: Path,
+    expected: dict[str, dict[str, Any]],
+    actual: dict[str, Path],
+) -> bool:
+    """Validate HF 1.33's full local-dir tree listing, never arbitrary cache JSON.
+
+    Cache revisions must match each payload's download metadata. These local
+    consistency checks do not independently authenticate a Hub commit; payload
+    SHA256 remains bound to the caller's trusted release manifest.
+    """
+    match = re.fullmatch(r"\.cache/huggingface/trees/([0-9a-f]{40})\.json", relative)
+    if match is None:
+        return False
+    payloads = set(expected) | ({".gitattributes"} if ".gitattributes" in actual else set())
+    # More than enough room for the documented fields and JSON-escaped names.
+    limit = 4096 + sum(6 * len(name.encode()) + 1024 for name in payloads)
+    if path.stat().st_size > limit:
+        return False
+    try:
+        tree = json.loads(path.read_text(), object_pairs_hook=_unique_json_object)
+        if (
+            not isinstance(tree, dict)
+            or set(tree) != {"format_version", "files"}
+            or type(tree["format_version"]) is not int
+            or tree["format_version"] != 1
+            or not isinstance(tree["files"], dict)
+            or set(tree["files"]) != payloads
+        ):
+            return False
+        for name, info in tree["files"].items():
+            safe_relative(name)
+            if not isinstance(info, dict) or not {"size", "blob_id"} <= set(info):
+                return False
+            if set(info) - {"size", "blob_id", "lfs_sha256", "lfs_size", "xet_hash"}:
+                return False
+            payload = actual[name]
+            size = expected[name]["bytes"] if name in expected else payload.stat().st_size
+            if (
+                type(info["size"]) is not int
+                or info["size"] != size
+                or payload.stat().st_size != size
+                or not isinstance(info["blob_id"], str)
+                or not HEX_COMMIT.fullmatch(info["blob_id"])
+            ):
+                return False
+            lfs = "lfs_sha256" in info or "lfs_size" in info
+            if lfs:
+                if (
+                    name not in expected
+                    or info.get("lfs_sha256") != expected[name]["sha256"]
+                    or type(info.get("lfs_size")) is not int
+                    or info["lfs_size"] != size
+                ):
+                    return False
+                etag = info["lfs_sha256"]
+            else:
+                digest = hashlib.sha1(f"blob {size}\0".encode())
+                with payload.open("rb") as stream:
+                    while chunk := stream.read(1_048_576):
+                        digest.update(chunk)
+                if digest.hexdigest() != info["blob_id"]:
+                    return False
+                etag = info["blob_id"]
+            if "xet_hash" in info and (
+                not lfs
+                or not isinstance(info["xet_hash"], str)
+                or not re.fullmatch(r"[0-9a-fA-F]{64}", info["xet_hash"])
+            ):
+                return False
+            metadata_name = f".cache/huggingface/download/{name}.metadata"
+            metadata = actual.get(metadata_name)
+            if metadata is None or not _hf_metadata(metadata_name, metadata, set(expected)):
+                return False
+            lines = metadata.read_text().splitlines()
+            if lines[:2] != [match[1], etag]:
+                return False
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+    return True
+
+
 def verify_bundle(
     root: Path, expected: dict[str, dict[str, Any]], checkpoint: Any
 ) -> dict[str, Any]:
@@ -158,7 +251,9 @@ def verify_bundle(
         raise ValueError(f"download is missing payloads: {sorted(missing)}")
     ignored = []
     for name in sorted(set(actual) - set(expected)):
-        if not _hf_metadata(name, actual[name], set(expected)):
+        if not _hf_metadata(name, actual[name], set(expected)) and not _hf_tree_cache(
+            name, actual[name], expected, actual
+        ):
             raise ValueError(f"download contains unexpected payload: {name}")
         ignored.append(name)
     allowed_directories = _parent_directories(set(expected) | set(ignored))
