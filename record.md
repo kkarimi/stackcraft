@@ -403,3 +403,11 @@ local game and Docker demo retained. Do not create a Space, buy PRO, or require
 external hosting as a completion gate. Model publication and fresh-download/GPU
 parity checks continue. Remove promised live-demo links and clarify this deferral
 in release cards/tutorials before the final documentation revision.
+
+The full suite passed 304 tests, including the opt-in native CPU encoding check;
+Ruff lint/format and ty passed. Public model page inspection found Hugging Face's
+generic PEFT use-model snippet reporting an invalid task type for this custom
+decision head. Set explicit library_name: stackcraft, as supported by the Hub's
+custom-library metadata, while documenting PEFT as an internal dependency. This
+points users to the actual bundled loader instead of an inapplicable generated
+snippet. No checkpoint or native loader implementation changed.

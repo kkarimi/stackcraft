@@ -2,7 +2,7 @@
 license: apache-2.0
 base_model: Cloudflare/clef-flash
 base_model_relation: adapter
-library_name: peft
+library_name: stackcraft
 language:
 - en
 tags:
@@ -95,7 +95,8 @@ uncertainty does not capture variation across training seeds.
 
 ## Loading
 
-Use the released Stackcraft source and locked ML dependencies. Generic
+Use the released Stackcraft source and locked ML dependencies. Stackcraft uses
+PEFT internally but requires its custom native-head loader. Generic
 `AutoModel` or adapter-only loading omits the custom decision head and is incorrect.
 From the downloaded model repository's `code/` directory, install the locked ML
 environment with `uv sync --locked --extra ml` and cache the pinned upstream
