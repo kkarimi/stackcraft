@@ -376,3 +376,21 @@ passed. Full ty needs optional ML imports, so README/Tutorial00 now distinguish
 the scoped no-ML check from `uv run --locked --extra ml ty check`. They also
 explain retaining --extra ml when working in an ML environment. No source
 diagnostics were suppressed and no runtime dependency was added to the game.
+
+## 2026-10-06 — Lossless evidence packaging for the slow upload
+
+The initial upload is live and transferring the FP32 head; observed upstream
+throughput is slow relative to the 2.75 GB raw bundle. Most remaining bytes are
+repeated JSON evaluation evidence. Before another upload, package evidence/ as
+a deterministic lossless evidence.zip with entries rooted at evidence/, plus a
+raw evidence-files.json hash/size manifest. Preserve all raw records and all
+frozen hashes after extraction. Verify each archive entry against staged source
+before removing only the newly staged uncompressed evidence directory. Keep the
+selected checkpoint bytes unchanged and test extraction equality. This is a
+release transport change only, not a new analysis or reduced study deliverable.
+
+Compression measurement: 1,017 evidence files, 2,222,025,418 raw bytes, became
+74,541,451 ZIP bytes with deflate level 6 (96.65% reduction). Archive/read-back
+tests passed, including exact extraction paths/bytes and malformed archives.
+The strict downloaded-payload verifier must run before extraction into its root;
+extraction restores the original evidence/ layout for offline inspection.

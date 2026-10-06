@@ -11,7 +11,7 @@ and verified results are recorded in the final release report when available.
 The source repository contains the simulator, native model adapter, training and
 evaluation scripts, tests, locked environment and tutorials. The model repository
 contains the selected checkpoint's LoRA weights and separately trained decision
-head, plus source and evidence needed to reproduce the study. The dataset repository
+head, plus source and losslessly compressed evidence needed to reproduce the study. The dataset repository
 contains exact train/validation JSONL files and the generator manifest. The demo
 repository runs the game and replays cached model decisions without downloading a
 9B model or renting GPU hardware.
@@ -108,7 +108,22 @@ These commands prepare local files only; neither creates a remote repository nor
 uploads anything.
 
 The builder stages separate model, dataset and demo directories and a release
-manifest. It includes only explicit source/build inputs. Environments, credentials,
+manifest. Raw evaluation and selection files are packed in `model/evidence.zip`
+with an `evidence/` path prefix. `evidence-files.json` records every uncompressed
+file's SHA256 and size; the builder rechecks archive entry bytes before dropping
+its temporary uncompressed copy. Compression changes transport size, not any
+record, checkpoint or frozen evidence hash.
+
+After verifying the downloaded release manifest, extract from the model repository
+root when you need the raw reports or per-episode files:
+
+```bash
+python -m zipfile -e evidence.zip .
+```
+
+This restores the `evidence/evaluation/` and `evidence/selection/` paths used by
+the study report. Model inference itself does not require extracting the logs.
+ It includes only explicit source/build inputs. Environments, credentials,
 Git history, local service data, raw upstream backbone weights and arbitrary files
 from the working directory are excluded. This is safer and more reproducible than
 uploading the repository directory recursively and hoping ignore patterns cover it.

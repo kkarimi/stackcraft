@@ -207,9 +207,12 @@ Dataset manifest, checkpoint files, evaluation source files and supporting repor
 hashes are all included in [final-summary.json](final-summary.json).
 
 The prepared model-release layout contains `code/` with these reports, source,
-locked environment, tests and tutorials; `evidence/evaluation/` with the full
+locked environment, tests and tutorials; `evidence.zip` losslessly preserves
+`evidence/evaluation/` with the full
 report, request and per-player episode records; and `evidence/selection/` with
-the frozen choice and both candidates' validation evidence. These portable paths
+the frozen choice and both candidates' validation evidence. Extract the ZIP from
+the model repository root to restore these exact paths; `evidence-files.json`
+records their unchanged uncompressed hashes and sizes. These portable paths
 are relative to the model repository root and do not require access to private Git
 history. See the [model release](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
 [dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and

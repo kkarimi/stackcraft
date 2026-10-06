@@ -7,7 +7,9 @@ import hashlib
 import importlib.util
 import json
 import shutil
-from pathlib import Path
+import stat
+import zipfile
+from pathlib import Path, PurePosixPath
 from types import ModuleType, SimpleNamespace
 from typing import Any
 
@@ -228,6 +230,101 @@ def selection_evidence_files(selection_path: Path) -> list[Path]:
     return sorted(files)
 
 
+def _evidence_name(name: str) -> None:
+    path = PurePosixPath(name)
+    if (
+        "\\" in name
+        or ":" in name
+        or "\x00" in name
+        or path.is_absolute()
+        or ".." in path.parts
+        or len(path.parts) < 2
+        or path.parts[0] != "evidence"
+        or path.as_posix() != name
+    ):
+        raise ValueError("archive entries must be canonical files below evidence/")
+
+
+def verify_evidence_archive(archive: Path, expected: dict[str, dict[str, Any]]) -> None:
+    """Read every entry back, checking exact names, lengths, CRC and raw SHA256."""
+    for name in expected:
+        _evidence_name(name)
+    with zipfile.ZipFile(archive) as source:
+        infos = source.infolist()
+        if len(infos) != len(expected) or {info.filename for info in infos} != set(expected):
+            raise ValueError("archive entries differ from the exact raw evidence inventory")
+        for info in infos:
+            _evidence_name(info.filename)
+            entry = expected[info.filename]
+            if (
+                info.is_dir()
+                or info.compress_type != zipfile.ZIP_DEFLATED
+                or info.flag_bits & 1
+                or stat.S_IFMT(info.external_attr >> 16) != stat.S_IFREG
+                or info.file_size != entry["bytes"]
+            ):
+                raise ValueError("archive entry is not the declared regular evidence file")
+            digest = hashlib.sha256()
+            size = 0
+            with source.open(info) as stream:
+                while chunk := stream.read(1_048_576):
+                    size += len(chunk)
+                    digest.update(chunk)
+            if size != entry["bytes"] or digest.hexdigest() != entry["sha256"]:
+                raise ValueError("archive entry bytes differ from the raw evidence SHA256")
+
+
+def pack_evidence(model: Path) -> dict[str, Any]:
+    """Pack staged copies only; leave originals in place until the caller removes them."""
+    root = model / "evidence"
+    archive = model / "evidence.zip"
+    index = model / "evidence-files.json"
+    if archive.exists() or index.exists():
+        raise ValueError("evidence archive or inventory already exists")
+    paths = sorted(root.rglob("*"))
+    if root.is_symlink() or any(path.is_symlink() for path in paths):
+        raise ValueError("evidence archive inputs cannot contain symlinks")
+    files = [path for path in paths if path.is_file()]
+    if not files or any(not path.is_file() and not path.is_dir() for path in paths):
+        raise ValueError("evidence archive needs regular staged files")
+    expected = {}
+    with zipfile.ZipFile(archive, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as target:
+        for path in files:
+            name = path.relative_to(model).as_posix()
+            _evidence_name(name)
+            info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.compress_level = 6
+            info.create_system = 3
+            info.external_attr = (stat.S_IFREG | 0o644) << 16
+            digest = hashlib.sha256()
+            size = 0
+            with path.open("rb") as source, target.open(info, "w", force_zip64=True) as stream:
+                while chunk := source.read(1_048_576):
+                    digest.update(chunk)
+                    size += len(chunk)
+                    stream.write(chunk)
+            expected[name] = {"sha256": digest.hexdigest(), "bytes": size}
+    verify_evidence_archive(archive, expected)
+    # A concurrent edit must not be hidden by deleting a changed staged source.
+    for name, entry in expected.items():
+        path = model / name
+        if path.stat().st_size != entry["bytes"] or sha256(path) != entry["sha256"]:
+            raise ValueError("staged evidence changed while packing the archive")
+    manifest = {
+        "schema_version": 1,
+        "archive": "evidence.zip",
+        "compression": "ZIP_DEFLATED",
+        "compression_level": 6,
+        "archive_sha256": sha256(archive),
+        "archive_bytes": archive.stat().st_size,
+        "files": expected,
+        "extraction_root": "model repository root",
+    }
+    write_json(index, manifest)
+    return manifest
+
+
 def render_model_card(template: str, report: dict[str, Any], selection: dict[str, Any]) -> str:
     summary = report["trained_vs_base"]
     rows = [
@@ -289,8 +386,11 @@ def render_model_card(template: str, report: dict[str, Any], selection: dict[str
     return card + (
         "\n\n## Bundle layout\n\n"
         "`checkpoint/` preserves the selected checkpoint bytes. `code/` contains the source, "
-        "locked environment, tests, scripts and milestone tutorials. `evidence/` contains the "
-        "frozen selection, both validation candidates and complete final evaluation. "
+        "locked environment, tests, scripts and milestone tutorials. `evidence.zip` losslessly "
+        "compresses the frozen selection, both validation candidates and complete final "
+        "evaluation. From the model repository root, run `python -m zipfile -e evidence.zip .` after download verification to restore "
+        "`evidence/` and all original relative paths. `evidence-files.json` records each raw "
+        "file's byte count and SHA256; extraction preserves the original evidence hashes. "
         "From `code/`, run `uv sync --locked --extra ml`; load `../checkpoint` using the "
         "native Stackcraft loader. No access to a private GitHub repository is required.\n"
     )
@@ -444,6 +544,10 @@ def build_release(args: argparse.Namespace) -> dict[str, Any]:
         copy_file(
             args.selection.parent / relative, args.output / "model/evidence/selection" / relative
         )
+    pack_evidence(args.output / "model")
+    # Only remove the copies created in this new staging directory, after read-back
+    # verification. Original run/selection artifacts and checkpoints are untouched.
+    shutil.rmtree(args.output / "model/evidence")
     for name in ("train.jsonl", "validation.jsonl", "manifest.json"):
         copy_file(args.dataset / name, args.output / "dataset" / name)
     for bundle in ("model", "dataset"):
