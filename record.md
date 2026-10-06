@@ -469,3 +469,19 @@ The corrected report also rebuilds byte-identically. All seven external PDF link
 returned anonymous HTTP 200. The Hub automatically added one PDF LFS rule to
 `.gitattributes`; verification treats this explicit metadata addition separately
 from the unchanged experimental payloads.
+
+## 2026-10-06 — Technical report publication complete
+
+Final author: Nima Karimi. Source/PDF commit:
+4f09178ce6b3dfca0844e240fc8e42daee33b5da. Final HF report revision:
+292ce279b2fb8584b7da042b9826c993c400c578. Anonymous exact-revision downloads of
+all seven uploaded report/card files match local bytes, and the GitHub PDF also
+matches. The public model page displays the correct author, PDF link and
+non-peer-reviewed label. All 98 original files other than README/.gitattributes
+retain their original object identities; the dataset revision is unchanged.
+The README gained the report section and the Hub added exactly one LFS rule for
+the PDF. Original study reports and historical release manifests were not edited.
+The report is 101,100 bytes with SHA-256
+5c59b9a42f70cc02ad8f6c18364b7093dca815d09118c39df4ae5639121deef0.
+See reports/technical-report-publication.json for the full compact evidence.
+M7 is complete; hosted compute remains deferred and no purchase was made.

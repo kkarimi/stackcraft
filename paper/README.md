@@ -38,3 +38,5 @@ complete workflow and the reasons for these choices.
 
 The repository's Apache-2.0 license applies. This document does not claim a DOI,
 arXiv record, or an indexed Hugging Face Paper Page.
+
+[Publication verification and exact release revisions](../reports/technical-report-publication.md).

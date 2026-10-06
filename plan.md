@@ -1,7 +1,7 @@
 # Complete Stackcraft
 
 
-Status: M0–M6 complete; M7 technical-report publication active. Hosted CPU deployment remains deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
+Status: M0–M7 complete for the agreed scope. Hosted CPU deployment remains deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
 
 ## Purpose
 
@@ -50,7 +50,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M5: Selected epoch 02 passed exact fresh-process reload and all 1,000 final games. Independent replay/statistics and narrative audits passed. Trained mean lines 16.81 versus native 0.07 and heuristic 76.53. Fixed-seed three-bot recordings with live human play passed desktop/mobile checks; CPU Docker smoke passed. Final report and Tutorial 05 complete.
 - [x] (2026-10-06) M6: Public GitHub/model/dataset released; anonymous pinned downloads passed byte/schema and all 1,017 archived-record checks. Downloaded-code checkpoint reload matched reference probabilities exactly; GLM restored healthy. reports/publication.md and JSON record revisions and evidence. User deferred hosted CPU deployment; the verified local game/Docker demo remains included.
 
-- [ ] (2026-10-06) M7: Publish a polished technical report and figures, reproducible PDF build and tutorial, GitHub source/PDF, and an additive report asset linked from the existing HF model card.
+- [x] (2026-10-06) M7: Seven-page technical report by Nima Karimi, figures, locked CPU-only PDF build and Tutorial 07 published on GitHub and HF. Independent claim review, all-page visual inspection, repeat-build parity and anonymous pinned byte checks passed. See reports/technical-report-publication.json.
 
 ## Milestones
 
@@ -131,7 +131,7 @@ Delegate manuscript preparation separately from build/figure work. Independently
 review numerical and scientific claims, inspect every rendered PDF page, validate
 links and text extraction, and reproduce the build. Add tutorial 07 explaining
 why PDF + repository assets were chosen and how to rebuild. Publish via reviewed
-local commits on main and one additive HF commit; preserve historical release
+local commits on main and additive HF commits; preserve historical release
 manifests and verify the new asset through an anonymous pinned download.
 Record final hashes, revisions, validation and any review findings compactly in
 `record.md` and a new report-publication record. M7 is complete only after the
@@ -201,3 +201,17 @@ artifacts and immutable revisions are listed in reports/publication.md and
 reports/publication.json. Hosted CPU deployment is deferred, not silently claimed
 as delivered. Any later hosted demo or new training study is separate follow-up
 work requiring the user's request; preserve this study's frozen evidence.
+
+
+### Technical report outcome
+
+M7 is complete. The seven-page technical report by Nima Karimi presents the
+frozen study with two vector figures, three data-derived tables, references,
+limitations and AI-assistance disclosure. Its isolated uv build reproduces the
+PDF and figures without a GPU or model download. Tutorial 07 explains each step
+and the alternatives. Independent scientific review and all-page visual checks
+passed. GitHub source/PDF and the additive HF report release were downloaded
+anonymously and matched the reviewed bytes. The model card links the report;
+checkpoint, dataset and original evidence remain unchanged. The only original HF
+metadata changes are the report link and an automatic PDF LFS rule. See
+reports/technical-report-publication.json for the exact revisions and checks.

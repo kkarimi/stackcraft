@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "status": "verified",
+  "date": "2026-10-06",
+  "author": "Nima Karimi",
+  "scope": "Additive technical report; no new model training or evaluation",
+  "github_source_commit": "4f09178ce6b3dfca0844e240fc8e42daee33b5da",
+  "github_pdf": {
+    "url": "https://raw.githubusercontent.com/kkarimi/stackcraft/4f09178ce6b3dfca0844e240fc8e42daee33b5da/paper/stackcraft-technical-report.pdf",
+    "status": 200,
+    "sha256": "5c59b9a42f70cc02ad8f6c18364b7093dca815d09118c39df4ae5639121deef0"
+  },
+  "hf_model": "nima1/stackcraft-clef-flash-lora",
+  "hf_original_release_revision": "c4272310bd6c63ee97a941255abf8f36ff162229",
+  "hf_revision": "292ce279b2fb8584b7da042b9826c993c400c578",
+  "public": true,
+  "hf_files": [
+    {
+      "path": "README.md",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/README.md",
+      "status": 200,
+      "sha256": "64d983ea1e9a006518c8961918b97b8b63c7723482bd4f3148bcb6850d928ca4",
+      "bytes": 9676
+    },
+    {
+      "path": "paper/README.md",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/paper/README.md",
+      "status": 200,
+      "sha256": "f544584d696670068778dbd3b73302aaeb55db505b2b819f1ffcd43d7b0a05f8",
+      "bytes": 1368
+    },
+    {
+      "path": "paper/stackcraft-technical-report.pdf",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/paper/stackcraft-technical-report.pdf",
+      "status": 200,
+      "sha256": "5c59b9a42f70cc02ad8f6c18364b7093dca815d09118c39df4ae5639121deef0",
+      "bytes": 101100
+    },
+    {
+      "path": "paper/stackcraft-technical-report.md",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/paper/stackcraft-technical-report.md",
+      "status": 200,
+      "sha256": "0a452c32f72b4b2eb46cdb3d264fc65420682721598376844cde25d98178ed56",
+      "bytes": 19819
+    },
+    {
+      "path": "paper/figures/outcomes.svg",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/paper/figures/outcomes.svg",
+      "status": 200,
+      "sha256": "27ffe1afc9dc5a0022aa0227b0f3b6c41e94bae5412af54e2e4cdd69170fee1b",
+      "bytes": 68942
+    },
+    {
+      "path": "paper/figures/latency.svg",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/paper/figures/latency.svg",
+      "status": 200,
+      "sha256": "805d33917441ca9ded9f06dd24e078406a071df9676b8cec73759c2e0f74bd9e",
+      "bytes": 54775
+    },
+    {
+      "path": "paper/build-manifest.json",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/292ce279b2fb8584b7da042b9826c993c400c578/paper/build-manifest.json",
+      "status": 200,
+      "sha256": "fbec331c582211a8eb3e0ea48ce712622585768f6983624cce7faf86fda2d082",
+      "bytes": 2015
+    }
+  ],
+  "unchanged_original_files": 98,
+  "original_files_changed": {
+    "README.md": "Prominent technical report links and description",
+    ".gitattributes": "paper/stackcraft-technical-report.pdf filter=lfs diff=lfs merge=lfs -text"
+  },
+  "unchanged_dataset_revision": "211708dd56f1a8af711c060c2ab1ecab35e7166d",
+  "validation": {
+    "scientific_review": "Independent agent checked claims, tables, figure data and disclosures against frozen records",
+    "pdf_visual_review": "All seven pages inspected; after author update, title page re-inspected and pages 2-7 raster bytes unchanged",
+    "pages": 7,
+    "build_repeated_byte_identically": true,
+    "ruff": "passed",
+    "format": "passed",
+    "ty": "passed",
+    "renderer_warnings": 0,
+    "pdf_text_checks": "passed",
+    "pdf_links": [
+      {
+        "url": "https://arxiv.org/abs/2106.09685",
+        "status": 200
+      },
+      {
+        "url": "https://github.com/kkarimi/stackcraft/blob/82a8854258f228a214f0964bbbd3d2b52e2be1e5/reports/final-study.md",
+        "status": 200
+      },
+      {
+        "url": "https://github.com/kkarimi/stackcraft/blob/ad348c20820061b130abfc2890ab8de00b62e7e4/reports/publication.md",
+        "status": 200
+      },
+      {
+        "url": "https://huggingface.co/Cloudflare/clef-flash/blob/17f0b0ad64efb65d273590632833508766b2aae6/README.md",
+        "status": 200
+      },
+      {
+        "url": "https://huggingface.co/datasets/nima1/stackcraft-data/tree/211708dd56f1a8af711c060c2ab1ecab35e7166d",
+        "status": 200
+      },
+      {
+        "url": "https://huggingface.co/nima1",
+        "status": 200
+      },
+      {
+        "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/tree/c4272310bd6c63ee97a941255abf8f36ff162229",
+        "status": 200
+      }
+    ],
+    "hf_model_page": {
+      "author": "Nima Karimi",
+      "pdf_link_present": true,
+      "not_peer_reviewed_label_present": true
+    }
+  },
+  "build_manifest_sha256": "fbec331c582211a8eb3e0ea48ce712622585768f6983624cce7faf86fda2d082"
+}
