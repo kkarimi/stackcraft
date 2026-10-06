@@ -8,13 +8,15 @@ for milestones and acceptance criteria.
 
 ## Releases
 
-- [Play the CPU demo](https://huggingface.co/spaces/nima1/stackcraft)
+- [Planned CPU demo](https://huggingface.co/spaces/nima1/stackcraft) — hosting awaits the account requirement below
 - [Model adapter and decision head](https://huggingface.co/nima1/stackcraft-clef-flash-lora)
 - [Synthetic dataset](https://huggingface.co/datasets/nima1/stackcraft-data)
 - [Source and release verification](https://github.com/kkarimi/stackcraft)
 
 The demo replays actual model decisions alongside live human play. It needs no
-GPU hosting. All four repositories are public.
+GPU hosting. All four destinations are approved for public release. Hugging Face
+currently requires a PRO subscription to create the Docker CPU Space; the local
+demo works, and hosted publication awaits that account requirement.
 
 ## What the experiment found
 

@@ -348,3 +348,15 @@ nima1; all three proposed HF names are currently absent. Add approved links,
 build a fresh release bundle, verify/upload, download exact published revisions,
 check bytes/schema and GPU reload parity, and exercise the hosted demo.
 Only the already authorized GLM service may be temporarily stopped/restored.
+
+## 2026-10-06 — GitHub/dataset published; Docker Space account gate
+
+GitHub kkarimi/stackcraft was created PUBLIC and source commit 898c958 pushed.
+Dataset upload succeeded at 4fe704eeaeaf3ea140544052c510abde2b2aa804.
+Creating Docker Space nima1/stackcraft with cpu-basic returned HTTP 402: personal
+Docker CPU Spaces now require PRO. Official Spaces overview confirms no hourly
+cpu-basic charge but a paid-plan creation requirement. No account subscription
+or paid hardware was purchased. Asked the user to enable PRO or supply another
+CPU host; model upload continues independently. Updated current source hosting
+instructions to disclose the actual prerequisite. Rebuild release source metadata
+after hosting is resolved; no frozen model/dataset/evaluation bytes will change.

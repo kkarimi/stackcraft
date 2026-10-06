@@ -155,8 +155,10 @@ Confirm concrete destinations and visibility after the local bundle is reviewabl
 Use existing CLI authentication; do not put access tokens in code, Git, model cards,
 commands or chat. Create the approved GitHub repository and push the reviewed local
 commits. Create the approved model, dataset and Docker Space repositories, uploading
-the corresponding staged directories only. The Space can use the default free CPU
-hardware; this study does not authorize a paid GPU upgrade.
+the corresponding staged directories only. The Space uses `cpu-basic`, with no hourly hardware charge. Creating a personal
+Docker Space nevertheless requires a Hugging Face PRO subscription under the
+current policy; see [the deployment guide](../demo-hosting.md). No subscription
+purchase or paid GPU upgrade is authorized by this study.
 
 Save immutable Hugging Face commit revisions returned by each upload, together with
 the Git commit and model/dataset/demo URLs. Repository names alone are mutable;

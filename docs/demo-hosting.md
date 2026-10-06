@@ -87,6 +87,15 @@ Use a free host port; do not stop another application merely to reclaim 8080.
 
 ## Configure a Hugging Face Docker Space
 
+As checked on 2026-10-06, Hugging Face requires a PRO subscription for a personal
+account to create a Docker Space, including `cpu-basic`. That hardware has no
+hourly charge, but it is not subscription-free hosting. Static Spaces have different
+requirements and cannot run this Python HTTP service unchanged. See the
+[official Spaces overview](https://huggingface.co/docs/hub/spaces-overview).
+The initial `nima1/stackcraft` creation returned HTTP 402; no subscription or paid
+hardware was purchased. Resolve the account requirement or choose another CPU host
+before following the deployment steps below.
+
 Once publication is authorized, the Space repository needs the Dockerfile,
 `.dockerignore`, `pyproject.toml`, `uv.lock`, `src/` including the reviewed replay
 asset, and a README. Put this configuration at the top of the Space README:
