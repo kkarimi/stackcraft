@@ -55,6 +55,7 @@
       "final_test": true
     }
   ],
+  "report_url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/blob/main/code/reports/final-study.md",
   "players": [
     {
       "id": "base",

@@ -29,10 +29,11 @@ the reproducibility source in the model release and the Space's game source are
 public if those repositories are public. Review the concrete local bundle, proposed
 owners and visibility before creating external repositories.
 
-The proposed destinations are `kkarimi/stackcraft` on GitHub and
+The owner approved all four destinations as public on 2026-10-06: `kkarimi/stackcraft` on GitHub and
 `nima1/stackcraft-clef-flash-lora`, `nima1/stackcraft-data`, and Space
-`nima1/stackcraft` on Hugging Face. They are proposals until the owner approves this
-new project's publication settings. Do not infer approval from a previous project.
+`nima1/stackcraft` on Hugging Face. This approval explicitly includes the source
+inside the public model and Space repositories. The final release report in GitHub
+records immutable revisions and actual download/hosting verification.
 
 ## Preserve evidence while preparing checkpoint metadata
 

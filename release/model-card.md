@@ -27,6 +27,11 @@ is downloaded separately; these files are not a standalone model. Clef-flash is
 based on Qwen3.5-9B. The native schema head scores every supplied legal placement
 in one forward pass, with no generated text or command parsing.
 
+Related releases: [source and tutorials](https://github.com/kkarimi/stackcraft),
+[model](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
+[dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
+[playable CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+
 ## Intended use
 
 Learn how to build deterministic environments, generate search-teacher labels,

@@ -6,7 +6,7 @@ for native Clef and **76.53** for the cheap heuristic on all 200 reserved seeds.
 This tutorial gives the frozen procedure and explains the measured outcome. See
 [the final study](../../reports/final-study.md) for full results and limitations,
 and [the compact JSON](../../reports/final-summary.json) for exact metrics and hashes.
-Publication is pending; the experiment results are complete.
+The experiment results are complete; release verification is tracked separately.
 
 ## Separate learning, selection and final testing
 

@@ -337,3 +337,14 @@ explicit goal and plan require confirming destinations and visibility first.
 Mark the goal blocked pending that existing question, not complete or paused.
 On answer, rebuild with approved cross-links and the loading correction, publish
 the agreed repositories, then verify actual downloads and the hosted demo.
+
+## 2026-10-06 — All four public repositories approved
+
+User explicitly selected all four public for GitHub kkarimi/stackcraft, HF model
+nima1/stackcraft-clef-flash-lora, dataset nima1/stackcraft-data, and CPU Space
+nima1/stackcraft after disclosure that public artifacts contain source code.
+The publication blocker is resolved. Existing CLI identities are kkarimi and
+nima1; all three proposed HF names are currently absent. Add approved links,
+build a fresh release bundle, verify/upload, download exact published revisions,
+check bytes/schema and GPU reload parity, and exercise the hosted demo.
+Only the already authorized GLM service may be temporarily stopped/restored.

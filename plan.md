@@ -1,7 +1,7 @@
 # Complete Stackcraft
 
 
-Status: blocked on new-project publication destinations/visibility. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
+Status: active. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
 
 ## Purpose
 
@@ -163,16 +163,13 @@ Publication and fresh-download verification remain outstanding under M6.
 
 ## Next Action
 
-The local release is staged at `runs/release-v1` from clean source commit
-`3c98736`. Its byte/schema/card review passed. The concrete publication question is
-pending; await the user's destinations/visibility answer before creating remote repositories.
-Proposed GitHub: `kkarimi/stackcraft`; Hugging Face model:
-`nima1/stackcraft-clef-flash-lora`; dataset: `nima1/stackcraft-data`;
-Docker Space: `nima1/stackcraft`. Public HF artifacts include reproducibility
-source, even if GitHub is private. No public upload has occurred.
+The user approved all four repositories PUBLIC on 2026-10-06: GitHub
+`kkarimi/stackcraft`, Hugging Face model `nima1/stackcraft-clef-flash-lora`,
+dataset `nima1/stackcraft-data`, and CPU demo Space `nima1/stackcraft`.
+Public reproducibility/game source was explicitly disclosed and approved.
 
-After authorization, add approved cross-links, rebuild the exact final bundle,
-publish, record immutable revisions, verify fresh downloads and checkpoint parity,
-and test the actual hosted demo. Preserve all frozen checkpoint/evaluation bytes.
-GLM is restored and healthy. The local game is available on port 8087.
-Resume after the publication answer; do not mark the goal complete until M6 passes.
+Add the approved cross-links, rebuild and verify the final bundle, publish,
+record immutable revisions, verify fresh downloads and checkpoint parity,
+and test the hosted demo. Preserve all frozen checkpoint/evaluation bytes.
+The existing GLM stop/restore authorization applies to the bounded reload check.
+No paid hardware is authorized. Complete M6 before marking the goal complete.

@@ -10,7 +10,8 @@ These are results from all **200 held-out piece sequences**, seeds 30000–30199
 with a 200-piece cap for each of five players: 1,000 completed episodes. There
 were **zero inference errors and zero invalid decisions**. Training, selection,
 reload verification, final evaluation and an independent computational audit are
-complete. Publication is pending; this report does not claim a published release.
+complete. Publication and fresh-download verification are tracked separately in
+the [source repository](https://github.com/kkarimi/stackcraft).
 
 The [compact machine-readable report](final-summary.json) contains full-precision
 summaries, all paired intervals, runtime configuration and evidence hashes.
@@ -210,7 +211,9 @@ locked environment, tests and tutorials; `evidence/evaluation/` with the full
 report, request and per-player episode records; and `evidence/selection/` with
 the frozen choice and both candidates' validation evidence. These portable paths
 are relative to the model repository root and do not require access to private Git
-history. This report does not supply publication URLs before publication occurs.
+history. See the [model release](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
+[dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
+[CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
 [Tutorial 05](../docs/tutorials/05-evaluation.md) gives the reproduction procedure.
 
 The principal limitations are one training seed, a small synthetic dataset, an

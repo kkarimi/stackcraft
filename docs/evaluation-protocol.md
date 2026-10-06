@@ -5,7 +5,7 @@ cap, with all five players and no errors. Training, validation selection, reload
 verification, final evaluation and the independent CPU audit are complete. The
 [final study](../reports/final-study.md) reports the measured outcomes and
 [compact JSON](../reports/final-summary.json) preserves exact statistics and hashes.
-Publication is pending.
+Release verification is tracked separately in the source repository.
 
 The procedure below records decisions frozen before test results were opened;
 completion does not authorize tuning against these now-disclosed sequences.

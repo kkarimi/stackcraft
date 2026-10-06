@@ -3,9 +3,18 @@
 A playable, deterministic falling-block game for studying decision models. The goal is a fair comparison of a heuristic player, unchanged Clef-flash, and a fine-tuned model on identical piece sequences.
 
 **Status:** training, validation selection, fresh-process reload and the 1,000-game
-held-out evaluation are complete. The final report and recorded demo are being
-reviewed for release; publication remains pending. See [the project plan](plan.md)
+held-out evaluation are complete. The final report and recorded demo passed review. See [the project plan](plan.md)
 for milestones and acceptance criteria.
+
+## Releases
+
+- [Play the CPU demo](https://huggingface.co/spaces/nima1/stackcraft)
+- [Model adapter and decision head](https://huggingface.co/nima1/stackcraft-clef-flash-lora)
+- [Synthetic dataset](https://huggingface.co/datasets/nima1/stackcraft-data)
+- [Source and release verification](https://github.com/kkarimi/stackcraft)
+
+The demo replays actual model decisions alongside live human play. It needs no
+GPU hosting. All four repositories are public.
 
 ## What the experiment found
 
@@ -41,7 +50,7 @@ uv sync --locked
 uv run --locked stackcraft serve --port 8087
 ```
 
-Open http://127.0.0.1:8087. The game needs no GPU or model credential. Sessions are local, in memory, and expire when the server restarts; download a replay to retain a game. The local service retains 128 sessions and limits each to 2,000 placements. Use a single server worker. The public demo release is being prepared; the game does not require an account.
+Open http://127.0.0.1:8087. The game needs no GPU or model credential. Sessions are local, in memory, and expire when the server restarts; download a replay to retain a game. The local service retains 128 sessions and limits each to 2,000 placements. Use a single server worker. The game does not require an account.
 
 ## Development
 
@@ -114,7 +123,7 @@ as a new experiment, not quietly substituted into this study.
 The [Docker deployment guide](docs/demo-hosting.md) builds a CPU-only image with
 no model credentials or Torch. Human gameplay is live; model comparisons replay
 recorded decisions and probabilities. Playback speed is separate from measured
-inference latency. Local packaging has been verified; public hosting is pending.
+inference latency. Local packaging has been verified. Release verification is recorded in the GitHub repository.
 
 Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Stackcraft is independent
 of Cloudflare, Qwen and Tetris.

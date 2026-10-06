@@ -33,6 +33,11 @@ affect these rules. Metadata includes seed and turn for reproduction; **do not
 feed seed or hidden sequence metadata to the policy**. Stackcraft's encoder feeds
 only the visible observation. Read the dataset schema and tutorial03 before use.
 
+Related releases: [source and tutorials](https://github.com/kkarimi/stackcraft),
+[model](https://huggingface.co/nima1/stackcraft-clef-flash-lora),
+[dataset](https://huggingface.co/datasets/nima1/stackcraft-data), and
+[playable CPU demo](https://huggingface.co/spaces/nima1/stackcraft).
+
 ## Generation
 
 The teacher searches the current placement and exactly one preview placement.
