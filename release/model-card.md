@@ -15,6 +15,12 @@ tags:
 
 # Stackcraft Clef-Flash
 
+[Read the technical report (PDF)](https://huggingface.co/nima1/stackcraft-clef-flash-lora/resolve/main/paper/stackcraft-technical-report.pdf) ·
+[Paper source and build instructions](https://github.com/kkarimi/stackcraft/tree/main/paper)
+
+The report presents the completed synthetic study, with methods, paired results,
+limitations and AI-assistance disclosure. It is not peer reviewed.
+
 **Release preparation: full-study results and selected checkpoint are pending.**
 This is a small, synthetic imitation-learning study of a falling-block placement
 policy. It is not a generally capable game agent, reinforcement-learning result,

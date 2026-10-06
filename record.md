@@ -432,3 +432,32 @@ publication reports preserve links, revisions, trusted manifest, download eviden
 archive validation and GPU parity/restoration. Hosting is deferred by explicit
 user instruction; local gameplay/Docker verification remains delivered. Push this
 completion record, verify remote main, then complete the goal.
+
+## 2026-10-06 — Technical report publication intent
+
+The user approved converting the existing report into a polished technical report,
+with figures and PDF, publishing source on GitHub and attaching it to the existing
+HF model repository. No new experiment is needed. Acceptance: an independently
+reviewed manuscript grounded in frozen evidence; a separate locked uv paper build;
+readable inspected PDF; milestone tutorial; anonymous verification of the public
+PDF hash and additive HF revision. Preserve all original reports, release manifests,
+weights, data and model code. Existing direct-main local-commit workflow applies.
+Manuscript preparation and PDF/figure implementation have disjoint file ownership.
+
+The seven-page report passed an independent agent review against the frozen
+summary, dataset and publication records. All three tables and figure data agree;
+the review confirmed the single-training-seed, precision-comparator, approximate
+teacher, workload-latency and four-reference-reload limitations. Synchronized the
+source title and fixed italic figure-caption grouping before final render. All
+seven PDF pages were inspected as images; no clipped text, detached figure captions
+or unreadable tables remained. The optional author prompt received no answer during
+preparation, so the stated default Nima (nima1) is used without an affiliation.
+
+The isolated paper environment is locked separately; main uv.lock and experimental
+source/reports remain unchanged. Ruff, formatting and ty passed for the builder.
+Two consecutive builds produced identical PDF, Markdown, SVG and manifest bytes.
+The PDF has 7 pages and 101,109 bytes, SHA-256
+bc006f185507965483576254ce241d74afcb8515f8fa56b766cade464b672829.
+The PDF embeds fonts and passes text/local-link checks. Tutorial 07 records the
+rebuild, scientific review and additive publication procedure. Only intended paper,
+README/card-template, tutorial and planning files will enter the source commit.

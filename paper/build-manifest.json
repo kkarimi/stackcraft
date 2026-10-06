@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "scope": "Presentation of frozen evidence; no new experiments or statistical estimates",
+  "frozen_evidence": {
+    "reports/final-summary.json": "63cdd8c6f3a51a943041714d255cbd9c3d6711f25e028dc6cfd7042ff08ff066",
+    "reports/published-checkpoint-reload.json": "a89b2e65f465f97966de78d9107671c647b1b1b2546b4f39840d1f941cd0b86b",
+    "reports/publication.json": "f2e32a4379c4334ee33ca345e6167a21610ef3c0d13e17ed97c4dbe3a819bfd0"
+  },
+  "inputs": {
+    "paper/report.md": "641733f78eeda30c311805a8571736649c2f51b61107458425ff4d30e6a940cb",
+    "paper/metadata.json": "93e9a55b493cd9dd74f1846e7b47d4545290f31583e200140bcbbdb328913c15",
+    "paper/style.css": "be4ce64f842794b229e7b2a742b5a09d2218e320fbd8acaf8ef640ebf7cb6442",
+    "paper/build.py": "6f55036d9039fc24948d3c609275305d2ad32cfa55fe99f2d7b68e5fde9af06c",
+    "paper/pyproject.toml": "656c6a0eb0768df38ba263a0fdab9283cc7a95487fe485162ef5919b876e00ee",
+    "paper/uv.lock": "216fea2d72c52d181642590774f43f3945998d7c099bfa59aae9c5e0661bc0dd",
+    "paper/evidence.json": "e31ebb7384e80efd68f6ecdd5800f7cc8ff5821e3db74c21fa2e24e36c9ac33c"
+  },
+  "outputs": {
+    "stackcraft-technical-report.pdf": {
+      "sha256": "bc006f185507965483576254ce241d74afcb8515f8fa56b766cade464b672829",
+      "bytes": 101109
+    },
+    "stackcraft-technical-report.md": {
+      "sha256": "95822e9954457f621f8e0173776a24d7390d8a2662e1c6ea94ceaaf4c6331da8",
+      "bytes": 19820
+    },
+    "figures/latency.svg": {
+      "sha256": "805d33917441ca9ded9f06dd24e078406a071df9676b8cec73759c2e0f74bd9e",
+      "bytes": 54775
+    },
+    "figures/outcomes.svg": {
+      "sha256": "27ffe1afc9dc5a0022aa0227b0f3b6c41e94bae5412af54e2e4cdd69170fee1b",
+      "bytes": 68942
+    }
+  },
+  "python": "3.13.16",
+  "versions": {
+    "matplotlib": "3.11.2",
+    "markdown-it-py": "4.2.0",
+    "weasyprint": "70.0",
+    "pypdf": "6.19.0"
+  },
+  "pages": 7,
+  "pdf_text_checks": "passed",
+  "fonts": "DejaVu fonts from the locked Matplotlib distribution; embedded in PDF"
+}

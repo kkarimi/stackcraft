@@ -8,6 +8,7 @@ for milestones and acceptance criteria.
 
 ## Releases
 
+- [Technical report (PDF)](paper/stackcraft-technical-report.pdf) · [read online](paper/stackcraft-technical-report.md) · [rebuild the paper](paper/README.md)
 - [Run the playable demo locally](docs/demo-hosting.md)
 - [Model adapter and decision head](https://huggingface.co/nima1/stackcraft-clef-flash-lora)
 - [Synthetic dataset](https://huggingface.co/datasets/nima1/stackcraft-data)
@@ -118,6 +119,7 @@ These are engineering measurements, not evidence of better game play. See
 5. [Real GPU training and checkpoint fidelity](docs/tutorials/04-gpu-feasibility.md)
 6. [Validation selection and paired game evaluation](docs/tutorials/05-evaluation.md)
 7. [Release, public reproduction and fresh-download checks](docs/tutorials/06-release.md)
+8. [Write, typeset and publish a reproducible technical report](docs/tutorials/07-technical-report.md)
 
 Each tutorial explains the commands, evidence, design choices and alternatives.
 The [evaluation protocol](docs/evaluation-protocol.md) freezes 200 test sequences

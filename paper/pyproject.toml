@@ -1,0 +1,15 @@
+[project]
+name = "stackcraft-paper"
+version = "1.0.0"
+description = "CPU-only, reproducible typesetting of the frozen Stackcraft study"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "markdown-it-py>=4,<5",
+    "matplotlib>=3.10,<4",
+    "weasyprint>=68,<71",
+    "pypdf>=6,<7",
+]
+
+[tool.uv]
+package = false
+

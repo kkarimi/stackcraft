@@ -1,7 +1,7 @@
 # Complete Stackcraft
 
 
-Status: complete for the agreed scope; hosted CPU deployment deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
+Status: M0–M6 complete; M7 technical-report publication active. Hosted CPU deployment remains deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
 
 ## Purpose
 
@@ -18,7 +18,7 @@ Clef returns probabilities over supplied choices rather than generating a move a
 ## Plan Layout and Workflow
 
 
-`plan.md` is the source of truth for milestones. `record.md` stores compact evidence and experiment intentions. Tutorials belong in `docs/tutorials/00-foundation.md` through `06-release.md`. Keep plans, concise records, source, tests and tutorials in Git. Ignore environments, credentials, downloaded weights, raw datasets, checkpoints, and bulky run outputs; retain artifact hashes and release links in reports.
+`plan.md` is the source of truth for milestones. `record.md` stores compact evidence and experiment intentions. Tutorials belong in `docs/tutorials/00-foundation.md` through `07-technical-report.md`. The M7 paper source, isolated uv environment and generated PDF live in `paper/`. Keep plans, concise records, source, tests and tutorials in Git. Ignore environments, credentials, downloaded weights, raw datasets, checkpoints, and bulky run outputs; retain artifact hashes and release links in reports.
 
 Use local commits on main initially; no pull requests are required. Review each diff before committing. Remote repository and artifact names will use Stackcraft where available. Confirm new-project destinations and visibility before external publication; previous private-GitHub/public-Hugging-Face preferences are context, not a new publication decision. Prepare concrete release artifacts before requesting that final decision. No paid cloud compute is authorized by this plan.
 
@@ -49,6 +49,8 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
 - [x] (2026-10-05) M5: Selected epoch 02 passed exact fresh-process reload and all 1,000 final games. Independent replay/statistics and narrative audits passed. Trained mean lines 16.81 versus native 0.07 and heuristic 76.53. Fixed-seed three-bot recordings with live human play passed desktop/mobile checks; CPU Docker smoke passed. Final report and Tutorial 05 complete.
 - [x] (2026-10-06) M6: Public GitHub/model/dataset released; anonymous pinned downloads passed byte/schema and all 1,017 archived-record checks. Downloaded-code checkpoint reload matched reference probabilities exactly; GLM restored healthy. reports/publication.md and JSON record revisions and evidence. User deferred hosted CPU deployment; the verified local game/Docker demo remains included.
+
+- [ ] (2026-10-06) M7: Publish a polished technical report and figures, reproducible PDF build and tutorial, GitHub source/PDF, and an additive report asset linked from the existing HF model card.
 
 ## Milestones
 
@@ -110,6 +112,32 @@ Prepare model and dataset cards, dependency/license attribution, reproduction co
 
 After authorization, publish the agreed code, model, dataset and demo. Download released artifacts into a separate directory, validate schema/hashes and model output parity, and test published links. Tutorial 06 explains what is shipped, how another person reproduces inference/training, deployment tradeoffs, and measured limitations. Only then mark all milestones and this goal complete.
 
+### M7 — Technical report and PDF publication
+
+User approved the recommendation to turn the existing study into a technical
+report, publish source on GitHub, and attach a PDF to the existing public HF model
+repository. This authorizes these additive publications. No arXiv submission,
+blog, Space, subscription, retraining, or paid compute is in scope.
+
+Use the frozen final study/summary and publication verification as the evidence.
+Keep experimental code, weights, data, original reports and ML lockfile unchanged.
+Create `paper/report.md`, figures derived from recorded metrics, an isolated locked
+uv build under `paper/`, and `paper/stackcraft-technical-report.pdf`. Include methods,
+paired uncertainty, the stronger heuristic, single-training-seed limits, synthetic
+data provenance, references, artifact revisions and AI assistance disclosure.
+Use the requested author display name if supplied, otherwise Nima (nima1), with
+no invented affiliation. Clearly label the work a non-peer-reviewed technical report.
+
+Delegate manuscript preparation separately from build/figure work. Independently
+review numerical and scientific claims, inspect every rendered PDF page, validate
+links and text extraction, and reproduce the build. Add tutorial 07 explaining
+why PDF + repository assets were chosen and how to rebuild. Publish via reviewed
+local commits on main and one additive HF commit; preserve historical release
+manifests and verify the new asset through an anonymous pinned download.
+Record final hashes, revisions, validation and any review findings compactly in
+`record.md` and a new report-publication record. M7 is complete only after the
+public PDF and source links work and downloaded bytes match the reviewed artifact.
+
 ## Interfaces and Dependencies
 
 
@@ -141,6 +169,8 @@ Use unique run directories with immutable configs and artifact hashes. Resume ch
 Training feasibility passed on the RTX5090 with BF16 backbone and FP32 decision head. Community `MersivMedia/clef-finetune` documents only a tiny random-model CPU test; it is a source to inspect, not evidence of successful Clef training. RouterPlus documents a Tetris comparison application, demonstrating interest in the format but not fine-tuning gains. Read-only hardware reconnaissance found the local GLM llama.cpp Docker service occupies about 23 GB of the 32 GB card. The user authorized temporarily stopping and restoring that service. The real-weight baseline passed, and the service was restored and its in-container health endpoint returned status ok.
 
 ## Decision Log
+
+- 2026-10-06: User approved a polished technical report/PDF on GitHub and as an asset in the existing public HF model repository. Keep the original study and release verification immutable; document the additive publication separately.
 
 
 - 2026-10-05: User selected a Tetris-style project over a dungeon game because it looks fun. Use Stackcraft as the working name.
