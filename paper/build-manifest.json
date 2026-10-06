@@ -8,7 +8,7 @@
   },
   "inputs": {
     "paper/report.md": "641733f78eeda30c311805a8571736649c2f51b61107458425ff4d30e6a940cb",
-    "paper/metadata.json": "93e9a55b493cd9dd74f1846e7b47d4545290f31583e200140bcbbdb328913c15",
+    "paper/metadata.json": "78e7a30a2b15f7550a7e7f9fc001c3e395d83b844411e5f6fa380d0b3e21541b",
     "paper/style.css": "be4ce64f842794b229e7b2a742b5a09d2218e320fbd8acaf8ef640ebf7cb6442",
     "paper/build.py": "6f55036d9039fc24948d3c609275305d2ad32cfa55fe99f2d7b68e5fde9af06c",
     "paper/pyproject.toml": "656c6a0eb0768df38ba263a0fdab9283cc7a95487fe485162ef5919b876e00ee",
@@ -17,12 +17,12 @@
   },
   "outputs": {
     "stackcraft-technical-report.pdf": {
-      "sha256": "bc006f185507965483576254ce241d74afcb8515f8fa56b766cade464b672829",
-      "bytes": 101109
+      "sha256": "5c59b9a42f70cc02ad8f6c18364b7093dca815d09118c39df4ae5639121deef0",
+      "bytes": 101100
     },
     "stackcraft-technical-report.md": {
-      "sha256": "95822e9954457f621f8e0173776a24d7390d8a2662e1c6ea94ceaaf4c6331da8",
-      "bytes": 19820
+      "sha256": "0a452c32f72b4b2eb46cdb3d264fc65420682721598376844cde25d98178ed56",
+      "bytes": 19819
     },
     "figures/latency.svg": {
       "sha256": "805d33917441ca9ded9f06dd24e078406a071df9676b8cec73759c2e0f74bd9e",

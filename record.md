@@ -450,14 +450,22 @@ the review confirmed the single-training-seed, precision-comparator, approximate
 teacher, workload-latency and four-reference-reload limitations. Synchronized the
 source title and fixed italic figure-caption grouping before final render. All
 seven PDF pages were inspected as images; no clipped text, detached figure captions
-or unreadable tables remained. The optional author prompt received no answer during
-preparation, so the stated default Nima (nima1) is used without an affiliation.
+or unreadable tables remained. The initial render used the stated default Nima (nima1). The user subsequently
+selected Nima Karimi; update the byline, PDF metadata and public descriptions
+before the final publication verification. No affiliation is listed.
 
 The isolated paper environment is locked separately; main uv.lock and experimental
 source/reports remain unchanged. Ruff, formatting and ty passed for the builder.
 Two consecutive builds produced identical PDF, Markdown, SVG and manifest bytes.
-The PDF has 7 pages and 101,109 bytes, SHA-256
-bc006f185507965483576254ce241d74afcb8515f8fa56b766cade464b672829.
+The final Nima Karimi PDF has 7 pages and 101,100 bytes, SHA-256
+5c59b9a42f70cc02ad8f6c18364b7093dca815d09118c39df4ae5639121deef0.
 The PDF embeds fonts and passes text/local-link checks. Tutorial 07 records the
 rebuild, scientific review and additive publication procedure. Only intended paper,
 README/card-template, tutorial and planning files will enter the source commit.
+
+The user confirmed Nima Karimi as author. The corrected PDF metadata and title
+page were checked; rendered pages 2–7 are byte-identical to the inspected pages.
+The corrected report also rebuilds byte-identically. All seven external PDF links
+returned anonymous HTTP 200. The Hub automatically added one PDF LFS rule to
+`.gitattributes`; verification treats this explicit metadata addition separately
+from the unchanged experimental payloads.

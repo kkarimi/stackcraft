@@ -1,6 +1,6 @@
 # Stackcraft: Adapting Clef-flash to a Falling-Block Decision Task
 
-Nima (nima1) · 2026-10-06 · Version 1.0
+Nima Karimi · 2026-10-06 · Version 1.0
 
 **Technical report · Not peer reviewed**
 

@@ -125,8 +125,7 @@ Create `paper/report.md`, figures derived from recorded metrics, an isolated loc
 uv build under `paper/`, and `paper/stackcraft-technical-report.pdf`. Include methods,
 paired uncertainty, the stronger heuristic, single-training-seed limits, synthetic
 data provenance, references, artifact revisions and AI assistance disclosure.
-Use the requested author display name if supplied, otherwise Nima (nima1), with
-no invented affiliation. Clearly label the work a non-peer-reviewed technical report.
+Use the user-selected author display name Nima Karimi, with no affiliation. Clearly label the work a non-peer-reviewed technical report.
 
 Delegate manuscript preparation separately from build/figure work. Independently
 review numerical and scientific claims, inspect every rendered PDF page, validate
