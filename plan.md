@@ -1,7 +1,7 @@
 # Complete Stackcraft
 
 
-Status: active; hosted CPU deployment deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
+Status: complete for the agreed scope; hosted CPU deployment deferred by user on 2026-10-06. This living plan owns the Stackcraft goal. Update Progress, Surprises and Discoveries, Decision Log, and Outcomes and Retrospective as work proceeds.
 
 ## Purpose
 
@@ -48,7 +48,7 @@ An honest negative training result is acceptable scientific evidence; silently r
 - [x] (2026-10-05) M3: Search expert, frozen disjoint splits, duplicate audit and tutorial03 complete.827train/215validation regenerated from70d84bd and matched the independently audited pilot; manifest retained under reports/.
 - [x] (2026-10-05) M4: Real head-only and rank4LoRA GPU steps passed finite-gradient/intended-change/frozen-hash checks. Both fresh-process reloads reproduce probabilities exactly. Tutorial04 and reports/gpu-feasibility.json retain evidence and caught PEFT serialization issue.
 - [x] (2026-10-05) M5: Selected epoch 02 passed exact fresh-process reload and all 1,000 final games. Independent replay/statistics and narrative audits passed. Trained mean lines 16.81 versus native 0.07 and heuristic 76.53. Fixed-seed three-bot recordings with live human play passed desktop/mobile checks; CPU Docker smoke passed. Final report and Tutorial 05 complete.
-- [ ] M6: Publish public code/model/data, verify fresh downloads and checkpoint parity, and finish release records. User deferred hosted CPU deployment; the verified local game/Docker demo remains included.
+- [x] (2026-10-06) M6: Public GitHub/model/dataset released; anonymous pinned downloads passed byte/schema and all 1,017 archived-record checks. Downloaded-code checkpoint reload matched reference probabilities exactly; GLM restored healthy. reports/publication.md and JSON record revisions and evidence. User deferred hosted CPU deployment; the verified local game/Docker demo remains included.
 
 ## Milestones
 
@@ -152,26 +152,23 @@ Training feasibility passed on the RTX5090 with BF16 backbone and FP32 decision 
 ## Outcomes and Retrospective
 
 
-M0–M5 are complete. Fine-tuning improved the selected model over unchanged Clef,
+M0–M6 are complete for the agreed scope. Fine-tuning improved the selected model over unchanged Clef,
 with mean lines 16.81 versus 0.07 and a paired gain interval [15.74, 17.77]. The
 heuristic remains substantially stronger (76.53 lines) and faster. All 1,000
 held-out episodes and all paired intervals passed independent review; no errors
 were excluded. The final comparison demo includes live human play alongside
 actual base/trained/heuristic recordings and passed desktop/mobile and CPU Docker
 checks. Full report, compact metrics, source hashes and all seven tutorials exist.
-Publication and fresh-download verification remain outstanding under M6.
+Public GitHub/model/dataset publication and fresh-download verification are complete.
+The actual downloaded checkpoint passed exact reference-probability parity, and
+GLM was restored healthy. See reports/publication.md for immutable revisions and
+verification evidence. Hosted CPU deployment was explicitly deferred by the user.
 
 ## Next Action
 
-The user approved public GitHub `kkarimi/stackcraft`, model
-`nima1/stackcraft-clef-flash-lora` and dataset `nima1/stackcraft-data`.
-On 2026-10-06 the user said "Forget the cpu hosting for now" after Hugging Face's
-Docker PRO requirement. Hosted deployment is explicitly deferred; do not create
-a Space or purchase any subscription. Keep the local game and Docker instructions.
-
-Complete the compressed model upload, update release documentation to reflect
-this deferral, verify fresh model/dataset downloads and bounded GPU reload parity,
-and record public source/release revisions. The previous desktop/mobile/Docker
-checks satisfy the retained local-demo requirement. Mark M6 complete after the
-remaining publication and verification evidence exists, without claiming a hosted
-demo. Existing GLM stop/restore authorization applies to the reload check.
+No required implementation or experiment remains within the agreed scope.
+The completion commit publishes final verification records on GitHub. Public
+artifacts and immutable revisions are listed in reports/publication.md and
+reports/publication.json. Hosted CPU deployment is deferred, not silently claimed
+as delivered. Any later hosted demo or new training study is separate follow-up
+work requiring the user's request; preserve this study's frozen evidence.

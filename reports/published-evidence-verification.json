@@ -1,0 +1,8 @@
+{
+  "status": "verified",
+  "entries": 1017,
+  "raw_bytes": 2222025418,
+  "archive_sha256": "42140794ea00edc0b4918f5f9ae79faf0ac6fd6d5cdcd01df43438ac12d5afee",
+  "archive_bytes": 74541451,
+  "method": "Stream read actual downloaded ZIP and compare every raw file with trusted release inventory"
+}

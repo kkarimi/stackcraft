@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-06",
+  "evidence": {
+    "published-checkpoint-reload.json": {
+      "bytes": 767,
+      "sha256": "a89b2e65f465f97966de78d9107671c647b1b1b2546b4f39840d1f941cd0b86b"
+    },
+    "published-download-provenance.json": {
+      "bytes": 1052,
+      "sha256": "f65c138e9611c79196c3c17388f9ee4f462f9bdc72531311b68a480e72ab5bad"
+    },
+    "published-evidence-verification.json": {
+      "bytes": 297,
+      "sha256": "7b97d62a4723f7ebe3261836b723b7b35945eff67f194b0cf78c2111c40ec4ec"
+    },
+    "published-files-verification.json": {
+      "bytes": 17441,
+      "sha256": "46cd68360c0b15cfb5177dd026141eaf060ddd12dab3c30de194407f48484646"
+    },
+    "published-gpu-restoration.json": {
+      "bytes": 809,
+      "sha256": "fbe4997c5feb3405eac463b536533fba5b918bbd0fc59dee473c875b8ef59803"
+    },
+    "published-release-manifest.json": {
+      "bytes": 21707,
+      "sha256": "c37baf81670eacc8ec92a43219a377b35c3b61a78372ad7323d436000a543948"
+    }
+  },
+  "github": {
+    "artifact_source_commit": "82a8854258f228a214f0964bbbd3d2b52e2be1e5",
+    "url": "https://github.com/kkarimi/stackcraft",
+    "verification_records": "in the containing Git commit on main",
+    "visibility": "public"
+  },
+  "hosted_demo": {
+    "instruction": "Forget the cpu hosting for now",
+    "local_demo_verified": true,
+    "space_created": false,
+    "status": "deferred by user",
+    "subscription_or_paid_compute_purchased": false
+  },
+  "huggingface": {
+    "dataset": {
+      "commit_url": "https://huggingface.co/datasets/nima1/stackcraft-data/commit/211708dd56f1a8af711c060c2ab1ecab35e7166d",
+      "private": false,
+      "repo_id": "nima1/stackcraft-data",
+      "repo_type": "dataset",
+      "revision": "211708dd56f1a8af711c060c2ab1ecab35e7166d",
+      "status": "uploaded",
+      "url": "https://huggingface.co/datasets/nima1/stackcraft-data"
+    },
+    "model": {
+      "commit_url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/commit/c4272310bd6c63ee97a941255abf8f36ff162229",
+      "private": false,
+      "repo_id": "nima1/stackcraft-clef-flash-lora",
+      "repo_type": "model",
+      "revision": "c4272310bd6c63ee97a941255abf8f36ff162229",
+      "status": "uploaded",
+      "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora"
+    }
+  },
+  "limitations": [
+    "One training seed and one small synthetic dataset.",
+    "The heuristic remained much stronger and faster than the trained model.",
+    "GPU parity checks four fixed reference distributions, not every possible input.",
+    "The local game and recorded comparison are verified; no hosted Space is claimed."
+  ],
+  "schema_version": 1,
+  "source_identity": {
+    "commit": "82a8854258f228a214f0964bbbd3d2b52e2be1e5",
+    "dirty": false,
+    "method": "published-source-manifest",
+    "source_manifest_sha256": "1523dc586bf0e67e3b31b8f0bd35d85fabf2f3e44ae1ab41cd07a6f00653426b"
+  },
+  "status": "complete for user-approved scope",
+  "validation": {
+    "anonymous_downloads": true,
+    "dataset_counts": {
+      "train": 827,
+      "validation": 215
+    },
+    "evidence_archive_entries": 1017,
+    "evidence_archive_raw_bytes": 2222025418,
+    "full_tests_passed": 304,
+    "glm_restored_healthy": true,
+    "gpu_max_absolute_probability_difference": 0.0,
+    "gpu_reference_rows": 4,
+    "gpu_tolerance": 0.0001,
+    "independent_completion_audit": "passed; all M0-M6 requirements satisfied with hosting deferred",
+    "native_encoding_included": true,
+    "published_model_and_dataset_bytes": "verified",
+    "ruff_format": "passed",
+    "ruff_lint": "passed",
+    "ty": "passed"
+  }
+}

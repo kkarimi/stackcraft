@@ -411,3 +411,24 @@ decision head. Set explicit library_name: stackcraft, as supported by the Hub's
 custom-library metadata, while documenting PEFT as an internal dependency. This
 points users to the actual bundled loader instead of an inapplicable generated
 snippet. No checkpoint or native loader implementation changed.
+
+## 2026-10-06 — Public release and completion audit passed
+
+Final model revision c4272310bd6c63ee97a941255abf8f36ff162229 and dataset
+revision 211708dd56f1a8af711c060c2ab1ecab35e7166d are PUBLIC. Both were freshly
+downloaded anonymously into absent directories with force_download=True. All
+bytes/schema/splits passed against the retained v6 manifest; the skipped demo
+is explicit. All 1,017 raw ZIP entries also passed after download.
+
+The downloaded source manifest is clean at 82a8854258f228a214f0964bbbd3d2b52e2be1e5.
+Its actual checkpoint reload passed four reference rows with max difference0.0
+(tolerance1e-4), in5.67seconds. The bounded authorized wrapper exited0 and restored
+GLM healthy; root separately confirmed /health status ok. No training occurred.
+
+Independent completion audit verified M0-M6 against evidence and anonymous public
+URLs. The final model page renders the actual results and custom loader without
+the invalid generic snippet. Full suite304passed; Ruff/format/typassed. Final
+publication reports preserve links, revisions, trusted manifest, download evidence,
+archive validation and GPU parity/restoration. Hosting is deferred by explicit
+user instruction; local gameplay/Docker verification remains delivered. Push this
+completion record, verify remote main, then complete the goal.

@@ -1,0 +1,23 @@
+{
+  "container": "omarchy-local-ai-glm-4.7-flash.llamacpp.q5xl.32k.rtx-5090-engine",
+  "command": [
+    "env",
+    "PYTHONPATH=/home/nima/Work/stackcraft/runs/download-public-v6/model/code/src",
+    "/home/nima/Work/stackcraft/.venv/bin/python",
+    "-B",
+    "/home/nima/Work/stackcraft/runs/download-public-v6/model/code/scripts/probe_clef_training.py",
+    "--dataset",
+    "/home/nima/Work/stackcraft/runs/download-public-v6/dataset",
+    "--reload",
+    "/home/nima/Work/stackcraft/runs/download-public-v6/model/checkpoint",
+    "--output",
+    "/home/nima/Work/stackcraft/runs/released-model-reload"
+  ],
+  "original_running": true,
+  "stopped_at": 1791268405.1673796,
+  "job_pid": 3389166,
+  "exit_code": 0,
+  "restored_running": true,
+  "restored_healthy": true,
+  "restored_at": 1791268414.3214898
+}

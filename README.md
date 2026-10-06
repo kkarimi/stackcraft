@@ -11,7 +11,7 @@ for milestones and acceptance criteria.
 - [Run the playable demo locally](docs/demo-hosting.md)
 - [Model adapter and decision head](https://huggingface.co/nima1/stackcraft-clef-flash-lora)
 - [Synthetic dataset](https://huggingface.co/datasets/nima1/stackcraft-data)
-- [Source and release verification](https://github.com/kkarimi/stackcraft)
+- [Source](https://github.com/kkarimi/stackcraft) and [release verification](reports/publication.md)
 
 The demo replays actual model decisions alongside live human play. It needs no
 GPU hosting. GitHub, the model and dataset are public. Hosted deployment was

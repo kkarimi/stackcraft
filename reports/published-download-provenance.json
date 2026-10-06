@@ -1,0 +1,28 @@
+{
+  "dataset": {
+    "repo_id": "nima1/stackcraft-data",
+    "repo_type": "dataset",
+    "url": "https://huggingface.co/datasets/nima1/stackcraft-data",
+    "private": false,
+    "status": "uploaded",
+    "revision": "211708dd56f1a8af711c060c2ab1ecab35e7166d",
+    "commit_url": "https://huggingface.co/datasets/nima1/stackcraft-data/commit/211708dd56f1a8af711c060c2ab1ecab35e7166d",
+    "directory": "runs/download-public-v6/dataset",
+    "force_download": true,
+    "token": false,
+    "directory_was_absent": true
+  },
+  "model": {
+    "repo_id": "nima1/stackcraft-clef-flash-lora",
+    "repo_type": "model",
+    "url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora",
+    "private": false,
+    "status": "uploaded",
+    "revision": "c4272310bd6c63ee97a941255abf8f36ff162229",
+    "commit_url": "https://huggingface.co/nima1/stackcraft-clef-flash-lora/commit/c4272310bd6c63ee97a941255abf8f36ff162229",
+    "directory": "runs/download-public-v6/model",
+    "force_download": true,
+    "token": false,
+    "directory_was_absent": true
+  }
+}
